@@ -1,0 +1,68 @@
+schema = "fdgr.adrs.v1"
+revision = 1
+
+[[adr]]
+id = "ADR-0001"
+name = "Three-plane authority"
+path = "docs/adr/ADR-0001-three-plane-authority.md"
+status = "accepted_initial"
+
+[[adr]]
+id = "ADR-0002"
+name = "Process sidecars"
+path = "docs/adr/ADR-0002-process-sidecars.md"
+status = "accepted_initial"
+
+[[adr]]
+id = "ADR-0003"
+name = "Metric scale witnesses"
+path = "docs/adr/ADR-0003-metric-scale-witnesses.md"
+status = "accepted_initial"
+
+[[adr]]
+id = "ADR-0004"
+name = "Original evidence custody"
+path = "docs/adr/ADR-0004-original-evidence-custody.md"
+status = "accepted_initial"
+
+[[adr]]
+id = "ADR-0005"
+name = "Agent operating model is the system center"
+path = "docs/adr/ADR-0005-agent-operating-model.md"
+status = "accepted_design"
+
+[[adr]]
+id = "ADR-0006"
+name = "Question-first cognitive graph"
+path = "docs/adr/ADR-0006-question-first-cognition.md"
+status = "accepted_design"
+
+[[adr]]
+id = "ADR-0007"
+name = "Canonical Agent Turn Packet"
+path = "docs/adr/ADR-0007-agent-turn-packet.md"
+status = "accepted_design"
+
+[[adr]]
+id = "ADR-0008"
+name = "Context packs require Pack DNA"
+path = "docs/adr/ADR-0008-context-pack-dna.md"
+status = "accepted_design"
+
+[[adr]]
+id = "ADR-0009"
+name = "Episode and surprise based accretion"
+path = "docs/adr/ADR-0009-evidence-gated-accretion.md"
+status = "accepted_design"
+
+[[adr]]
+id = "ADR-0010"
+name = "Eleven-operation semantic narrow waist"
+path = "docs/adr/ADR-0010-agent-narrow-waist.md"
+status = "accepted_design"
+
+[[adr]]
+id = "ADR-0011"
+name = "One canonical machine vocabulary"
+path = "docs/adr/ADR-0011-canonical-wire-vocabulary.md"
+status = "accepted_design"

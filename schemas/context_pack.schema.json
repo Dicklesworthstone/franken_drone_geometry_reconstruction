@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/context_pack.v1.json",
+  "title": "FDGR Context Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "pack_id",
+    "digest",
+    "anchor",
+    "focus",
+    "profile",
+    "items",
+    "coverage",
+    "pack_dna"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.context_pack/1"
+    },
+    "pack_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "focus": {
+      "type": "object"
+    },
+    "profile": {
+      "enum": [
+        "pulse",
+        "briefing",
+        "tactical",
+        "pilot",
+        "forensic",
+        "custom"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "handle",
+          "epistemic_state",
+          "evidence"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "epistemic_state": {
+            "enum": [
+              "observed",
+              "certified_derived",
+              "inferred",
+              "predicted",
+              "assumed",
+              "stale",
+              "unknown",
+              "contradicted",
+              "indeterminate"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "content": {}
+        },
+        "additionalProperties": true
+      }
+    },
+    "coverage": {
+      "type": "object"
+    },
+    "pack_dna": {
+      "type": "object",
+      "required": [
+        "selector",
+        "policy_root",
+        "mandatory",
+        "selected",
+        "omitted",
+        "budget"
+      ],
+      "properties": {
+        "selector": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mandatory": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "selected": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "omitted": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "budget": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "continuation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  }
+}

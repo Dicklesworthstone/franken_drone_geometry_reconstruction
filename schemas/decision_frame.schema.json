@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/decision_frame.v1.json",
+  "title": "FDGR Decision Frame",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "frame_id",
+    "anchor",
+    "status",
+    "objective_ids",
+    "question_ids",
+    "decision_boundary",
+    "admitted_facts",
+    "epistemic_debt",
+    "constraints",
+    "candidate_frontier",
+    "active_obligations",
+    "recommended_next_steps",
+    "stopping_rule",
+    "budget",
+    "digest"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.decision_frame/1"
+    },
+    "frame_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "status": {
+      "enum": [
+        "open",
+        "inspectable",
+        "candidate_ready",
+        "commit_ready",
+        "waiting",
+        "verified",
+        "blocked",
+        "stale",
+        "contradicted",
+        "indeterminate",
+        "retired"
+      ]
+    },
+    "objective_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "decision_boundary": {
+      "type": "object"
+    },
+    "admitted_facts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "epistemic_debt": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "candidate_frontier": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "active_obligations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "recommended_next_steps": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "stopping_rule": {
+      "type": "object"
+    },
+    "budget": {
+      "type": "object"
+    },
+    "invalidators": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "continuation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

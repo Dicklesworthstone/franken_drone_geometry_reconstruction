@@ -1,0 +1,246 @@
+{
+  "schema_version": "fdgr.agent_turn_contract/1",
+  "status": "normative-target",
+  "purpose": "Shared orientation, continuity, focus, singular Decision Frame, four-ledger, affordance, recommendation, uncertainty, coverage, budget, continuation, and handoff spine for every agent-facing result.",
+  "phases": [
+    "bootstrap",
+    "orient",
+    "focus",
+    "inspect",
+    "formulate",
+    "propose",
+    "compare",
+    "commit",
+    "watch",
+    "verify",
+    "reconcile",
+    "learn",
+    "handoff",
+    "resume"
+  ],
+  "continuity_statuses": [
+    "bootstrap",
+    "continuous",
+    "heartbeat",
+    "partial",
+    "gap",
+    "reset",
+    "stale",
+    "indeterminate"
+  ],
+  "epistemic_states": [
+    "observed",
+    "certified_derived",
+    "inferred",
+    "predicted",
+    "assumed",
+    "stale",
+    "unknown",
+    "contradicted",
+    "indeterminate"
+  ],
+  "recovery_classes": [
+    "do_not_retry_unchanged",
+    "safe_read_retry",
+    "refresh_and_retry",
+    "rebase_required",
+    "backoff",
+    "reconciliation_required",
+    "confirmation_required",
+    "operator_action_required"
+  ],
+  "profiles": {
+    "pulse": {
+      "intent": "Cheapest safe heartbeat.",
+      "target_output_tokens": {
+        "min": 120,
+        "max": 400
+      }
+    },
+    "briefing": {
+      "intent": "Default cold/resume orientation.",
+      "target_output_tokens": {
+        "min": 500,
+        "max": 1600
+      }
+    },
+    "tactical": {
+      "intent": "Decision-specific causal and evidence context.",
+      "requires_focus": true
+    },
+    "pilot": {
+      "intent": "Immediate manual-capture guidance tied to evidence deficits.",
+      "requires_live_or_recent_capture": true
+    },
+    "forensic": {
+      "intent": "Evidence-complete audit or reconciliation for bounded scope.",
+      "requires_explicit_scope": true
+    },
+    "custom": {
+      "intent": "Explicit registered projection union under hard bounds.",
+      "unknown_projection_behavior": "fail_closed"
+    }
+  },
+  "field_order": [
+    "schema",
+    "operation",
+    "phase",
+    "status",
+    "error",
+    "recovery",
+    "session_id",
+    "turn_id",
+    "request_id",
+    "anchor",
+    "continuity",
+    "profile",
+    "focus",
+    "decision_frame",
+    "ledgers",
+    "changes",
+    "attention",
+    "affordances",
+    "recommendations",
+    "uncertainty",
+    "coverage",
+    "budget",
+    "references",
+    "continuation"
+  ],
+  "ledgers": [
+    "world",
+    "epistemic",
+    "work",
+    "system"
+  ],
+  "authority_rules": {
+    "attention_can_authorize": false,
+    "recommendation_can_authorize": false,
+    "memory_can_authorize": false,
+    "counterfactual_can_authorize": false,
+    "affordance_can_authorize": false,
+    "plan_plus_current_witnesses_capabilities_policy_and_fences_required": true
+  },
+  "budget_categories": [
+    "canonical_reads",
+    "derived_queries",
+    "graph_operations",
+    "search_operations",
+    "planning_expansions",
+    "candidate_simulation",
+    "cpu_time",
+    "gpu_time",
+    "peak_memory",
+    "source_bytes",
+    "network_bytes",
+    "storage_bytes",
+    "operator_attention",
+    "flight_time",
+    "evidence_materialization",
+    "output_bytes",
+    "output_tokens"
+  ],
+  "required_invariants": [
+    {
+      "id": "AGENT-INV-001",
+      "statement": "Every success, progress record, and error carries the same agent-turn spine."
+    },
+    {
+      "id": "AGENT-INV-002",
+      "statement": "Every packet binds one compatible anchor vector and immutable generation of each included projection."
+    },
+    {
+      "id": "AGENT-INV-003",
+      "statement": "Continuity gaps, resets, staleness, and indeterminate outcomes are explicit."
+    },
+    {
+      "id": "AGENT-INV-004",
+      "statement": "Only observed and eligible certified-derived facts may satisfy authoritative preconditions."
+    },
+    {
+      "id": "AGENT-INV-005",
+      "statement": "Active work and the minimum safe next protocol step remain visible across errors and handoffs."
+    },
+    {
+      "id": "AGENT-INV-006",
+      "statement": "Recommendations are structured, costed, evidence-linked, authority-free, and may recommend doing nothing."
+    },
+    {
+      "id": "AGENT-INV-007",
+      "statement": "Empty results never prove absence without complete-domain coverage and detectability."
+    },
+    {
+      "id": "AGENT-INV-008",
+      "statement": "Budget exhaustion returns a complete decision-useful prefix, omissions, and continuation without dropping safety."
+    },
+    {
+      "id": "AGENT-INV-009",
+      "statement": "Memory, text, attention, and counterfactuals cannot grant capability or dispatch effects."
+    },
+    {
+      "id": "AGENT-INV-010",
+      "statement": "Equivalent packets use registered canonical ordering and tie breaks."
+    },
+    {
+      "id": "AGENT-INV-011",
+      "statement": "Prediction-observation divergence creates an explicit surprise record."
+    },
+    {
+      "id": "AGENT-INV-012",
+      "statement": "A handoff packet is sufficient to resume safely without reconstructing the transcript."
+    },
+    {
+      "id": "AGENT-INV-013",
+      "statement": "Turn identity and authority-bearing request identity are distinct and never silently aliased."
+    },
+    {
+      "id": "AGENT-INV-014",
+      "statement": "All subsystem state is projected through the same abstraction tower and four ledgers."
+    },
+    {
+      "id": "AGENT-INV-015",
+      "statement": "A question names the evidence and stopping rule required for resolution."
+    },
+    {
+      "id": "AGENT-INV-016",
+      "statement": "A context pack exposes Pack DNA for inclusion, omission, and marginal budget value."
+    },
+    {
+      "id": "AGENT-INV-017",
+      "statement": "Every materially decision-bearing packet contains exactly one compatible Decision Frame."
+    },
+    {
+      "id": "AGENT-INV-018",
+      "statement": "Attention re-interrupts only after a material transition, expiry, or invalidated acknowledgement."
+    },
+    {
+      "id": "AGENT-INV-019",
+      "statement": "Every public spatial reference is frame-complete and historically resolvable."
+    },
+    {
+      "id": "AGENT-INV-020",
+      "statement": "Pilot recommendation, acknowledgement, observed maneuver, usable evidence, and question resolution remain separate facts."
+    },
+    {
+      "id": "AGENT-INV-021",
+      "statement": "Every public machine surface uses one registry-derived lower snake_case vocabulary and fdgr.<name>/1 payload identity."
+    },
+    {
+      "id": "AGENT-INV-022",
+      "statement": "Status, error state-change semantics, and minimum safe recovery are explicit on the common packet rather than inferred from tool-specific data."
+    },
+    {
+      "id": "AGENT-INV-023",
+      "statement": "Every public anchor conforms to the same complete anchor-vector schema and digest rather than a transport-specific partial object."
+    }
+  ],
+  "statuses": [
+    "complete",
+    "partial",
+    "accepted",
+    "blocked",
+    "failed",
+    "cancelled",
+    "indeterminate"
+  ]
+}

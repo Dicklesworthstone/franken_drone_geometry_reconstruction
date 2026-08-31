@@ -1,0 +1,129 @@
+
+schema = "fdgr.errors.v1"
+revision = 1
+
+[[error]]
+id = "ERR-IDENTITY-NONCANONICAL"
+category = "input"
+retry = "after_correction"
+message = "An identity was not canonical lowercase domain-separated SHA-256 text."
+
+[[error]]
+id = "ERR-ANCHOR-MIXED-GENERATION"
+category = "consistency"
+retry = "replan"
+message = "Inputs came from incompatible capture, clock, calibration, model, ontology, or policy generations."
+
+[[error]]
+id = "ERR-TIME-DISCONTINUITY"
+category = "capture"
+retry = "new_epoch"
+message = "A timestamp or packet discontinuity cannot be represented within the current clock epoch."
+
+[[error]]
+id = "ERR-SCALE-UNWITNESSED"
+category = "geometry"
+retry = "add_evidence"
+message = "A metric claim was requested without an admitted scale witness."
+
+[[error]]
+id = "ERR-MODEL-UNADMITTED"
+category = "model"
+retry = "registry_change"
+message = "The requested model artifact, license, revision, or execution profile is not admitted."
+
+[[error]]
+id = "ERR-MODEL-OUTPUT-INVALID"
+category = "model"
+retry = "quarantine_and_recompute"
+message = "A model output failed schema, numeric, coordinate, basis, or digest validation."
+
+[[error]]
+id = "ERR-PUBLICATION-INCOMPLETE"
+category = "publication"
+retry = "resume_or_abort"
+message = "A publication root referenced missing, unverified, or incompatible children."
+
+[[error]]
+id = "ERR-EFFECT-INDETERMINATE"
+category = "effect"
+retry = "reconcile_only"
+message = "An external effect may have occurred but cannot yet be safely classified."
+
+[[error]]
+id = "ERR-COVERAGE-UNCERTIFIED"
+category = "evidence"
+retry = "capture_more"
+message = "The requested completeness or absence claim lacks a sufficient coverage certificate."
+
+[[error]]
+id = "ERR-DEVICE-PROFILE-UNKNOWN"
+category = "device"
+retry = "compatibility_probe"
+message = "The aircraft, controller, application, firmware, operating system, or region profile is unknown."
+
+[[error]]
+id = "ERR-DEVICE-AUTHORITY"
+category = "security"
+retry = "new_authorized_session"
+message = "The operation lacks an owner-authorized device capability."
+
+[[error]]
+id = "ERR-ARCHIVE-UNVERIFIED"
+category = "archive"
+retry = "verify_or_reupload"
+message = "The remote object has not passed provider-independent retrieval and digest verification."
+
+[[error]]
+id = "ERR-PRIVACY-BLOCKED"
+category = "privacy"
+retry = "redact_or_change_scope"
+message = "Publication or model execution would exceed the admitted privacy scope."
+
+[[error]]
+id = "ERR-BUDGET-EXHAUSTED"
+category = "resource"
+retry = "increase_budget_or_reduce_scope"
+message = "The operation exhausted a declared CPU, GPU, memory, I/O, network, storage, or time budget."
+
+[[error]]
+id = "ERR-CONTINUITY-GAP"
+category = "continuity"
+retry = "refresh_and_retry"
+message = "The requested basis cannot be advanced to the target anchor without a gap or reset."
+
+[[error]]
+id = "ERR-QUESTION-BLOCKED"
+category = "epistemic"
+retry = "operator_action_or_new_evidence"
+message = "The question cannot reach its terminal predicate under current evidence, grants, compatibility, or budget."
+
+[[error]]
+id = "ERR-PLAN-STALE"
+category = "consistency"
+retry = "rebase_required"
+message = "A plan witness or policy basis changed before commit and the sealed plan must be replayed or rejected."
+
+[[error]]
+id = "ERR-AFFORDANCE-UNAVAILABLE"
+category = "authority"
+retry = "inspect_requirements"
+message = "The requested action family is blocked or degraded; the response names unmet grants, evidence, compatibility, or confirmation requirements."
+
+[[error]]
+id = "ERR-CONTEXT-PACK-INCOMPLETE"
+category = "resource"
+retry = "continue_or_narrow"
+message = "The context budget admitted only a complete decision-useful prefix; omissions and an anchor-bound continuation are provided."
+
+[[error]]
+id = "ERR-HANDOFF-STALE"
+category = "continuity"
+retry = "orient_from_current"
+message = "The handoff anchor is no longer directly resumable; current orientation and invalidated assumptions are required."
+
+[[error]]
+id = "ERR-RECOMMENDATION-NONE"
+category = "decision"
+retry = "do_not_retry_unchanged"
+message = "No action has positive admissible value under the current objective, evidence, risk, and budget; waiting or stopping is intentional."

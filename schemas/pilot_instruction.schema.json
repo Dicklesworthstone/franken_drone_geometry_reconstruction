@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/pilot_instruction.v1.json",
+  "title": "FDGR Human Pilot Instruction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "instruction_id",
+    "basis_anchor",
+    "question_ids",
+    "spatial_handle",
+    "maneuver",
+    "purpose",
+    "preconditions",
+    "safe_envelope",
+    "success_cue",
+    "quality_conditions",
+    "abort_conditions",
+    "expected_evidence_gain",
+    "operator_actions",
+    "status"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.pilot_instruction/1"
+    },
+    "instruction_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "basis_anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "spatial_handle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "maneuver": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "safe_envelope": {
+      "type": "object"
+    },
+    "success_cue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quality_conditions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "abort_conditions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
+    },
+    "expected_evidence_gain": {
+      "type": "object"
+    },
+    "estimated_burden": {
+      "type": "object"
+    },
+    "operator_actions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "acknowledge",
+          "skip",
+          "cannot_comply",
+          "abort"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "acknowledged",
+        "observed_in_progress",
+        "completed",
+        "skipped",
+        "cannot_comply",
+        "aborted",
+        "stale"
+      ]
+    },
+    "observed_execution": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "resolution_result": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  }
+}

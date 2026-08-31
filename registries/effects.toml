@@ -1,0 +1,91 @@
+
+schema = "fdgr.effects.v1"
+revision = 1
+
+[[effect]]
+id = "EFFECT-INGEST-001"
+name = "Read source media"
+capability = "CAP-CAPTURE-READ"
+reversible = true
+risk = "low"
+completion = "Every requested byte is either durably staged or named in an explicit gap receipt."
+
+[[effect]]
+id = "EFFECT-PROCESS-001"
+name = "Spawn media sidecar"
+capability = "CAP-PROCESS-MEDIA"
+reversible = true
+risk = "medium"
+completion = "The child and descendants are drained, outputs validated, and temporary roots retired or published."
+
+[[effect]]
+id = "EFFECT-MODEL-001"
+name = "Spawn model worker"
+capability = "CAP-PROCESS-MODEL"
+reversible = true
+risk = "medium"
+completion = "The worker is drained and its proposal bundle is verified or quarantined."
+
+[[effect]]
+id = "EFFECT-PUBLISH-001"
+name = "Publish immutable generation"
+capability = "CAP-GENERATION-PUBLISH"
+reversible = false
+risk = "high"
+completion = "The new root is atomically visible and independently traversable; the previous root remains coherent."
+
+[[effect]]
+id = "EFFECT-CLOUD-001"
+name = "Upload immutable object"
+capability = "CAP-ARCHIVE-WRITE"
+reversible = true
+risk = "medium"
+completion = "Provider-independent retrieval verification discharges the upload obligation."
+
+[[effect]]
+id = "EFFECT-CLOUD-002"
+name = "Delete archive object"
+capability = "CAP-ARCHIVE-DELETE"
+reversible = false
+risk = "critical"
+completion = "A sealed deletion plan is revalidated, retention obligations are clear, deletion is observed, and surviving roots remain reconstructible."
+
+[[effect]]
+id = "EFFECT-DEVICE-001"
+name = "Open owner-authorized device session"
+capability = "CAP-DEVICE-OBSERVE"
+reversible = true
+risk = "medium"
+completion = "The adapter closes, credentials are erased from process memory where practical, and capture gaps are sealed."
+
+[[effect]]
+id = "EFFECT-DEVICE-002"
+name = "Send aircraft control command"
+capability = "CAP-DEVICE-CONTROL"
+reversible = false
+risk = "critical"
+completion = "Out of scope until a separate flight-safety architecture and qualification program is adopted."
+
+[[effect]]
+id = "EFFECT-PLAN-001"
+name = "Commit sealed semantic plan"
+capability = "CAP-PLAN-COMMIT"
+reversible = false
+risk = "variable_by_child_effect"
+completion = "Every child obligation is terminal or explicitly indeterminate and the plan's verification predicate has a sealed result."
+
+[[effect]]
+id = "EFFECT-HANDOFF-001"
+name = "Publish handoff capsule"
+capability = "CAP-HANDOFF-PUBLISH"
+reversible = true
+risk = "low"
+completion = "The capsule is root-last published, anchor-consistent, privacy-checked, and independently readable."
+
+[[effect]]
+id = "EFFECT-EPISODE-001"
+name = "Append episode capsule"
+capability = "CAP-EPISODE-APPEND"
+reversible = true
+risk = "low"
+completion = "Predicted and observed state, costs, surprises, and evidence references validate and publish under one episode root."

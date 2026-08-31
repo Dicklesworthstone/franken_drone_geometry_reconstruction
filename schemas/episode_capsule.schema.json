@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/episode_capsule.v1.json",
+  "title": "FDGR Episode Capsule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "episode_id",
+    "start_anchor",
+    "end_anchor",
+    "objective_ids",
+    "question_ids",
+    "context_pack_id",
+    "candidate_plan_ids",
+    "selected_plan_id",
+    "obligation_ids",
+    "predicted",
+    "observed",
+    "cost",
+    "outcome",
+    "surprises",
+    "evidence"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.episode_capsule/1"
+    },
+    "episode_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "start_anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "end_anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "objective_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "context_pack_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidate_plan_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "selected_plan_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "obligation_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "predicted": {
+      "type": "object"
+    },
+    "observed": {
+      "type": "object"
+    },
+    "cost": {
+      "type": "object"
+    },
+    "outcome": {
+      "enum": [
+        "success",
+        "partial",
+        "failed",
+        "cancelled",
+        "indeterminate",
+        "abandoned"
+      ]
+    },
+    "surprises": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "lesson_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,79 @@
+schema = "fdgr.agent_operations.v1"
+revision = 1
+
+[[operation]]
+id = "OP-AGENT-OPEN-SESSION"
+logical_name = "fdgr.open_session"
+phase = "bootstrap"
+authority = "read_only_negotiation"
+summary = "Negotiate protocol, lineage, grants, profiles, budgets, and continuity basis."
+
+[[operation]]
+id = "OP-AGENT-ORIENT"
+logical_name = "fdgr.orient"
+phase = "orient"
+authority = "read_only"
+summary = "Return the smallest sufficient four-ledger briefing and ranked attention."
+
+[[operation]]
+id = "OP-AGENT-QUERY"
+logical_name = "fdgr.query"
+phase = "focus"
+authority = "read_only"
+summary = "Answer a bounded question or expand typed handles with coverage and provenance."
+
+[[operation]]
+id = "OP-AGENT-PROPOSE"
+logical_name = "fdgr.propose"
+phase = "propose"
+authority = "authority_free_planning"
+summary = "Compile an objective or next-step template into sealed candidate plans."
+
+[[operation]]
+id = "OP-AGENT-COMPARE"
+logical_name = "fdgr.compare"
+phase = "compare"
+authority = "authority_free_planning"
+summary = "Compare candidates or branches on one basis and expose a Pareto frontier."
+
+[[operation]]
+id = "OP-AGENT-COMMIT"
+logical_name = "fdgr.commit"
+phase = "commit"
+authority = "effectful_after_validation"
+summary = "Revalidate and commit one sealed plan, creating owned obligations."
+
+[[operation]]
+id = "OP-AGENT-WATCH"
+logical_name = "fdgr.watch"
+phase = "watch"
+authority = "read_only"
+summary = "Return semantic progress and terminal transitions for active work."
+
+[[operation]]
+id = "OP-AGENT-CANCEL"
+logical_name = "fdgr.cancel"
+phase = "reconcile"
+authority = "effectful_cancellation"
+summary = "Request cancellation and report drain, compensation, and reconciliation."
+
+[[operation]]
+id = "OP-AGENT-EXPLAIN"
+logical_name = "fdgr.explain"
+phase = "inspect"
+authority = "read_only"
+summary = "Traverse claims, decisions, scores, witnesses, omissions, and evidence."
+
+[[operation]]
+id = "OP-AGENT-HANDOFF"
+logical_name = "fdgr.handoff"
+phase = "handoff"
+authority = "publication_only"
+summary = "Create or resume a compact sealed authority-free continuity capsule."
+
+[[operation]]
+id = "OP-AGENT-DOCTOR"
+logical_name = "fdgr.doctor"
+phase = "inspect"
+authority = "read_only_diagnostic"
+summary = "Diagnose compatibility, custody, compute, model, policy, and qualification posture."

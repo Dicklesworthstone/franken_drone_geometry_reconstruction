@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/agent_turn.v1.json",
+  "title": "FDGR Agent Turn Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "operation",
+    "phase",
+    "status",
+    "error",
+    "recovery",
+    "session_id",
+    "turn_id",
+    "anchor",
+    "continuity",
+    "profile",
+    "focus",
+    "decision_frame",
+    "ledgers",
+    "changes",
+    "attention",
+    "affordances",
+    "recommendations",
+    "uncertainty",
+    "coverage",
+    "budget",
+    "references"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.agent_turn/1"
+    },
+    "operation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "phase": {
+      "enum": [
+        "bootstrap",
+        "orient",
+        "focus",
+        "inspect",
+        "formulate",
+        "propose",
+        "compare",
+        "commit",
+        "watch",
+        "verify",
+        "reconcile",
+        "learn",
+        "handoff",
+        "resume"
+      ]
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial",
+        "accepted",
+        "blocked",
+        "failed",
+        "cancelled",
+        "indeterminate"
+      ]
+    },
+    "error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message",
+            "state_changed",
+            "retryable",
+            "related_refs"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]*$"
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "state_changed": {
+              "type": "boolean"
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "details": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "related_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "recovery": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "class",
+            "reason",
+            "minimum_safe_step",
+            "preserves_state",
+            "requires_refresh",
+            "invalidated_refs"
+          ],
+          "properties": {
+            "class": {
+              "enum": [
+                "do_not_retry_unchanged",
+                "safe_read_retry",
+                "refresh_and_retry",
+                "rebase_required",
+                "backoff",
+                "reconciliation_required",
+                "confirmation_required",
+                "operator_action_required"
+              ]
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "minimum_safe_step": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "preserves_state": {
+              "type": "boolean"
+            },
+            "requires_refresh": {
+              "type": "boolean"
+            },
+            "retry_after_ms": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "invalidated_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "turn_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "continuity": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "bootstrap",
+            "continuous",
+            "heartbeat",
+            "partial",
+            "gap",
+            "reset",
+            "stale",
+            "indeterminate"
+          ]
+        },
+        "basis": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "profile": {
+      "enum": [
+        "pulse",
+        "briefing",
+        "tactical",
+        "pilot",
+        "forensic",
+        "custom"
+      ]
+    },
+    "focus": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "decision_frame": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "ledgers": {
+      "type": "object",
+      "required": [
+        "world",
+        "epistemic",
+        "work",
+        "system"
+      ],
+      "properties": {
+        "world": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "epistemic": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "work": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "system": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "attention": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "affordances": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "uncertainty": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "continuation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "blocked",
+              "failed",
+              "cancelled",
+              "indeterminate"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "recovery": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "failed",
+              "indeterminate"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "complete"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

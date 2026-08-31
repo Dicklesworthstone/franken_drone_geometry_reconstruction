@@ -1,0 +1,178 @@
+schema = "fdgr.tests.v1"
+revision = 1
+
+[[test_family]]
+id = "TEST-001"
+required_evidence = "canonical codec vectors, malformed bounds, roundtrip, cross-implementation"
+
+[[test_family]]
+id = "TEST-002"
+required_evidence = "identity/domain-separation and collision/substitution handling"
+
+[[test_family]]
+id = "TEST-003"
+required_evidence = "anchor snapshot isolation and mixed-generation rejection"
+
+[[test_family]]
+id = "TEST-004"
+required_evidence = "clock discontinuity, drift, packet/frame accounting"
+
+[[test_family]]
+id = "TEST-005"
+required_evidence = "coordinate conversion and known-camera projection/unprojection"
+
+[[test_family]]
+id = "TEST-006"
+required_evidence = "scale witness admission, conflict, demotion, and metric-output refusal"
+
+[[test_family]]
+id = "TEST-007"
+required_evidence = "publication kill-point crash matrix and orphan staging repair"
+
+[[test_family]]
+id = "TEST-008"
+required_evidence = "cancellation request/drain/reconcile/finalize at every boundary"
+
+[[test_family]]
+id = "TEST-009"
+required_evidence = "idempotency and indeterminate external effect reconciliation"
+
+[[test_family]]
+id = "TEST-010"
+required_evidence = "source/device compatibility and secret leak scans"
+
+[[test_family]]
+id = "TEST-011"
+required_evidence = "media sidecar malformed input/output, descendant cleanup, timeline equivalence"
+
+[[test_family]]
+id = "TEST-012"
+required_evidence = "model artifact/license/profile and output validation"
+
+[[test_family]]
+id = "TEST-013"
+required_evidence = "reference/optimized/model geometry differential tests"
+
+[[test_family]]
+id = "TEST-014"
+required_evidence = "loop closure, refinement, fusion, topology, and uncertainty"
+
+[[test_family]]
+id = "TEST-015"
+required_evidence = "semantic presence, counterevidence, critical resolution, absence refusal"
+
+[[test_family]]
+id = "TEST-016"
+required_evidence = "coverage certificate and next-best-view deterministic policy"
+
+[[test_family]]
+id = "TEST-017"
+required_evidence = "archive multipart, checksum, readback, repair, and restore"
+
+[[test_family]]
+id = "TEST-018"
+required_evidence = "capability noninterference and privacy export"
+
+[[test_family]]
+id = "TEST-019"
+required_evidence = "graph/search/report rebuild and provenance equivalence"
+
+[[test_family]]
+id = "TEST-020"
+required_evidence = "CLI/MCP schemas, pagination, cancellation, tasks, and multi-client isolation"
+
+[[test_family]]
+id = "TEST-021"
+required_evidence = "migration, backward/forward compatibility, and old-capture reinterpretation"
+
+[[test_family]]
+id = "TEST-022"
+required_evidence = "local release qualification and evidence bundle self-verification"
+
+[[test_family]]
+id = "TEST-023"
+required_evidence = "Agent Turn Packet shape, field order, success/error/progress parity, and schema golden vectors"
+
+[[test_family]]
+id = "TEST-024"
+required_evidence = "cold arrival obtains sufficient mission, anchor, four-ledger, authority, and next-step orientation in one call"
+
+[[test_family]]
+id = "TEST-025"
+required_evidence = "pulse heartbeat stays compact, delta-correct, and preserves critical continuity and active work"
+
+[[test_family]]
+id = "TEST-026"
+required_evidence = "gap, reset, stale, partial, and indeterminate continuity vectors fail closed with exact recovery"
+
+[[test_family]]
+id = "TEST-027"
+required_evidence = "question terminal predicates, evidence deficits, counterevidence, stopping, and reopening under new evidence"
+
+[[test_family]]
+id = "TEST-028"
+required_evidence = "context-pack deterministic selection, mandatory safety items, Pack DNA, budget marginal value, and continuation"
+
+[[test_family]]
+id = "TEST-029"
+required_evidence = "affordance enabled/degraded/blocked reasons match state, grants, compatibility, risk, and confirmation"
+
+[[test_family]]
+id = "TEST-030"
+required_evidence = "candidate plans share a basis and Pareto ordering is deterministic under adversarial equivalent options"
+
+[[test_family]]
+id = "TEST-031"
+required_evidence = "active obligations, confirmations, drains, and indeterminate effects remain visible after context loss"
+
+[[test_family]]
+id = "TEST-032"
+required_evidence = "pilot guidance identifies evidence purpose, quality/abort rules, and observed question-resolution outcome"
+
+[[test_family]]
+id = "TEST-033"
+required_evidence = "episode and surprise capsules compare prediction, observation, cost, regret, and affected assumptions"
+
+[[test_family]]
+id = "TEST-034"
+required_evidence = "memory/policy promotion requires independent evidence, replay, shadow, canary, monitor, and rollback"
+
+[[test_family]]
+id = "TEST-035"
+required_evidence = "handoff capsule allows a fresh agent to resume the minimum safe step without transcript replay"
+
+[[test_family]]
+id = "TEST-036"
+required_evidence = "multi-agent branch, reservation, lease/fence, duplicate-work, merge, and stale-worker campaigns"
+
+[[test_family]]
+id = "TEST-037"
+required_evidence = "capability/help/schema/robot-doc/MCP manifest parity, typo repair, valid-value discovery, and maturity honesty"
+
+[[test_family]]
+id = "TEST-038"
+required_evidence = "Decision Frame sufficiency, singularity, stale/rebase, do-nothing candidate, and one-basis candidate-frontier scenarios"
+
+[[test_family]]
+id = "TEST-039"
+required_evidence = "attention class ordering, deterministic tie breaks, hysteresis, acknowledgement, suppression, expiry, and material-change re-entry"
+
+[[test_family]]
+id = "TEST-040"
+required_evidence = "spatial-handle coordinate declaration, semantic zoom, access control, historical supersession, ambiguity, and round-trip fixtures"
+
+[[test_family]]
+id = "TEST-041"
+required_evidence = "human-pilot acknowledge, skip, refusal, observed compliance, quality failure, stop, safety preemption, and abort scenarios"
+
+[[test_family]]
+id = "TEST-042"
+required_evidence = "CLI, MCP, NDJSON, and cockpit projections produce semantically equivalent Decision Frames and Agent Turn Packets"
+
+[[test_family]]
+id = "TEST-043"
+required_evidence = "all public schemas, CLI JSON, MCP, NDJSON, receipts, examples, migrations, and self-description use one canonical snake_case vocabulary and fdgr.<name>/1 payload identity"
+
+[[test_family]]
+id = "TEST-044"
+required_evidence = "anchor-vector canonical encoding, digest, cross-schema reuse, per-generation high-water compatibility, gap/reset/stale transitions, and mixed-generation rejection"

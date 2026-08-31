@@ -1,0 +1,127 @@
+schema = "fdgr.gates.v1"
+revision = 1
+
+[[gate]]
+id = "GATE-000"
+name = "Constitution frozen"
+terminal_predicate = "Registries parse, stable IDs are unique, dependency policy passes, and no implementation claim exceeds evidence."
+
+[[gate]]
+id = "GATE-001"
+name = "Reference identity and ledger"
+terminal_predicate = "Canonical codec and single-threaded ledger replay byte-identically across the fixture corpus."
+
+[[gate]]
+id = "GATE-002"
+name = "Crash-safe evidence publication"
+terminal_predicate = "Original media and evidence roots survive the complete staged-publication crash matrix."
+
+[[gate]]
+id = "GATE-003"
+name = "Media normalization qualified"
+terminal_predicate = "Sidecar cancellation, malformed media, timestamp accounting, deterministic profiles, and output verification pass."
+
+[[gate]]
+id = "GATE-004"
+name = "Calibration and scale honest"
+terminal_predicate = "Metric exports are impossible without scale witnesses; calibration and scale uncertainty calibrate on held-out fixtures."
+
+[[gate]]
+id = "GATE-005"
+name = "Recorded capture useful"
+terminal_predicate = "At least one DJI Flip recorded path and one generic camera path produce complete anchored frame generations."
+
+[[gate]]
+id = "GATE-006"
+name = "Live observation admitted"
+terminal_predicate = "A version-pinned owner-authorized live path runs read-only, accounts for gaps, and closes without leaked work or secrets."
+
+[[gate]]
+id = "GATE-007"
+name = "Reference geometry oracle"
+terminal_predicate = "A deterministic classical baseline produces poses and sparse geometry with known failure classifications."
+
+[[gate]]
+id = "GATE-008"
+name = "Model lanes admitted"
+terminal_predicate = "Exact model artifacts pass license, sandbox, schema, numeric, reproducibility, and domain benchmark gates."
+
+[[gate]]
+id = "GATE-009"
+name = "Refined geometry stable"
+terminal_predicate = "Pose and depth refinement outperform or safely reject priors without nondeterministic publication drift."
+
+[[gate]]
+id = "GATE-010"
+name = "Digital surface model useful"
+terminal_predicate = "Fused geometry, uncertainty, coverage, held-out reprojection, scale, and topology metrics meet profile targets."
+
+[[gate]]
+id = "GATE-011"
+name = "Semantic twin trustworthy"
+terminal_predicate = "Ontology assets resolve with evidence, counterevidence, critical-asset review, and calibrated uncertainty."
+
+[[gate]]
+id = "GATE-012"
+name = "Archive recoverable"
+terminal_predicate = "Local loss followed by B2 or R2 restore reconstructs every retained authoritative root from verified objects."
+
+[[gate]]
+id = "GATE-013"
+name = "Human and agent surfaces complete"
+terminal_predicate = "CLI, reports, search, measurements, and exports preserve anchors, status, uncertainty, and stable schemas."
+
+[[gate]]
+id = "GATE-014"
+name = "Agent integration non-bypassable"
+terminal_predicate = "MCP and Eidetic surfaces cannot mutate or redefine canonical state outside registered semantic paths."
+
+[[gate]]
+id = "GATE-015"
+name = "Fault and benchmark evidence"
+terminal_predicate = "Lab schedules and ground-truth campaigns cover named failure classes with reproducible receipts."
+
+[[gate]]
+id = "GATE-016"
+name = "Performance claims earned"
+terminal_predicate = "Same-binary experiments show semantic equivalence and statistically defensible latency, cost, and memory results."
+
+[[gate]]
+id = "GATE-017"
+name = "Release qualified"
+terminal_predicate = "All advertised platform, device, model, privacy, recovery, and performance dimensions have current positive evidence."
+
+[[gate]]
+id = "GATE-018"
+name = "Agent semantics contract locked"
+terminal_predicate = "The abstraction tower, operating loop, anchor vector, four ledgers, epistemic lattice, question graph, Agent Turn Packet, profiles, and authority boundaries have machine contracts and golden vectors."
+
+[[gate]]
+id = "GATE-019"
+name = "Cold orientation and context packs qualified"
+terminal_predicate = "Cold arrival, pulse, briefing, tactical, forensic, budget, gap, and Pack DNA scenarios satisfy determinism, sufficiency, coverage, and token-economy tests."
+
+[[gate]]
+id = "GATE-020"
+name = "Question-driven planning qualified"
+terminal_predicate = "Objectives, questions, deficits, affordances, candidate plans, Pareto comparison, value-of-information, and stopping rules replay deterministically and never bypass authority."
+
+[[gate]]
+id = "GATE-021"
+name = "Active work and handoff qualified"
+terminal_predicate = "Obligations, semantic progress, confirmations, indeterminate effects, cancellation, reconciliation, and handoff/resume remain sufficient across context and agent replacement."
+
+[[gate]]
+id = "GATE-022"
+name = "Accretion qualified"
+terminal_predicate = "Episodes, surprises, cost calibration, feedback, lesson promotion, shadow/canary policy, monitoring, and rollback improve qualified workloads without weakening proof gates."
+
+[[gate]]
+id = "GATE-023"
+name = "Agent-native release qualified"
+terminal_predicate = "Self-description, first-try discoverability, live/lab adapter parity, multi-agent coordination, and the full orient-to-handoff loop pass local Doodlestein qualification on advertised profiles."
+
+[[gate]]
+id = "GATE-024"
+name = "Shared cockpit and pilot protocol qualified"
+terminal_predicate = "Decision Frames, epistemic-debt attention, frame-complete spatial handles, and human-pilot cards pass semantic-equivalence, cold-resume, stability, access-control, cognitive-load, stop, refusal, and abort campaigns."

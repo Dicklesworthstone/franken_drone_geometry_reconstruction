@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/plan_candidate.v1.json",
+  "title": "FDGR Plan Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "plan_id",
+    "basis_anchor",
+    "objective_ids",
+    "question_ids",
+    "steps",
+    "witnesses",
+    "predicted_delta",
+    "cost",
+    "risk",
+    "reversibility",
+    "digest"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.plan_candidate/1"
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "basis_anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "objective_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
+    },
+    "witnesses": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "predicted_delta": {
+      "type": "object"
+    },
+    "cost": {
+      "type": "object"
+    },
+    "risk": {
+      "type": "object"
+    },
+    "reversibility": {
+      "enum": [
+        "read_only",
+        "fully_reversible",
+        "compensatable",
+        "partially_reversible",
+        "irreversible",
+        "unknown"
+      ]
+    },
+    "invalidators": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

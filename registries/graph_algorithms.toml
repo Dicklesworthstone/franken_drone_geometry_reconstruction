@@ -1,0 +1,137 @@
+schema = "fdgr.graph_algorithms.v1"
+revision = 1
+contract = "pinned-view + explicit-semantics + canonical-choice + certificate"
+
+[[family]]
+id = "GALG-001"
+name = "components-and-dynamic-connectivity"
+uses = ["view/pose components", "room/free-space connectivity", "archive closure"]
+reference = "ordered traversal / union-find; full recompute after deletion"
+optimized_candidate = "franken_networkx exact family after GATE-709"
+
+[[family]]
+id = "GALG-002"
+name = "articulation-bridges-biconnectivity"
+uses = ["fragile pose edges", "portal/stair chokepoints", "utility/evidence bottlenecks"]
+reference = "deterministic DFS"
+
+[[family]]
+id = "GALG-003"
+name = "scc-condensation-cycle-diagnosis"
+uses = ["obligation dependencies", "protocol state machines", "directed utilities"]
+reference = "deterministic Tarjan/Kosaraju profile"
+
+[[family]]
+id = "GALG-004"
+name = "topological-critical-path-antichain"
+uses = ["pipeline obligations", "release lanes", "parallel work planning"]
+reference = "stable Kahn order and DAG dynamic programming"
+
+[[family]]
+id = "GALG-005"
+name = "shortest-widest-minimax-k-shortest"
+uses = ["manual/assisted viewpoints", "walkable routes", "utility and evidence paths"]
+reference = "stable Dijkstra/Bellman-Ford/profile-specific simple paths"
+
+[[family]]
+id = "GALG-006"
+name = "dominators-postdominators"
+uses = ["mandatory portals", "mandatory utility components", "provenance dominance"]
+reference = "iterative dataflow then qualified optimized algorithm"
+
+[[family]]
+id = "GALG-007"
+name = "spanning-forests"
+uses = ["pose initialization", "sparse explanatory backbones", "transfer topology"]
+reference = "stable Kruskal/Prim"
+
+[[family]]
+id = "GALG-008"
+name = "cycle-bases-consistency"
+uses = ["pose closure residuals", "room/wall loops", "utility loops"]
+reference = "fundamental cycle basis with canonical tree"
+
+[[family]]
+id = "GALG-009"
+name = "max-flow-min-cut-gomory-hu"
+uses = ["segmentation", "weak cuts", "capacity and evidence separation"]
+reference = "integer-capacity Edmonds-Karp/Dinic profile"
+
+[[family]]
+id = "GALG-010"
+name = "min-cost-flow-circulation"
+uses = ["track stitching", "object association", "view demand assignment", "transfer scheduling"]
+reference = "bounded integer successive shortest path"
+
+[[family]]
+id = "GALG-011"
+name = "bipartite-weighted-bottleneck-matching"
+uses = ["features", "cross-session objects", "semantic proposals", "viewpoint targets"]
+reference = "deterministic augmenting-path/Hungarian profiles"
+
+[[family]]
+id = "GALG-012"
+name = "compatibility-clique-independent-set-coloring"
+uses = ["loop closures", "conflict-free claims/views", "resource scheduling"]
+reference = "exact bounded search and honest maximal heuristics"
+
+[[family]]
+id = "GALG-013"
+name = "k-core-k-truss-degeneracy"
+uses = ["redundant evidence cores", "stable view/track subgraphs"]
+reference = "deterministic peeling"
+
+[[family]]
+id = "GALG-014"
+name = "centrality-pagerank-hits-ppr"
+uses = ["attention", "evidence context", "representative observations"]
+reference = "fixed-order iterations and convergence certificate"
+
+[[family]]
+id = "GALG-015"
+name = "community-partition-hypotheses"
+uses = ["room clusters", "scene partition", "work sharding"]
+reference = "deterministic seeded profile; hypothesis-only"
+
+[[family]]
+id = "GALG-016"
+name = "spectral-diagnostics"
+uses = ["connectivity/conditioning warnings", "spectral partition candidates"]
+reference = "residual-certified power/Lanczos profile"
+
+[[family]]
+id = "GALG-017"
+name = "isomorphism-subgraph-motifs"
+uses = ["repeated windows/doors/rooms", "local loop closure", "protocol schemas"]
+reference = "bounded labeled backtracking / WL filters"
+
+[[family]]
+id = "GALG-018"
+name = "graph-edit-change"
+uses = ["cross-session change", "branch comparison", "profile evolution"]
+reference = "bounded search with explicit lower/upper bounds"
+
+[[family]]
+id = "GALG-019"
+name = "treewidth-elimination-order"
+uses = ["bundle/factor elimination", "factorized query plans"]
+reference = "stable min-degree/min-fill heuristics with observed fill"
+
+[[family]]
+id = "GALG-020"
+name = "temporal-graphs"
+uses = ["AS OF topology", "persistence", "temporal reachability"]
+reference = "interval-filtered snapshot traversal"
+
+[[family]]
+id = "GALG-021"
+name = "submodular-selection"
+uses = ["keyframes", "next-best views", "context packs", "scrub samples"]
+reference = "stable lazy greedy with assumptions/bounds"
+
+[certificate]
+required = [
+  "algorithm_id", "input_anchor", "projection_digest", "graph_semantics",
+  "n", "m", "numeric_policy", "tie_break_policy", "budget", "stop_reason",
+  "operation_counts", "decision_path_digest", "ordered_output_digest"
+]

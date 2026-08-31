@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/evidence_event.v1.json",
+  "title": "FDGR Evidence Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "event_id",
+    "event_type",
+    "basis",
+    "sequence",
+    "payload_root"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.evidence_event/1"
+    },
+    "event_id": {
+      "$ref": "#/$defs/digest"
+    },
+    "event_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "basis": {
+      "$ref": "capture_anchor.schema.json"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "payload_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "parent_event_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/digest"
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

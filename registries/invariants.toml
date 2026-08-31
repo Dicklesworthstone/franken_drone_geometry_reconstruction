@@ -1,0 +1,268 @@
+
+schema = "fdgr.invariants.v1"
+revision = 1
+
+[[invariant]]
+id = "INV-001"
+name = "Anchored claims only"
+text = "Every geometry, timing, calibration, semantic, coverage, and completion claim names an immutable evidence basis and policy epoch."
+
+[[invariant]]
+id = "INV-002"
+name = "Original evidence is immutable"
+text = "Exact acquired bytes and acquisition metadata are append-only; normalization and compression create derived siblings rather than rewriting originals."
+
+[[invariant]]
+id = "INV-003"
+name = "One version universe"
+text = "Capture history, calibration, clocks, geometry, semantics, archives, subscriptions, branches, and replay derive from one ordered evidence-capsule stream."
+
+[[invariant]]
+id = "INV-004"
+name = "No mixed generations"
+text = "A request observes one complete anchor and never combines unpublished or incompatible geometry, calibration, clock, model, ontology, or policy generations."
+
+[[invariant]]
+id = "INV-005"
+name = "Metric claims require scale witnesses"
+text = "No distance, area, volume, clearance, or location may be presented in metric units unless its coordinate transform cites a registered scale witness."
+
+[[invariant]]
+id = "INV-006"
+name = "Model output is a proposal"
+text = "A neural model output becomes an observation or hypothesis only after structural, numerical, basis, and registry validation; it is never canonical by process exit alone."
+
+[[invariant]]
+id = "INV-007"
+name = "Cognition cannot dispatch effects"
+text = "Reconstruction, search, semantic, graph, memory, and next-best-view components can propose intents but have no device, archive, deletion, or publication authority."
+
+[[invariant]]
+id = "INV-008"
+name = "Acknowledgement is not completion"
+text = "Adapter acceptance, subprocess exit, upload response, and queue insertion are not semantic success; completion requires a verified terminal predicate."
+
+[[invariant]]
+id = "INV-009"
+name = "Reserve materialize verify publish"
+text = "Every coherent multi-artifact generation is reserved, materialized below an unpublished root, verified, and only then atomically published."
+
+[[invariant]]
+id = "INV-010"
+name = "Cancellation drains"
+text = "Cancellation requests stop new effects, drain or reconcile in-flight work, publish a terminal receipt, and never silently abandon an indeterminate external effect."
+
+[[invariant]]
+id = "INV-011"
+name = "No orphan work"
+text = "Every task, subprocess, transfer, lease, watcher, and obligation is owned by an Asupersync region whose closure reaches quiescence or reports an explicit indeterminate boundary."
+
+[[invariant]]
+id = "INV-012"
+name = "Deterministic decision replay"
+text = "Given identical evidence roots, registries, policies, model outputs, and laboratory schedule, deterministic decisions and eligible outputs are byte-reproducible."
+
+[[invariant]]
+id = "INV-013"
+name = "Negative claims are witnessed"
+text = "Absence claims such as no exterior spigot or no uncovered wall require a coverage certificate over an explicit authorized domain."
+
+[[invariant]]
+id = "INV-014"
+name = "Original capture retained"
+text = "Archive policy may move or replicate original bytes but cannot delete the last verified original solely because a transcode, point cloud, mesh, or digital twin exists."
+
+[[invariant]]
+id = "INV-015"
+name = "External executables are untrusted"
+text = "ffmpeg, ffprobe, Python, model runtimes, GPU drivers, vendor utilities, and cloud tools execute as supervised sidecars with bounded inputs and verified outputs, never through in-process FFI."
+
+[[invariant]]
+id = "INV-016"
+name = "Secrets never enter evidence"
+text = "Passwords, tokens, cookies, access keys, session secrets, and raw authorization material are redacted before logs, manifests, crashpacks, traces, or model inputs."
+
+[[invariant]]
+id = "INV-017"
+name = "Local qualification is authoritative"
+text = "A clean local qualification receipt over exact source, toolchain, models, fixtures, and dependency closure is the release authority; hosted CI is a mirror."
+
+[[invariant]]
+id = "INV-018"
+name = "Safe Rust trust domain"
+text = "All FDGR Rust crates use forbid unsafe code; any future exception requires a separate process boundary rather than an unsafe island in the core workspace."
+
+[[invariant]]
+id = "INV-019"
+name = "Closed dependency universe"
+text = "Production Rust dependencies are std, Asupersync, admitted Franken siblings, and rare fundamental exceptions named with exact revisions and evidence in the allowlist."
+
+[[invariant]]
+id = "INV-020"
+name = "Adaptivity cannot weaken proof"
+text = "Adaptive policies may choose effort, scheduling, candidate counts, or storage tiers but cannot relax safety, freshness, completeness, scale, privacy, or publication gates."
+
+[[invariant]]
+id = "INV-021"
+name = "Cloud is not authoritative before verification"
+text = "A cloud upload becomes a replica only after provider-independent identity, size, metadata, and retrieval verification; a successful HTTP response alone is insufficient."
+
+[[invariant]]
+id = "INV-022"
+name = "Appearance is not canonical geometry"
+text = "Gaussian splats, NeRFs, rendered panoramas, textures, and view-synthesis assets are derived presentation products and cannot substitute for metric geometry and uncertainty."
+
+[[invariant]]
+id = "INV-023"
+name = "Agent memory is advisory"
+text = "Eidetic Engine memories may cite FDGR anchors and evidence, but canonical state never cites memory and live evidence always wins."
+
+[[invariant]]
+id = "INV-024"
+name = "Critical assets require elevated evidence"
+text = "Electrical service, propane storage, HVAC equipment, access routes, and other safety-relevant assets require registered multi-view or human-confirmation gates before Resolved status."
+
+[[invariant]]
+id = "INV-025"
+name = "Owned-device authorization"
+text = "Live device adapters operate only for an explicitly admitted owner-authorized session and never bypass account, pairing, encryption, access-control, or geographic restrictions."
+
+[[invariant]]
+id = "INV-026"
+name = "Coordinate conventions are explicit"
+text = "Every pose, point, normal, bounding volume, raster, and export declares handedness, axis order, units, frame identity, origin, and transform direction."
+
+[[invariant]]
+id = "INV-027"
+name = "Clock discontinuities create epochs"
+text = "Timestamp resets, source switches, app restarts, packet discontinuities, and unbounded drift create a new clock or capture epoch instead of being smoothed into false continuity."
+
+[[invariant]]
+id = "INV-028"
+name = "License admission is per artifact"
+text = "Each model weight, codebase, dataset, codec, and calibration asset has an immutable license receipt; family names and repository licenses do not authorize an unreviewed checkpoint."
+
+[[invariant]]
+id = "INV-029"
+name = "Finite numeric domain"
+text = "NaN, infinity, overflow, invalid quaternions, singular calibrations, and unbounded coordinates are rejected or quarantined before publication."
+
+[[invariant]]
+id = "INV-030"
+name = "Authority narrows across seams"
+text = "Read-only observation, reconstruction, semantic resolution, archive replication, deletion, and device control use distinct capability types and runtime scopes."
+
+[[invariant]]
+id = "INV-031"
+name = "One agent operating loop"
+text = "Every public operation is a view or transition within bootstrap, orient, focus, inspect, formulate, propose, compare, commit, watch, verify/reconcile, learn, and handoff/resume; no subsystem exposes a competing lifecycle."
+
+[[invariant]]
+id = "INV-032"
+name = "Agent turn spine everywhere"
+text = "Every success, progress record, and error carries the canonical Agent Turn Packet with semantic status, error/recovery state, exact anchor, continuity, four ledgers, uncertainty, coverage, budget, and safe next protocol state."
+
+[[invariant]]
+id = "INV-033"
+name = "Questions name proof obligations"
+text = "Every material uncertainty is represented as a question with supporting and contradicting evidence, deficits, affected objectives, terminal predicate, and stopping rule."
+
+[[invariant]]
+id = "INV-034"
+name = "Four ledgers are synchronized projections"
+text = "World, epistemic, work, and system ledgers bind one compatible anchor vector and cannot be assembled from independently fresh caches."
+
+[[invariant]]
+id = "INV-035"
+name = "Active work survives context loss"
+text = "Prepared plans, obligations, confirmations, drains, checkpoints, transfers, and indeterminate effects remain visible without requiring a remembered handle from an earlier turn."
+
+[[invariant]]
+id = "INV-036"
+name = "Recommendations are authority free"
+text = "Attention, affordances, recommendations, memory, predictions, and counterfactuals may propose a typed next step but cannot create an effect ticket or satisfy authoritative preconditions."
+
+[[invariant]]
+id = "INV-037"
+name = "Context packs explain themselves"
+text = "Every context pack records Pack DNA sufficient to explain mandatory inclusion, marginal selection value, redundancy, omissions, coverage, and what additional budget would buy."
+
+[[invariant]]
+id = "INV-038"
+name = "Budget preserves safety"
+text = "Budget exhaustion returns a structurally complete decision-useful prefix, explicit omissions, and an anchor-bound continuation; continuity, indeterminate effects, and critical safety state are never omitted."
+
+[[invariant]]
+id = "INV-039"
+name = "Plan alternatives share a basis"
+text = "Candidate plans and counterfactuals compared together share one anchor, objective, question set, policy, grants, and budget, and expose a deterministic Pareto frontier."
+
+[[invariant]]
+id = "INV-040"
+name = "Surprise is explicit"
+text = "Material prediction-versus-observation divergence creates an immutable surprise record linked to the episode, evidence, and affected policy assumptions."
+
+[[invariant]]
+id = "INV-041"
+name = "Learning is promoted not improvised"
+text = "No episode or feedback item directly changes production policy; promotion requires independent evidence, applicability bounds, replay, shadow evaluation, canary epoch, monitoring, and rollback."
+
+[[invariant]]
+id = "INV-042"
+name = "Handoff is sufficient and authority free"
+text = "A sealed handoff capsule contains the minimum sufficient understanding to resume safely but grants no capability, lease, or effect authority."
+
+[[invariant]]
+id = "INV-043"
+name = "Self-description matches reality"
+text = "CLI help, robot docs, MCP schemas, operation manifests, maturity status, and examples derive from or are parity-tested against canonical registries and current qualification evidence."
+
+[[invariant]]
+id = "INV-044"
+name = "Pilot guidance states evidence purpose"
+text = "Every capture maneuver recommendation identifies the questions and deficits it is expected to change, its quality and abort conditions, and the distinction between guidance, observed maneuver, acquired evidence, and resolved question."
+
+[[invariant]]
+id = "INV-045"
+name = "Do nothing is a valid recommendation"
+text = "The recommendation engine may return wait, stop, reconcile, ask the operator, or no action when those dominate unnecessary capture, computation, publication, or mutation."
+
+[[invariant]]
+id = "INV-046"
+name = "One Decision Frame per decision"
+text = "Every materially decision-bearing packet contains exactly one compatible Decision Frame joining objective, questions, evidence debt, constraints, candidate frontier, active obligations, budget, stopping rule, and next protocol steps."
+
+[[invariant]]
+id = "INV-047"
+name = "Epistemic debt is explicit"
+text = "Every unresolved decision-relevant uncertainty terminates as resolved, consciously accepted, blocked, superseded, or indeterminate; disappearance from attention is not resolution."
+
+[[invariant]]
+id = "INV-048"
+name = "Attention is stable"
+text = "Attention uses class priority, deterministic ranking, hysteresis, suppression, acknowledgement, and material-change re-entry so raw event or model frequency cannot thrash the agent."
+
+[[invariant]]
+id = "INV-049"
+name = "Spatial handles are frame complete"
+text = "Every public spatial reference names anchor, coordinate frame, handedness, axes, units, origin, transform direction, scale authority, support, and historical correspondence; naked coordinates are forbidden."
+
+[[invariant]]
+id = "INV-050"
+name = "Pilot guidance is human mediated"
+text = "Initial flight guidance is authority-free and separates recommendation, operator acknowledgement, observed maneuver, usable evidence, and question resolution; no recommendation is represented as aircraft execution."
+
+[[invariant]]
+id = "INV-051"
+name = "One canonical wire vocabulary"
+text = "Every public machine surface emits lower snake_case field and enum names, fdgr.<name>/1 payload schema identities, explicit units and frames, and registry-derived operation vocabulary; compatibility aliases are ingress-only and epoch-scoped."
+
+[[invariant]]
+id = "INV-052"
+name = "Outcome and recovery are explicit"
+text = "Every agent-facing packet declares semantic status, nullable stable error details including whether state changed, and a typed minimum-safe recovery object whenever recovery is required; retry safety is never inferred from prose or transport success."
+
+[[invariant]]
+id = "INV-053"
+name = "One complete anchor schema"
+text = "Every public state, decision, plan, obligation, episode, handoff, pilot, and spatial reference binds the same canonical anchor-vector schema and anchor digest; transport-specific partial anchor objects are forbidden."

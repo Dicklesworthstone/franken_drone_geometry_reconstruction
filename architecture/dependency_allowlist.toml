@@ -1,0 +1,165 @@
+schema = "fdgr.dependency_policy.v1"
+revision = 1
+policy = "closed_universe"
+exclusive_async_runtime = "asupersync"
+fdgr_unsafe_code = "forbid"
+c_cpp_ffi = false
+in_process_python = false
+hosted_github_actions_authority = false
+source_closure = "release/source_closure.lock.json"
+
+[[platform]]
+name = "rust-std"
+status = "admitted"
+
+[[fundamental_exception]]
+name = "serde"
+status = "proposal_allowed_exact_pin_required"
+default_features = false
+
+[[fundamental_exception]]
+name = "serde_json"
+status = "proposal_allowed_exact_pin_required"
+default_features = false
+
+[[fundamental_exception]]
+name = "serde_bytes"
+status = "proposal_allowed_exact_pin_required"
+default_features = false
+
+[[owned_source]]
+name = "asupersync"
+research_commit = "7b6ff6e95685f2d614eb418e8f026033dee4317a"
+research_tree = "e028dff7ae88f49215566b8cf422ec2398deb450"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "frankensqlite"
+research_commit = "2d8a68b9ad82d685f8bacd9d5fe3c8fe5304a0e4"
+research_tree = "ca7a3fb70a9f590bc8bd65ff5069b915afe0201f"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "frankenfs"
+research_commit = "151ea2dabb37c26d4f21e1369e409b1a348ca00b"
+research_tree = "476cdc0083f122bf2d7a8f6394d9ff4e4b51d01d"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "frankensearch"
+research_commit = "de1dbc4b97ab55481e3605a2302e8a560f3e8248"
+research_tree = "4c2d6d9b7ef55bacc50f7948a0d06bcc938552f3"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "franken_markdown"
+research_commit = "d5029f558d4193a2b6c7607d1d7aef3ff44975b1"
+research_tree = "04f2ab20e9e7b7f84c28811e3597d370ff7dd38e"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "frankengraphdb"
+research_commit = "a280bda6b904498ec60f9e0a4e9bcbbd667691e1"
+research_tree = "dc8214d26a24e725f00115a0beb37af9096469fd"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "franken_networkx"
+research_commit = "f3b2a3872dcebcc29155c483543aa6e4ef6b6663"
+research_tree = "ee6c1262cf7eb5d13567a6221f19afcf777b736e"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "dwarf_fortress_mcp"
+research_commit = "30db7c5aa9f058818a6814abb1a51ca63a09e75a"
+research_tree = "7a699fe88c55a540b67776af42f2dfcd2be94ce0"
+status = "design_reference_only"
+production_admitted = false
+
+[[owned_source]]
+name = "fastmcp_rust"
+research_commit = "db1c17667faa27baeb5fa6208978f1a3e86e224d"
+research_tree = "d2ac16ad956c170008242c0513d6b0947fe2ccd5"
+status = "planned_exact_pin_requires_admission"
+production_admitted = false
+
+[[owned_source]]
+name = "eidetic_engine_cli"
+research_commit = "386157ecd3b14f92338d7b39d2a8d956ff0db563"
+research_tree = "5e086352a42fc9099c11a90fc0630f7e02b90873"
+status = "external_owned_tool"
+production_admitted = false
+
+[[owned_source]]
+name = "doodlestein_self_releaser"
+research_commit = "871758b7cf640ffe25f44675acb58d2c9f69e41f"
+research_tree = "f293d5f51eee72a5dc7ed8fe85b7755fcc6e6db0"
+status = "external_owned_tool"
+production_admitted = false
+
+[[forbidden]]
+name = "tokio"
+reason = "second runtime"
+
+[[forbidden]]
+name = "async-std"
+reason = "second runtime"
+
+[[forbidden]]
+name = "smol"
+reason = "second runtime"
+
+[[forbidden]]
+name = "rayon"
+reason = "ambient parallelism"
+
+[[forbidden]]
+name = "reqwest"
+reason = "external Tokio HTTP stack"
+
+[[forbidden]]
+name = "hyper"
+reason = "external HTTP stack"
+
+[[forbidden]]
+name = "axum"
+reason = "external web framework"
+
+[[forbidden]]
+name = "tower"
+reason = "external middleware framework"
+
+[[forbidden]]
+name = "sqlx"
+reason = "external SQL/runtime layer"
+
+[[forbidden]]
+name = "diesel"
+reason = "external ORM"
+
+[[forbidden]]
+name = "sea-orm"
+reason = "external ORM"
+
+[[forbidden]]
+name = "opencv"
+reason = "native C/C++ FFI"
+
+[[forbidden]]
+name = "pyo3"
+reason = "in-process Python"
+
+[[forbidden]]
+name = "rusqlite"
+reason = "C SQLite FFI"
+
+[[forbidden]]
+name = "rocksdb"
+reason = "native external storage engine"

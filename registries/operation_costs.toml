@@ -1,0 +1,102 @@
+
+schema = "fdgr.operation_costs.v1"
+revision = 1
+
+[[operation]]
+id = "OP-INGEST-CHUNK"
+dominant_dimensions = ["source_bytes", "write_bytes", "hash_bytes"]
+required_receipts = ["input_range", "object_digest", "durability_stage"]
+
+[[operation]]
+id = "OP-DECODE-GOP"
+dominant_dimensions = ["encoded_bytes", "decoded_pixels", "frame_count", "sidecar_memory"]
+required_receipts = ["ffmpeg_profile", "packet_timeline", "frame_timeline", "output_digests"]
+
+[[operation]]
+id = "OP-KEYFRAME-SELECT"
+dominant_dimensions = ["candidate_frames", "feature_cost", "coverage_bins", "motion_score"]
+required_receipts = ["policy_id", "decision_path_digest", "selected_frame_ids"]
+
+[[operation]]
+id = "OP-MODEL-INFER"
+dominant_dimensions = ["input_pixels", "input_views", "model_parameters", "gpu_memory", "wall_time"]
+required_receipts = ["model_artifact_root", "worker_profile", "input_anchor", "output_root", "resource_usage"]
+
+[[operation]]
+id = "OP-BUNDLE-ADJUST"
+dominant_dimensions = ["cameras", "tracks", "observations", "iterations", "linear_solver_work"]
+required_receipts = ["basis", "numeric_policy", "residual_distribution", "termination_reason"]
+
+[[operation]]
+id = "OP-FUSE-GEOMETRY"
+dominant_dimensions = ["depth_samples", "voxel_or_surfel_cells", "memory", "spatial_extent"]
+required_receipts = ["coordinate_frame", "scale_status", "uncertainty_policy", "geometry_root"]
+
+[[operation]]
+id = "OP-SEMANTIC-RESOLVE"
+dominant_dimensions = ["observations", "candidate_assets", "graph_edges", "model_tokens", "human_reviews"]
+required_receipts = ["ontology_root", "resolver_policy", "supporting_evidence", "counterevidence"]
+
+[[operation]]
+id = "OP-CLOUD-REPLICATE"
+dominant_dimensions = ["object_count", "bytes", "parts", "retries", "readback_bytes"]
+required_receipts = ["provider_profile", "upload_ids", "object_digests", "retrieval_verification"]
+
+[[operation]]
+id = "OP-ORIENT-COST"
+dominant_dimensions = ["changed_capsules", "active_work", "open_questions", "attention_candidates", "output_tokens"]
+required_receipts = ["anchor_vector", "continuity", "profile", "four_ledgers", "selection_policy", "budget"]
+
+[[operation]]
+id = "OP-CONTEXT-PACK"
+dominant_dimensions = ["retrieval_candidates", "graph_expansions", "selected_items", "output_tokens", "redundancy_groups"]
+required_receipts = ["focus", "selector", "pack_dna", "coverage", "omissions", "continuation"]
+
+[[operation]]
+id = "OP-QUESTION-EVALUATE"
+dominant_dimensions = ["supporting_evidence", "counterevidence", "coverage_domains", "candidate_steps"]
+required_receipts = ["terminal_predicate", "epistemic_state", "deficits", "stopping_rule"]
+
+[[operation]]
+id = "OP-PLAN-COMPARE"
+dominant_dimensions = ["candidate_count", "counterfactual_work", "objective_terms", "uncertainty_scenarios"]
+required_receipts = ["common_basis", "pareto_frontier", "dominated_reasons", "tie_break", "decision_card"]
+
+[[operation]]
+id = "OP-PILOT-GUIDE"
+dominant_dimensions = ["view_candidates", "visibility_edges", "question_bundles", "route_length", "operator_attention"]
+required_receipts = ["evidence_gain", "quality_conditions", "risk_constraints", "stop_abort_predicates"]
+
+[[operation]]
+id = "OP-HANDOFF"
+dominant_dimensions = ["active_objectives", "open_questions", "active_work", "attention", "output_tokens"]
+required_receipts = ["anchor", "minimum_safe_next_steps", "invalidators", "digest"]
+
+[[operation]]
+id = "OP-EPISODE-CLOSE"
+dominant_dimensions = ["plans", "obligations", "evidence", "surprises", "cost_categories"]
+required_receipts = ["start_end_anchors", "predicted_observed_delta", "actual_cost", "outcome", "lesson_candidates"]
+
+[[operation_cost]]
+id = "OP-DECISION-FRAME"
+name = "Decision Frame build"
+unit = "frame"
+required_dimensions = ["canonical_reads", "derived_queries", "graph_operations", "output_tokens"]
+
+[[operation_cost]]
+id = "OP-ATTENTION-REFRESH"
+name = "Attention and epistemic-debt refresh"
+unit = "refresh"
+required_dimensions = ["derived_queries", "graph_operations", "output_tokens"]
+
+[[operation_cost]]
+id = "OP-SPATIAL-EXPAND"
+name = "Spatial handle expansion"
+unit = "expansion"
+required_dimensions = ["canonical_reads", "graph_operations", "output_tokens"]
+
+[[operation_cost]]
+id = "OP-PILOT-CARD"
+name = "Human pilot card"
+unit = "card"
+required_dimensions = ["derived_queries", "operator_attention", "flight_time", "output_tokens"]

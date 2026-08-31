@@ -1,0 +1,120 @@
+schema = "fdgr.risks.v1"
+revision = 1
+
+[[risk]]
+id = "RISK-001"
+name = "DJI live access remains unavailable or unstable"
+statement = "**Impact:** no direct live stream for the motivating device. **Mitigation:** original-media import and recorded/mirrored capture are first-class; generic capture adapters; protocol work optional; live assistance can use controller screen capture. **Kill criterion:** none for project mission; only the exact live-profile claim is withheld."
+
+[[risk]]
+id = "RISK-002"
+name = "Monocular metric scale is unreliable"
+statement = "**Impact:** plausible but wrong dimensions. **Mitigation:** structural metric-output gate; scale witnesses; measured targets; telemetry as bounded prior; contradiction/demotion; relative geometry remains useful. **Kill criterion:** no metric claim without independent evidence."
+
+[[risk]]
+id = "RISK-003"
+name = "Foundation models fail UAV/home domain"
+statement = "**Impact:** drift, wrong cameras/depth, poor fine structures, excessive GPU cost. **Mitigation:** deterministic classical reference, multiple candidates, UAVFF3D/private corpus, refinement, held-out views, refusal, exact model admission. **Kill criterion:** model remains research-only or removed; architecture survives."
+
+[[risk]]
+id = "RISK-004"
+name = "Semantics overclaim critical assets"
+statement = "**Impact:** unsafe or misleading utility/location information. **Mitigation:** observation/hypothesis/resolved states; multi-view geometry; ontology-specific gates; counterevidence; human confirmation; privacy export controls; measure false-resolution separately. **Kill criterion:** concept remains hypothesis-only until precision target is earned."
+
+[[risk]]
+id = "RISK-005"
+name = "Long videos overwhelm GPU/memory/storage"
+statement = "**Impact:** high cost or inability to finish. **Mitigation:** progressive keyframes, streaming/windowed models, spatial tiling, checkpointing, analysis renditions, content reuse, budgeted quality profiles, cloud tiering. **Kill criterion:** degrade quality/latency explicitly rather than overcommit."
+
+[[risk]]
+id = "RISK-006"
+name = "Cumulative complexity prevents implementation"
+statement = "**Impact:** plan becomes ceremony rather than software. **Mitigation:** thin vertical slices, reference-before-adapter, work-package DAG, no crate before a boundary, no full Franken integration at once, performance only after profile, status honesty. **Kill criterion:** simplify implementation while preserving invariants; do not simplify truth."
+
+[[risk]]
+id = "RISK-007"
+name = "Franken sibling APIs/readiness lag plan"
+statement = "**Impact:** integration blocked or semantics unavailable. **Mitigation:** semantic traits and deterministic reference adapters; exact current-revision gates; design reuse without dependency; no sibling as single point of failure. **Kill criterion:** retain reference or replace adapter without changing domain contracts."
+
+[[risk]]
+id = "RISK-008"
+name = "Strict no-unsafe/no-FFI limits performance"
+statement = "**Impact:** pure Rust core cannot match native kernels/codecs. **Mitigation:** external process sidecars, GPU/model workers, safe owned abstractions, tiling, algorithmic optimization, zero-copy safe APIs, same-binary measurement. **Kill criterion:** performance claim narrows; safety invariant remains."
+
+[[risk]]
+id = "RISK-009"
+name = "Cloud compatibility is deceptively incomplete"
+statement = "**Impact:** stalled multipart, corrupt restore, lifecycle loss, checksum confusion. **Mitigation:** provider profiles; own digests; immutable keys; reconcile/list/head/readback; restore drills; multi-provider/repair policies. **Kill criterion:** provider remains unsupported for release claims."
+
+[[risk]]
+id = "RISK-010"
+name = "Privacy value conflicts with rich semantics"
+statement = "**Impact:** detailed property data leaks or becomes unsafe to share. **Mitigation:** local-first; privacy scope in anchor; no-network models; redacted exports; critical asset controls; graph-aware deletion; support bundles exclude raw data. **Kill criterion:** refuse lower-privacy export when proof is insufficient."
+
+[[risk]]
+id = "RISK-011"
+name = "Determinism conflicts with GPU/model throughput"
+statement = "**Impact:** unstable roots or irreproducible benchmark. **Mitigation:** classify determinism; raw output identities; exact profiles; canonical postprocessing; numeric envelopes; deterministic reference; no logical ID pretending outputs are identical. **Kill criterion:** profile cannot earn strict claim but may earn bounded semantic claim."
+
+[[risk]]
+id = "RISK-012"
+name = "Calibration/rolling shutter dominates error"
+statement = "**Impact:** sophisticated models cannot recover accurate geometry. **Mitigation:** device/source-specific calibration, crop/stabilization modeling, quality/motion warnings, rolling-shutter parameters, ground-truth tests, capture guidance. **Kill criterion:** reject or narrow high-accuracy profile for unsupported motion/source."
+
+[[risk]]
+id = "RISK-013"
+name = "Foliage/glass/water/repetitive texture defeats geometry"
+statement = "**Impact:** holes, floaters, false loops, wrong surfaces. **Mitigation:** material/dynamic classification, conservative fusion, multi-view/angle capture, counterevidence, uncertainty, inferred-surface tags, adversarial corpus. **Kill criterion:** mark unknown/excluded; do not fill as observed."
+
+[[risk]]
+id = "RISK-014"
+name = "Agent autonomy creates race or deletion hazards"
+statement = "**Impact:** duplicate work, stale publication, data loss. **Mitigation:** plans, witnesses, idempotency, leases/fences, capabilities, obligation ownership, branch isolation, critical deletion plans, no arbitrary commands. **Kill criterion:** reduce agent authority to read-only until gates pass."
+
+[[risk]]
+id = "RISK-015"
+name = "Agent packet becomes a second mutable truth"
+statement = "**Impact:** summaries drift from canonical evidence. **Mitigation:** packets are deterministic derived projections with anchor roots, rebuildability, and no authority. **Kill criterion:** disable cached briefing generation until replay equivalence is restored."
+
+[[risk]]
+id = "RISK-016"
+name = "Question graph creates planning ceremony"
+statement = "**Impact:** simple workflows become expensive. **Mitigation:** ephemeral implicit questions for simple reads, profile-specific compact projections, compiled domain sugar, and measured control-cost gates. **Kill criterion:** simplify representation while retaining explicit terminal evidence and stopping."
+
+[[risk]]
+id = "RISK-017"
+name = "Recommendation engine over-directs the operator"
+statement = "**Impact:** agent or pilot follows brittle advice. **Mitigation:** evidence-linked options, risk/reversibility, do-nothing alternative, operator confirmation, prediction/observation separation, and surprise capture. **Kill criterion:** revert to informational-only recommendations."
+
+[[risk]]
+id = "RISK-018"
+name = "Context compression hides decisive counterevidence"
+statement = "**Impact:** low-token pack creates false confidence. **Mitigation:** mandatory contradiction and safety classes, Pack DNA, coverage, omission reasons, adversarial selection tests, and forensic expansion. **Kill criterion:** increase mandatory set or disable compact profile for affected task."
+
+[[risk]]
+id = "RISK-019"
+name = "Adaptive memory amplifies a local mistake"
+statement = "**Impact:** one bad episode changes future behavior. **Mitigation:** immutable episodes, independent support, applicability bounds, shadow/canary, rollback, hard invariant ceiling. **Kill criterion:** freeze adaptive policy and use deterministic baseline."
+
+[[risk]]
+id = "RISK-020"
+name = "Multi-agent optimization creates hidden ownership races"
+statement = "**Impact:** duplicate effects or stale publication. **Mitigation:** semantic reservations, branch isolation, current witnesses, lease incarnation/fences, active-work ledger, and stale-worker tests. **Kill criterion:** serialize commits while retaining concurrent reads and branches."
+
+[[risk]]
+id = "RISK-021"
+name = "Attention thrash"
+summary = "Small score changes or repeated model outputs could repeatedly interrupt the agent and displace higher-value work."
+mitigation = "Class-priority ordering, deterministic ranking, hysteresis, suppression keys, acknowledgement expiry, and material-change re-entry tests."
+
+[[risk]]
+id = "RISK-022"
+name = "Pilot cognitive overload"
+summary = "Dense or unstable guidance could reduce flight safety and evidence quality."
+mitigation = "One-card protocol, stable landmarks, bounded cues, explicit done/abort conditions, operator refusal, safety preemption, and cognitive-load qualification."
+
+[[risk]]
+id = "RISK-023"
+name = "Spatial handle drift"
+summary = "Refined geometry could silently change the meaning of old spatial references."
+mitigation = "Anchor-bound frame-complete handles, explicit correspondence/supersession graphs, historical resolution, ambiguity refusal, and round-trip fixtures."

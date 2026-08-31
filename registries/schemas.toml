@@ -1,0 +1,116 @@
+schema = "fdgr.schemas.v1"
+revision = 1
+
+[[public_schema]]
+id = "SCHEMA-CAPTURE-ANCHOR"
+path = "schemas/capture_anchor.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/capture_anchor.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
+id = "SCHEMA-DIGITAL-TWIN-MANIFEST"
+path = "schemas/digital_twin_manifest.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/digital_twin_manifest.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
+id = "SCHEMA-EVIDENCE-EVENT"
+path = "schemas/evidence_event.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/evidence_event.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
+id = "SCHEMA-GEOMETRY-GENERATION"
+path = "schemas/geometry_generation.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/geometry_generation.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
+id = "SCHEMA-MODEL-WORKER-REQUEST"
+path = "schemas/model_worker_request.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/model_worker_request.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
+id = "SCHEMA-SEMANTIC-OBSERVATION"
+path = "schemas/semantic_observation.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/semantic_observation.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
+id = "SCHEMA-AGENT-TURN"
+path = "schemas/agent_turn.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/agent_turn.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-CONTEXT-PACK"
+path = "schemas/context_pack.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/context_pack.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-OBJECTIVE"
+path = "schemas/objective.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/objective.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-QUESTION"
+path = "schemas/question.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/question.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-PLAN-CANDIDATE"
+path = "schemas/plan_candidate.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/plan_candidate.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-OBLIGATION-PROGRESS"
+path = "schemas/obligation_progress.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/obligation_progress.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-EPISODE-CAPSULE"
+path = "schemas/episode_capsule.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/episode_capsule.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-HANDOFF-CAPSULE"
+path = "schemas/handoff_capsule.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/handoff_capsule.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-DECISION-FRAME"
+path = "schemas/decision_frame.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/decision_frame.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-ATTENTION-ITEM"
+path = "schemas/attention_item.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/attention_item.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-PILOT-INSTRUCTION"
+path = "schemas/pilot_instruction.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/pilot_instruction.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-SPATIAL-HANDLE"
+path = "schemas/spatial_handle.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/spatial_handle.v1.json"
+status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-ANCHOR-VECTOR"
+path = "schemas/anchor_vector.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/anchor_vector.v1.json"
+status = "normative_target"

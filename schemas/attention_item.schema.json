@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/attention_item.v1.json",
+  "title": "FDGR Attention Item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "attention_id",
+    "class",
+    "severity",
+    "urgency",
+    "epistemic_state",
+    "subject_handles",
+    "reason",
+    "consequence_if_ignored",
+    "evidence",
+    "decision_effect",
+    "suppression_key",
+    "status"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.attention_item/1"
+    },
+    "attention_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "class": {
+      "enum": [
+        "protocol_critical",
+        "physical_safety",
+        "objective_critical",
+        "efficiency",
+        "learning"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "urgency": {
+      "type": "number",
+      "minimum": 0
+    },
+    "epistemic_state": {
+      "enum": [
+        "observed",
+        "certified_derived",
+        "inferred",
+        "predicted",
+        "assumed",
+        "stale",
+        "unknown",
+        "contradicted",
+        "indeterminate"
+      ]
+    },
+    "subject_handles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "consequence_if_ignored": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "decision_effect": {
+      "type": "object"
+    },
+    "recommended_step": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "suppression_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "foreground",
+        "acknowledged",
+        "suppressed",
+        "expired",
+        "resolved"
+      ]
+    },
+    "first_seen_anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "last_changed_anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

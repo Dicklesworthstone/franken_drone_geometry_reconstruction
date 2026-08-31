@@ -1,0 +1,139 @@
+schema = "fdgr.open_questions.v1"
+revision = 1
+
+[[open_question]]
+id = "OPEN-001"
+name = "Canonical internal world frame"
+statement = "Should the default local world be gravity-aligned ENU, a camera-origin similarity frame, or a building-aligned frame with explicit transform? Decision requires telemetry availability, interchange needs, numeric stability, and repeated-capture alignment tests."
+
+[[open_question]]
+id = "OPEN-002"
+name = "Canonical binary codec"
+statement = "Use a fully custom compact codec, a tightly specified subset of an existing format, or an owned Franken codec? Need independent implementation, evolution, zero-copy potential, bounds, and audit."
+
+[[open_question]]
+id = "OPEN-003"
+name = "Logical versus representation identity"
+statement = "How should exact logical media identity relate to different chunk/compression/encryption representations while preserving verification and deduplication?"
+
+[[open_question]]
+id = "OPEN-004"
+name = "Best analysis mezzanine"
+statement = "All-intra AV1/HEVC, FFV1, JPEG XL/PNG frame sequence, or multiple profiles? Measure decode random access, determinism, quality, storage, and model throughput."
+
+[[open_question]]
+id = "OPEN-005"
+name = "DJI telemetry availability"
+statement = "Which exact Flip original files, app exports, controller sessions, or private protocols expose camera/gimbal/GNSS/barometer telemetry, at what rate/clock/accuracy? Unknown until measured by profile."
+
+[[open_question]]
+id = "OPEN-006"
+name = "Model execution portability"
+statement = "Container, Python environment lock, Nix/OCI, uv, or custom artifact bundle? Need offline, reproducible GPU profiles without expanding the Rust trust domain."
+
+[[open_question]]
+id = "OPEN-007"
+name = "Geometry canonical representation"
+statement = "Should surfels, TSDF/occupancy tiles, or another probabilistic surface be the primary canonical fused representation? Decision should optimize validation, incremental update, measurements, semantics, storage, and export rather than rendering fashion."
+
+[[open_question]]
+id = "OPEN-008"
+name = "Uncertainty representation"
+statement = "Full covariance, diagonal/local approximations, ensembles, evidential distributions, spatial error bounds, or multiple typed fields? Need calibration and computational feasibility."
+
+[[open_question]]
+id = "OPEN-009"
+name = "Cross-capture registration"
+statement = "How should repeated captures align under seasonal change, moved objects, new calibration, and weak geodetic priors while distinguishing physical change from model reinterpretation?"
+
+[[open_question]]
+id = "OPEN-010"
+name = "Semantic ontology granularity"
+statement = "How fine should utility/equipment taxonomy become before data and resolution gates support it? Too coarse is not useful; too fine invites hallucinated specificity."
+
+[[open_question]]
+id = "OPEN-011"
+name = "Human confirmation UX"
+statement = "Which evidence views and questions let an owner confirm an asset accurately with minimal burden? How is reviewer uncertainty represented?"
+
+[[open_question]]
+id = "OPEN-012"
+name = "Agent query language"
+statement = "Typed JSON AST first is safe; when does a textual query language produce enough token/usability benefit to justify a parser/optimizer?"
+
+[[open_question]]
+id = "OPEN-013"
+name = "Archive transport implementation"
+statement = "Asupersync-native HTTP/TLS/S3 in Rust versus tightly scoped process sidecar versus ATP gateway. The choice must satisfy closed-dependency, credential, cancellation, performance, and portability requirements."
+
+[[open_question]]
+id = "OPEN-014"
+name = "RaptorQ allocation policy"
+statement = "Which object classes and repair ratios minimize expected loss/retrieval cost under local/B2/R2 failure models?"
+
+[[open_question]]
+id = "OPEN-015"
+name = "Safe public sharing"
+statement = "Can useful geometry/coverage reports be shared while removing location, textures, neighboring property, and critical assets? Need measurable re-identification/privacy tests."
+
+[[open_question]]
+id = "OPEN-016"
+name = "Live model architecture"
+statement = "DA3 Streaming, CUT3R, another successor, or a classical/learned hybrid? Exact decision should be renewed at implementation time using current primary sources and FDGR benchmarks."
+
+[[open_question]]
+id = "OPEN-017"
+name = "Pure-Rust media hot paths"
+statement = "Which demux/decode/image operations are worth owning in safe Rust after profiling, and which remain best isolated in ffmpeg?"
+
+[[open_question]]
+id = "OPEN-018"
+name = "Formal methods scope"
+statement = "Which state machines merit TLA+/Lean/model checking first: publication, idempotency/effect reconciliation, archive deletion, capability noninterference, or scale/claim transitions?"
+
+[[open_question]]
+id = "OPEN-019"
+name = "Question graph granularity"
+statement = "Which questions should be durable nodes versus ephemeral compiler artifacts, and how can FDGR avoid both hidden uncertainty and excessive ceremony?"
+
+[[open_question]]
+id = "OPEN-020"
+name = "Context-pack objective"
+statement = "Which deterministic submodular objective and mandatory classes best predict agent decision quality per token across geometry, capture, archive, and semantic tasks?"
+
+[[open_question]]
+id = "OPEN-021"
+name = "Recommendation utility representation"
+statement = "How should lexicographic safety constraints, Pareto frontiers, calibrated costs, value of information, and user preference combine without an opaque scalar?"
+
+[[open_question]]
+id = "OPEN-022"
+name = "Episode causal evidence"
+statement = "Which interventions and natural experiments are sufficient to promote capture, model-selection, or budgeting lessons without mistaking correlation for causation?"
+
+[[open_question]]
+id = "OPEN-023"
+name = "Multi-agent branch economics"
+statement = "When do branch-per-agent and shared question bundles reduce total work enough to justify their metadata and merge cost?"
+
+[[open_question]]
+id = "OPEN-024"
+name = "Pilot guidance presentation"
+statement = "What is the lowest-cognitive-load visual and textual guidance that helps a human obtain the requested view without implying unsupported autonomous control?"
+
+[[open_question]]
+id = "OPEN-025"
+name = "Agent ergonomics benchmark"
+statement = "Which cold-arrival, context-loss, uncertainty, error, and handoff scenarios best measure first-try success, decision quality, and total control cost across frontier agents?"
+
+[[open_question]]
+id = "OPEN-026"
+question = "What Decision Frame density maximizes first-turn decision success across model context sizes without hiding meaningful alternatives?"
+
+[[open_question]]
+id = "OPEN-027"
+question = "Which visual, spoken, haptic, or controller-overlay pilot-card modalities minimize operator load for each admitted DJI profile?"
+
+[[open_question]]
+id = "OPEN-028"
+question = "How should epistemic-debt loss and question-sharing value be calibrated without allowing adaptive policy to suppress safety-critical uncertainty?"

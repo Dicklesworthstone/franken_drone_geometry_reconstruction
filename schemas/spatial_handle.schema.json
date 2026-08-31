@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/spatial_handle.v1.json",
+  "title": "FDGR Spatial Semantic Handle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "handle_id",
+    "kind",
+    "anchor",
+    "coordinate_frame",
+    "scale_authority",
+    "support",
+    "aliases",
+    "expansions"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.spatial_handle/1"
+    },
+    "handle_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "pixel",
+        "mask",
+        "ray",
+        "frustum",
+        "point",
+        "path",
+        "surface",
+        "volume",
+        "opening",
+        "asset",
+        "room",
+        "portal",
+        "utility_relation",
+        "coverage_region"
+      ]
+    },
+    "anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "branch_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "coordinate_frame": {
+      "type": "object",
+      "required": [
+        "frame_id",
+        "handedness",
+        "axis_order",
+        "units",
+        "origin",
+        "transform_direction"
+      ],
+      "additionalProperties": true
+    },
+    "scale_authority": {
+      "enum": [
+        "relative_only",
+        "estimated",
+        "witnessed",
+        "surveyed"
+      ]
+    },
+    "support": {
+      "type": "object"
+    },
+    "time_interval": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "coverage": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "privacy_scope": {
+      "type": "object"
+    },
+    "expansions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "superseded_by": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

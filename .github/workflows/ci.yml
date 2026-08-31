@@ -1,0 +1,30 @@
+name: local-qualification-contract
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTUP_TOOLCHAIN: nightly-2026-08-31
+
+# Portable Doodlestein/act job specification. It uses no GitHub-hosted runner and no third-party
+# action. A green hosted badge is not release authority.
+jobs:
+  qualification:
+    runs-on: [self-hosted, fdgr-local]
+    steps:
+      - name: Verify the pre-positioned exact checkout
+        shell: bash
+        run: |
+          test -d .git
+          git diff --exit-code
+          git diff --cached --exit-code
+      - name: Run the canonical local qualifier
+        shell: bash
+        run: ./scripts/qualify.sh

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/digital_twin_manifest.v1.json",
+  "title": "FDGR Digital Twin Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "twin_root",
+    "basis",
+    "geometry_root",
+    "scene_graph_root",
+    "claim_roots",
+    "readiness",
+    "publication_receipt_root"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.digital_twin_manifest/1"
+    },
+    "twin_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "basis": {
+      "$ref": "capture_anchor.schema.json"
+    },
+    "geometry_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "scene_graph_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "claim_roots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/digest"
+      },
+      "uniqueItems": true
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "unverified",
+          "negative_only",
+          "partial",
+          "qualified",
+          "blocked"
+        ]
+      }
+    },
+    "publication_receipt_root": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

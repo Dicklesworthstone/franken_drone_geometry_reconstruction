@@ -1,0 +1,65 @@
+
+schema = "fdgr.models.v1"
+revision = 1
+snapshot_date = "2026-08-30"
+default_policy = "deny_unregistered_artifact"
+
+[[model]]
+id = "MODEL-GEO-MAPANYTHING-APACHE"
+family = "MapAnything"
+role = "offline_geometry_prior"
+artifact = "facebook/map-anything-apache"
+license = "Apache-2.0"
+status = "candidate_default"
+network_default = false
+notes = "Commercially permissive checkpoint candidate. Must pass UAV and home-domain geometry, scale, uncertainty, and reproducibility gates before admission."
+
+[[model]]
+id = "MODEL-GEO-DA3-STREAMING"
+family = "Depth Anything 3"
+role = "streaming_depth_pose_prior"
+artifact = "exact checkpoint unresolved"
+license = "per_checkpoint_review_required"
+status = "research"
+network_default = false
+notes = "Streaming implementation is attractive for long sequences; code-repository license does not substitute for weight and dataset review."
+
+[[model]]
+id = "MODEL-GEO-CUT3R"
+family = "CUT3R"
+role = "online_stateful_geometry_prior"
+artifact = "exact checkpoint unresolved"
+license = "per_checkpoint_review_required"
+status = "research"
+network_default = false
+notes = "Continuous-state geometry is architecturally relevant; checkpoint and dataset restrictions require explicit admission."
+
+[[model]]
+id = "MODEL-GEO-VGGT-OMEGA-1B"
+family = "VGGT-Omega"
+role = "research_geometry_oracle"
+artifact = "facebook/VGGT-Omega gated checkpoints"
+license = "FAIR-Noncommercial-Research"
+status = "research_only"
+network_default = false
+notes = "Noncommercial research lane only. Published 1B benchmark claims are quarantined because the maintainers disclosed possible contamination on 2026-08-18."
+
+[[model]]
+id = "MODEL-SEM-QWEN38-27B"
+family = "Qwen3.8"
+role = "multimodal_semantic_proposer"
+artifact = "Qwen/Qwen3.8-27B"
+license = "Apache-2.0"
+status = "candidate"
+network_default = false
+notes = "Produces evidence-linked object and relation proposals; never geometry, scale, absence, or safety authority."
+
+[[model]]
+id = "MODEL-SEG-SAM31"
+family = "SAM 3.1"
+role = "video_mask_and_tracking_proposer"
+artifact = "exact checkpoint unresolved"
+license = "per_artifact_review_required"
+status = "research"
+network_default = false
+notes = "Useful for multi-object video masks and tracking. Checkpoint access and license are separately gated."

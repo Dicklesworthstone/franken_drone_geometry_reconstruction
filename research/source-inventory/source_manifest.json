@@ -1,0 +1,96 @@
+{
+  "schema": "fdgr.source_inventory/1",
+  "captured_at_utc": "2026-08-31T07:55:00Z",
+  "authority": "research_snapshot_only",
+  "note": "These exact public heads were inspected as design inputs. They are not automatically admitted Cargo dependencies or release evidence.",
+  "repositories": [
+    {
+      "name": "asupersync",
+      "url": "https://github.com/Dicklesworthstone/asupersync",
+      "commit": "7b6ff6e95685f2d614eb418e8f026033dee4317a",
+      "tree": "e028dff7ae88f49215566b8cf422ec2398deb450",
+      "role": "exclusive runtime, capability context, deterministic laboratory, ATP and RaptorQ",
+      "deep_dive": "research/deep-dives/01_ASUPERSYNC.md"
+    },
+    {
+      "name": "frankensqlite",
+      "url": "https://github.com/Dicklesworthstone/frankensqlite",
+      "commit": "2d8a68b9ad82d685f8bacd9d5fe3c8fe5304a0e4",
+      "tree": "ca7a3fb70a9f590bc8bd65ff5069b915afe0201f",
+      "role": "MVCC ledger, witnesses, deterministic commit, recovery",
+      "deep_dive": "research/deep-dives/02_FRANKENSQLITE.md"
+    },
+    {
+      "name": "frankenfs",
+      "url": "https://github.com/Dicklesworthstone/frankenfs",
+      "commit": "151ea2dabb37c26d4f21e1369e409b1a348ca00b",
+      "tree": "476cdc0083f122bf2d7a8f6394d9ff4e4b51d01d",
+      "role": "custody, staged-visible-durable publication, repair and crash evidence",
+      "deep_dive": "research/deep-dives/03_FRANKENFS.md"
+    },
+    {
+      "name": "frankensearch",
+      "url": "https://github.com/Dicklesworthstone/frankensearch",
+      "commit": "de1dbc4b97ab55481e3605a2302e8a560f3e8248",
+      "tree": "4c2d6d9b7ef55bacc50f7948a0d06bcc938552f3",
+      "role": "progressive retrieval, explanations, immutable search generations",
+      "deep_dive": "research/deep-dives/04_FRANKENSEARCH.md"
+    },
+    {
+      "name": "franken_markdown",
+      "url": "https://github.com/Dicklesworthstone/franken_markdown",
+      "commit": "d5029f558d4193a2b6c7607d1d7aef3ff44975b1",
+      "tree": "04f2ab20e9e7b7f84c28811e3597d370ff7dd38e",
+      "role": "deterministic exact reports, schemas and agent-readable documents",
+      "deep_dive": "research/deep-dives/05_FRANKEN_MARKDOWN.md"
+    },
+    {
+      "name": "frankengraphdb",
+      "url": "https://github.com/Dicklesworthstone/frankengraphdb",
+      "commit": "a280bda6b904498ec60f9e0a4e9bcbbd667691e1",
+      "tree": "dc8214d26a24e725f00115a0beb37af9096469fd",
+      "role": "one version universe, branches, graph storage, incremental projections",
+      "deep_dive": "research/deep-dives/06_FRANKENGRAPHDB.md"
+    },
+    {
+      "name": "franken_networkx",
+      "url": "https://github.com/Dicklesworthstone/franken_networkx",
+      "commit": "f3b2a3872dcebcc29155c483543aa6e4ef6b6663",
+      "tree": "ee6c1262cf7eb5d13567a6221f19afcf777b736e",
+      "role": "deterministic graph algorithms, tie-break and complexity witnesses",
+      "deep_dive": "research/deep-dives/07_FRANKEN_NETWORKX.md"
+    },
+    {
+      "name": "dwarf_fortress_mcp",
+      "url": "https://github.com/Dicklesworthstone/dwarf_fortress_mcp",
+      "commit": "30db7c5aa9f058818a6814abb1a51ca63a09e75a",
+      "tree": "7a699fe88c55a540b67776af42f2dfcd2be94ce0",
+      "role": "agent operating loop, witnessed effects, semantic narrow waist and handoff",
+      "deep_dive": "research/deep-dives/08_DWARF_FORTRESS_MCP.md"
+    },
+    {
+      "name": "fastmcp_rust",
+      "url": "https://github.com/Dicklesworthstone/fastmcp_rust",
+      "commit": "db1c17667faa27baeb5fa6208978f1a3e86e224d",
+      "tree": "d2ac16ad956c170008242c0513d6b0947fe2ccd5",
+      "role": "replaceable MCP transport and lifecycle presentation",
+      "deep_dive": "research/deep-dives/09_FASTMCP_RUST.md"
+    },
+    {
+      "name": "eidetic_engine_cli",
+      "url": "https://github.com/Dicklesworthstone/eidetic_engine_cli",
+      "commit": "386157ecd3b14f92338d7b39d2a8d956ff0db563",
+      "tree": "5e086352a42fc9099c11a90fc0630f7e02b90873",
+      "role": "external advisory memory, context packs, outcome feedback and ergonomics",
+      "deep_dive": "research/deep-dives/10_EIDETIC_ENGINE.md"
+    },
+    {
+      "name": "doodlestein_self_releaser",
+      "url": "https://github.com/Dicklesworthstone/doodlestein_self_releaser",
+      "commit": "871758b7cf640ffe25f44675acb58d2c9f69e41f",
+      "tree": "f293d5f51eee72a5dc7ed8fe85b7755fcc6e6db0",
+      "role": "local release qualification and exact-source artifact authority",
+      "deep_dive": "research/deep-dives/11_DOODLESTEIN_SELF_RELEASER.md"
+    }
+  ]
+}

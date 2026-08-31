@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/obligation_progress.v1.json",
+  "title": "FDGR Obligation Progress",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "obligation_id",
+    "plan_id",
+    "state",
+    "terminal_predicate",
+    "progress",
+    "active_children",
+    "budget",
+    "anchor"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.obligation_progress/1"
+    },
+    "obligation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "prepared",
+        "committed",
+        "dispatching",
+        "accepted",
+        "effect_observed",
+        "verifying",
+        "stable_complete",
+        "failed",
+        "cancelling",
+        "cancelled",
+        "indeterminate"
+      ]
+    },
+    "terminal_predicate": {
+      "type": "object"
+    },
+    "progress": {
+      "type": "object"
+    },
+    "active_children": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocker": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "budget": {
+      "type": "object"
+    },
+    "anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "next_heartbeat": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

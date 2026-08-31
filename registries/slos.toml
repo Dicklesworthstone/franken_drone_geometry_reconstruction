@@ -1,0 +1,102 @@
+schema = "fdgr.slos.v1"
+revision = 1
+
+[[slo]]
+id = "SLO-001"
+name = "Capture accounting"
+statement = "Every admitted source byte/packet/frame range is either published, explicitly rejected, or represented as a gap; unaccounted loss is zero."
+
+[[slo]]
+id = "SLO-002"
+name = "Online feedback"
+statement = "On a qualified workstation profile, p95 source-frame-to-quality/coverage update is under 2 seconds and progress heartbeat under 500 ms, excluding known source latency. Geometry may be slower and explicitly stale."
+
+[[slo]]
+id = "SLO-003"
+name = "Publication atomicity"
+statement = "Across the complete kill-point campaign, readers observe only the prior or successor complete root; zero partial roots."
+
+[[slo]]
+id = "SLO-004"
+name = "Cancellation"
+statement = "Cooperative local work stops accepting new effects immediately and reaches terminal or explicit indeterminate state within the profile drain budget; zero silent descendants or lost obligations."
+
+[[slo]]
+id = "SLO-005"
+name = "Exterior geometry standard profile"
+statement = "On the ground-truth home corpus under a defined capture protocol and witnessed scale, visible static surface median error ≤ 5 cm, 90th percentile ≤ 15 cm, and certifiable surface completeness ≥ 90%, with calibrated uncertainty and named excluded materials/regions."
+
+[[slo]]
+id = "SLO-006"
+name = "High-quality profile"
+statement = "Under closer/slower capture and stronger calibration/scale evidence, visible static surface median error ≤ 2.5 cm and selected opening/asset dimension median error ≤ 3 cm on qualified corpora. This is not a universal product promise."
+
+[[slo]]
+id = "SLO-007"
+name = "Critical semantic precision"
+statement = "Resolved critical-asset false-positive rate below 1% on the qualification corpus, using abstention/human confirmation as needed. Hypothesis recall is measured separately."
+
+[[slo]]
+id = "SLO-008"
+name = "Archive recovery"
+statement = "A full local-loss restore from each advertised provider reconstructs every retained root with byte-identical object identities and zero silent substitution."
+
+[[slo]]
+id = "SLO-009"
+name = "Deterministic reference replay"
+statement = "Strict reference state machines, plans, manifests, claims, and reports reproduce byte-identically across qualified platforms where specified."
+
+[[slo]]
+id = "SLO-010"
+name = "Agent economy"
+statement = "Representative “what is missing?”, “why this asset?”, “measure this opening,” and “verify archive” workflows complete with bounded context packs and an order of magnitude fewer transferred tokens than raw frame/point dumps."
+
+[[slo]]
+id = "SLO-011"
+name = "Cold-agent orientation"
+statement = "A qualified cold-arrival scenario identifies the current mission, exact anchor/continuity, top world facts, highest-value unresolved questions, all critical active work, authority posture, and safest next step from one briefing response."
+
+[[slo]]
+id = "SLO-012"
+name = "Heartbeat economy"
+statement = "When no meaningful change occurs, p95 pulse output is at most 400 tokens and contains no unchanged inventory while preserving continuity, active indeterminate work, and critical warnings."
+
+[[slo]]
+id = "SLO-013"
+name = "Context value density"
+statement = "On the agent benchmark suite, context-pack selection achieves at least the decision success of the full eligible context with at most one tenth of transferred tokens for representative bounded tasks."
+
+[[slo]]
+id = "SLO-014"
+name = "Handoff sufficiency"
+statement = "A fresh agent resumes and completes the minimum safe next step from the handoff capsule alone in every qualified handoff scenario, without replaying the prior transcript."
+
+[[slo]]
+id = "SLO-015"
+name = "Recommendation calibration"
+statement = "Predicted information gain, resource cost, and completion interval are calibrated by workload class and expose drift before policy promotion."
+
+[[slo]]
+id = "SLO-016"
+name = "First-try discoverability"
+statement = "At least 95% of canonical benchmark intents map to a valid read/propose path on the first call using only self-description, and every rejected attempt names an exact safe repair."
+
+[[slo]]
+id = "SLO-017"
+name = "Accretive control cost"
+statement = "For repeated qualified workload classes, admitted learning reduces median total control cost without regression in proof, calibration, safety, or recovery gates; gains are receipt-scoped rather than assumed."
+
+[[slo]]
+id = "SLO-018"
+name = "Decision Frame sufficiency"
+statement = "A qualified decision scenario can be correctly continued from its Decision Frame and referenced expansions without joining unrelated responses or replaying the transcript."
+
+[[slo]]
+id = "SLO-019"
+name = "Attention stability"
+statement = "Unchanged or immaterially changed attention items do not re-interrupt the agent; every repeated foreground item cites a material transition or expired acknowledgement."
+
+[[slo]]
+id = "SLO-020"
+name = "Pilot cognitive economy"
+statement = "Normal pilot guidance presents one primary card with at most two short cues, names done/abort conditions, and improves useful evidence per operator minute without increasing safety-preemption failures."

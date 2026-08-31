@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/model_worker_request.v1.json",
+  "title": "FDGR Model Worker Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "request_id",
+    "model_id",
+    "model_artifact_root",
+    "basis",
+    "input_roots",
+    "output_contract",
+    "budgets",
+    "network"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.model_worker_request/1"
+    },
+    "request_id": {
+      "$ref": "#/$defs/digest"
+    },
+    "model_id": {
+      "type": "string",
+      "pattern": "^MODEL-[A-Z0-9-]+$"
+    },
+    "model_artifact_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "basis": {
+      "$ref": "capture_anchor.schema.json"
+    },
+    "input_roots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/digest"
+      }
+    },
+    "output_contract": {
+      "type": "string"
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wall_ms",
+        "memory_bytes",
+        "output_bytes"
+      ],
+      "properties": {
+        "wall_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "memory_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "output_bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "network": {
+      "const": "disabled"
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

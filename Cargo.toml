@@ -1,0 +1,35 @@
+[workspace]
+members = [
+    "crates/fdgr-types",
+    "crates/fdgr-core",
+    "crates/fdgr-cli",
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.100"
+authors = ["Jeffrey Emanuel"]
+license = "LicenseRef-MIT-OpenAI-Anthropic-Rider"
+repository = "https://github.com/Dicklesworthstone/franken_drone_geometry_reconstruction"
+keywords = ["drone", "photogrammetry", "digital-twin", "rust", "computer-vision"]
+categories = ["computer-vision", "multimedia", "science", "command-line-utilities"]
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+rust_2018_idioms = { level = "deny", priority = -1 }
+unused_lifetimes = "deny"
+unused_qualifications = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+dbg_macro = "deny"
+indexing_slicing = "warn"

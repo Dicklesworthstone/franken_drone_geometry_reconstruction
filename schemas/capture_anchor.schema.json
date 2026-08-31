@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/capture_anchor.v1.json",
+  "title": "FDGR Capture Anchor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "capture_root",
+    "capture_epoch",
+    "frame_high_water",
+    "calibration_epoch",
+    "clock_epoch",
+    "policy_root",
+    "model_registry_root",
+    "evidence_root"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.capture_anchor/1"
+    },
+    "capture_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "capture_epoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "frame_high_water": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "calibration_epoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "clock_epoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "policy_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "model_registry_root": {
+      "$ref": "#/$defs/digest"
+    },
+    "evidence_root": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

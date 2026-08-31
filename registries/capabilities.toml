@@ -1,0 +1,118 @@
+schema = "fdgr.capabilities.v1"
+revision = 1
+default_policy = "deny"
+
+[[capability]]
+id = "CAP-CAPTURE-READ"
+authority = "read named source files/streams within a sealed scope"
+status = "planned"
+
+[[capability]]
+id = "CAP-CAPTURE-LIVE-OBSERVE"
+authority = "open a read-only live source session for an admitted profile"
+status = "planned"
+
+[[capability]]
+id = "CAP-DEVICE-OBSERVE"
+authority = "run bounded compatibility/read probes"
+status = "planned"
+
+[[capability]]
+id = "CAP-DEVICE-CONTROL"
+authority = "reserved; not admitted in the initial architecture"
+status = "reserved_unadmitted"
+
+[[capability]]
+id = "CAP-PROCESS-MEDIA"
+authority = "spawn exact admitted media profiles"
+status = "planned"
+
+[[capability]]
+id = "CAP-PROCESS-MODEL"
+authority = "spawn exact admitted model profiles"
+status = "planned"
+
+[[capability]]
+id = "CAP-EVIDENCE-APPEND"
+authority = "append validated capsule types to a lineage"
+status = "planned"
+
+[[capability]]
+id = "CAP-GENERATION-PUBLISH"
+authority = "publish a verified immutable root"
+status = "planned"
+
+[[capability]]
+id = "CAP-ARCHIVE-READ"
+authority = "retrieve named immutable objects"
+status = "planned"
+
+[[capability]]
+id = "CAP-ARCHIVE-WRITE"
+authority = "create named immutable remote objects"
+status = "planned"
+
+[[capability]]
+id = "CAP-ARCHIVE-DELETE"
+authority = "apply an independently sealed deletion plan"
+status = "planned_critical"
+
+[[capability]]
+id = "CAP-PRIVACY-EXPORT"
+authority = "produce a named lower-sensitivity derivative"
+status = "planned"
+
+[[capability]]
+id = "CAP-HUMAN-CONFIRM"
+authority = "attach a scoped human confirmation receipt"
+status = "planned"
+
+[[capability]]
+id = "CAP-ADMIN-POLICY"
+authority = "modify registries/policies through a separately audited path"
+status = "planned_critical"
+
+[[capability]]
+id = "CAP-AGENT-ORIENT"
+authority = "read an anchor-bound four-ledger orientation projection within privacy and token budgets"
+status = "planned"
+
+[[capability]]
+id = "CAP-AGENT-QUERY"
+authority = "read bounded canonical or certified-derived facts and expand typed handles"
+status = "planned"
+
+[[capability]]
+id = "CAP-BRANCH-SPECULATE"
+authority = "create and evaluate authority-free counterfactual branches over a pinned anchor"
+status = "planned"
+
+[[capability]]
+id = "CAP-PLAN-COMMIT"
+authority = "commit a sealed plan after current witness, policy, capability, idempotency, lease, and fence validation"
+status = "planned_critical"
+
+[[capability]]
+id = "CAP-HANDOFF-PUBLISH"
+authority = "publish an authority-free sealed handoff capsule for a named session/campaign"
+status = "planned"
+
+[[capability]]
+id = "CAP-EPISODE-APPEND"
+authority = "append a validated immutable episode and surprise capsule to the operational evidence lineage"
+status = "planned"
+
+[[capability]]
+id = "CAP-DIAGNOSTIC-FORENSIC"
+authority = "read bounded raw diagnostic and evidence surfaces within explicit privacy scope"
+status = "planned_sensitive"
+
+[[capability]]
+id = "CAP-PILOT-GUIDANCE"
+name = "Human pilot guidance"
+summary = "Read-only authority to generate bounded evidence-gain pilot cards for an operator-present session; grants no aircraft control."
+
+[[capability]]
+id = "CAP-SPATIAL-EXPAND"
+name = "Spatial handle expansion"
+summary = "Read-only authority to expand an authorized spatial/semantic handle across registered abstraction neighbors without leaking restricted geometry."

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/question.v1.json",
+  "title": "FDGR Question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "question_id",
+    "proposition",
+    "status",
+    "epistemic_state",
+    "terminal_predicate",
+    "evidence_deficits",
+    "affected_objectives"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.question/1"
+    },
+    "question_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proposition": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "unopened",
+        "open",
+        "partially_answered",
+        "answered",
+        "contradicted",
+        "blocked",
+        "stale",
+        "indeterminate",
+        "retired"
+      ]
+    },
+    "epistemic_state": {
+      "enum": [
+        "observed",
+        "certified_derived",
+        "inferred",
+        "predicted",
+        "assumed",
+        "stale",
+        "unknown",
+        "contradicted",
+        "indeterminate"
+      ]
+    },
+    "terminal_predicate": {
+      "type": "object"
+    },
+    "supporting_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "contradicting_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_deficits": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "affected_objectives": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "stopping_rule": {
+      "type": "object"
+    }
+  }
+}

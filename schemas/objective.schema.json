@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/objective.v1.json",
+  "title": "FDGR Objective",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "objective_id",
+    "mission_id",
+    "desired_predicates",
+    "hard_constraints",
+    "evidence_requirements",
+    "status"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.objective/1"
+    },
+    "objective_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mission_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_objective_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "desired_predicates": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
+    },
+    "hard_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "soft_utility": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidence_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "budget": {
+      "type": "object"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "active",
+        "blocked",
+        "satisfied",
+        "failed",
+        "suspended",
+        "abandoned"
+      ]
+    }
+  }
+}

@@ -1,0 +1,136 @@
+schema = "fdgr.geometry_algorithms.v1"
+revision = 1
+contract = "reference-first + provenance + numeric-policy + branchable-hypotheses"
+
+[[stage]]
+id = "GEOM-001"
+name = "clock-map-estimation"
+inputs = ["raw clock values", "correspondence events"]
+outputs = ["piecewise clock map", "residuals", "discontinuity epochs"]
+reference = "robust piecewise affine fit"
+
+[[stage]]
+id = "GEOM-002"
+name = "calibration"
+inputs = ["images", "metadata", "control patterns/measurements"]
+outputs = ["intrinsics", "distortion", "rolling-shutter", "extrinsics", "uncertainty"]
+reference = "small deterministic nonlinear least-squares profile"
+
+[[stage]]
+id = "GEOM-003"
+name = "frame-quality"
+inputs = ["decoded frame", "clock/calibration"]
+outputs = ["blur", "exposure", "texture", "dynamic/sky/foliage", "eligibility"]
+reference = "owned scalar metrics"
+
+[[stage]]
+id = "GEOM-004"
+name = "keyframe-selection"
+inputs = ["frame quality", "view overlap", "coverage", "budget"]
+outputs = ["ordered keyframes", "selection certificate"]
+reference = "stable submodular/facility-location or threshold profile"
+
+[[stage]]
+id = "GEOM-005"
+name = "features-lines-planes"
+inputs = ["frames", "calibration"]
+outputs = ["typed observations", "descriptors", "uncertainty"]
+reference = "owned deterministic scalar detectors/descriptors"
+
+[[stage]]
+id = "GEOM-006"
+name = "association-and-tracks"
+inputs = ["observations", "epipolar/temporal constraints"]
+outputs = ["track hypotheses", "ambiguity", "cycle status"]
+reference = "bounded matching/min-cost-flow + geometric verification"
+
+[[stage]]
+id = "GEOM-007"
+name = "robust-model-selection"
+inputs = ["correspondences"]
+outputs = ["essential/homography/PnP hypothesis", "inliers", "degeneracy"]
+reference = "deterministic sampled robust estimator with complete seed record"
+
+[[stage]]
+id = "GEOM-008"
+name = "local-pose"
+inputs = ["tracks", "calibration", "optional telemetry"]
+outputs = ["pose nodes/factors", "residuals", "gauge"]
+reference = "small deterministic bundle/factor solver"
+
+[[stage]]
+id = "GEOM-009"
+name = "loop-closure"
+inputs = ["view/search candidates", "geometric verification"]
+outputs = ["competing closure factors", "compatibility graph"]
+reference = "exact candidate verification and branch selection"
+
+[[stage]]
+id = "GEOM-010"
+name = "global-pose-bundle-adjustment"
+inputs = ["factor graph", "branch policy"]
+outputs = ["optimized poses/landmarks", "residual evidence", "conditioning"]
+reference = "deterministic dense/sparse small-problem oracle"
+
+[[stage]]
+id = "GEOM-011"
+name = "scale-resolution"
+inputs = ["scale witness graph", "pose/calibration"]
+outputs = ["scale transforms", "authority", "uncertainty/conflicts"]
+reference = "robust graph optimization with witness paths"
+
+[[stage]]
+id = "GEOM-012"
+name = "depth-multiview"
+inputs = ["frames", "poses", "calibration", "model proposals"]
+outputs = ["depth tiles", "confidence", "cross-view consistency"]
+reference = "bounded plane-sweep/patch or validated proposal path"
+
+[[stage]]
+id = "GEOM-013"
+name = "spatial-fusion"
+inputs = ["depth", "poses", "scale", "dynamic masks"]
+outputs = ["surfels", "TSDF/occupancy/free-space bricks", "conflicts"]
+reference = "simple deterministic block fusion"
+
+[[stage]]
+id = "GEOM-014"
+name = "mesh-extraction"
+inputs = ["spatial field"]
+outputs = ["mesh patches", "seams", "topology diagnostics"]
+reference = "owned deterministic marching/dual-contouring profile"
+
+[[stage]]
+id = "GEOM-015"
+name = "structural-topology"
+inputs = ["surfaces", "mesh", "coverage", "semantic proposals"]
+outputs = ["planes", "walls", "floors", "openings", "rooms", "portals"]
+reference = "explicit geometric/graph rules with hypothesis branches"
+
+[[stage]]
+id = "GEOM-016"
+name = "change-registration"
+inputs = ["two capture/reconstruction generations"]
+outputs = ["correspondence", "persistent/transient/change claims"]
+reference = "robust registration + graph edit evidence"
+
+[[stage]]
+id = "GEOM-017"
+name = "coverage-detectability"
+inputs = ["poses", "camera model", "surfaces/volumes", "class policy"]
+outputs = ["coverage field", "debt", "absence eligibility"]
+reference = "deterministic visibility/raster/ray profile"
+
+[[stage]]
+id = "GEOM-018"
+name = "next-best-view"
+inputs = ["coverage debt", "candidate viewpoints", "constraints"]
+outputs = ["selected viewpoints/routes", "expected information", "plan certificate"]
+reference = "stable submodular selection + graph path planner"
+
+[numeric_contract]
+required = [
+  "coordinate_frames", "units", "precision", "rounding", "NaN/Inf policy",
+  "robust loss", "stopping rule", "deterministic reduction", "uncertainty representation",
+  "degeneracy classification", "output equivalence contract"
+]

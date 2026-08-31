@@ -1,0 +1,40 @@
+schema = "fdgr.agent_profiles.v1"
+revision = 1
+
+[[profile]]
+id = "OP-PROFILE-PULSE"
+name = "pulse"
+purpose = "Cheapest safe heartbeat and active-work update."
+target_tokens_min = 120
+target_tokens_max = 400
+
+[[profile]]
+id = "OP-PROFILE-BRIEFING"
+name = "briefing"
+purpose = "Default cold-arrival or resume orientation."
+target_tokens_min = 500
+target_tokens_max = 1600
+
+[[profile]]
+id = "OP-PROFILE-TACTICAL"
+name = "tactical"
+purpose = "Decision-specific entity, region, causal, witness, blocker, and option context."
+requires_focus = true
+
+[[profile]]
+id = "OP-PROFILE-PILOT"
+name = "pilot"
+purpose = "Immediate manual-capture guidance tied to evidence deficits and stop conditions."
+requires_focus = true
+
+[[profile]]
+id = "OP-PROFILE-FORENSIC"
+name = "forensic"
+purpose = "Evidence-complete bounded audit, diagnosis, or reconciliation."
+requires_explicit_scope = true
+
+[[profile]]
+id = "OP-PROFILE-CUSTOM"
+name = "custom"
+purpose = "Explicit registered projection union under hard bounds."
+unknown_projection_behavior = "fail_closed"

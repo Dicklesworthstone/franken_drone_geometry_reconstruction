@@ -1,0 +1,231 @@
+#![forbid(unsafe_code)]
+//! Deterministic constitutional surfaces for the FDGR scaffold.
+
+use std::process::Command;
+
+/// Stable schema identifier for the current capability document.
+pub const CAPABILITIES_SCHEMA: &str = "fdgr.capabilities.v1";
+/// Stable schema identifier for doctor output.
+pub const DOCTOR_SCHEMA: &str = "fdgr.doctor.v1";
+/// Current package version.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// A named capability whose maturity is explicit.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct Capability {
+    /// Stable capability identifier.
+    pub id: &'static str,
+    /// Human-readable purpose.
+    pub description: &'static str,
+    /// Current maturity state.
+    pub status: CapabilityStatus,
+}
+
+/// Capability maturity. Source presence never implies implementation.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum CapabilityStatus {
+    /// Implemented and covered by the scaffold's local tests.
+    Scaffolded,
+    /// Normatively designed but not implemented.
+    Planned,
+    /// Requires external evidence before admission.
+    Research,
+}
+
+impl CapabilityStatus {
+    /// Stable machine-readable text.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Scaffolded => "scaffolded",
+            Self::Planned => "planned",
+            Self::Research => "research",
+        }
+    }
+}
+
+/// Returns the deterministic capability registry exposed by the initial CLI.
+#[must_use]
+pub fn capabilities() -> &'static [Capability] {
+    &[
+        Capability {
+            id: "archive.replicate.s3",
+            description: "replicate immutable content-addressed evidence to compatible object storage",
+            status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "canonical.digest.validate",
+            description: "validate canonical lowercase SHA-256 text identities",
+            status: CapabilityStatus::Scaffolded,
+        },
+        Capability {
+            id: "capture.dji.flip.live",
+            description: "acquire an owner-authorized DJI Flip live-view stream through an admitted adapter",
+            status: CapabilityStatus::Research,
+        },
+        Capability {
+            id: "capture.original.import",
+            description: "ingest exact original drone media and metadata into immutable evidence",
+            status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "geometry.reconstruct.metric",
+            description: "publish uncertainty-bearing geometry with an explicit metric scale witness",
+            status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "media.normalize",
+            description: "supervise ffmpeg/ffprobe sidecars and publish deterministic media renditions",
+            status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "repository.doctor",
+            description: "inspect local prerequisite executables without mutating the host",
+            status: CapabilityStatus::Scaffolded,
+        },
+        Capability {
+            id: "semantics.resolve.assets",
+            description: "resolve evidence-linked home assets and utility observations",
+            status: CapabilityStatus::Planned,
+        },
+    ]
+}
+
+/// Doctor verdict for one bounded check.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DoctorStatus {
+    /// The prerequisite was observed and responded successfully.
+    Pass,
+    /// The prerequisite is absent, optional, or not yet configured.
+    Warn,
+}
+
+impl DoctorStatus {
+    /// Stable machine-readable text.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Pass => "pass",
+            Self::Warn => "warn",
+        }
+    }
+}
+
+/// One deterministic doctor finding.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DoctorFinding {
+    /// Stable check identifier.
+    pub id: &'static str,
+    /// Verdict.
+    pub status: DoctorStatus,
+    /// Bounded explanation.
+    pub detail: String,
+}
+
+/// Runs read-only prerequisite probes in stable order.
+#[must_use]
+pub fn doctor() -> Vec<DoctorFinding> {
+    vec![
+        executable_check(
+            "tool.ffmpeg",
+            "ffmpeg",
+            &["-version"],
+            "ffmpeg is available",
+            "ffmpeg was not found; media normalization remains unavailable",
+        ),
+        executable_check(
+            "tool.ffprobe",
+            "ffprobe",
+            &["-version"],
+            "ffprobe is available",
+            "ffprobe was not found; media inspection remains unavailable",
+        ),
+        executable_check(
+            "tool.python3",
+            "python3",
+            &["--version"],
+            "python3 is available for isolated research model workers",
+            "python3 was not found; optional research model workers remain unavailable",
+        ),
+    ]
+}
+
+fn executable_check(
+    id: &'static str,
+    executable: &str,
+    arguments: &[&str],
+    pass_detail: &str,
+    warning_detail: &str,
+) -> DoctorFinding {
+    match Command::new(executable).args(arguments).output() {
+        Ok(output) if output.status.success() => DoctorFinding {
+            id,
+            status: DoctorStatus::Pass,
+            detail: pass_detail.to_owned(),
+        },
+        Ok(output) => DoctorFinding {
+            id,
+            status: DoctorStatus::Warn,
+            detail: format!("{warning_detail}; process status was {}", output.status),
+        },
+        Err(error) => DoctorFinding {
+            id,
+            status: DoctorStatus::Warn,
+            detail: format!("{warning_detail}; {error}"),
+        },
+    }
+}
+
+/// The dependency-ordered implementation sequence summarized for humans and agents.
+#[must_use]
+pub fn implementation_sequence() -> &'static [&'static str] {
+    &[
+        "freeze identities, claims, clocks, coordinates, scale witnesses, and publication contracts",
+        "build a deterministic reference evidence ledger and content-addressed publication oracle",
+        "import original recorded media with exact-byte preservation and timestamp accounting",
+        "supervise ffmpeg and model workers through bounded process-sidecar protocols",
+        "publish relative online geometry before admitting any metric claim",
+        "add calibration, telemetry, and independent scale-witness fusion",
+        "admit one offline geometry model through differential and license gates",
+        "add pose-graph refinement, fusion, uncertainty, and coverage certificates",
+        "add semantic observations and multi-view resolution into an evidence-linked scene graph",
+        "add resumable cloud replication, agent surfaces, live adapters, and optimization in that order",
+    ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{CapabilityStatus, capabilities, implementation_sequence};
+    use std::collections::BTreeSet;
+
+    #[test]
+    fn capability_ids_are_unique_and_ordered() {
+        let ids: Vec<_> = capabilities()
+            .iter()
+            .map(|capability| capability.id)
+            .collect();
+        let unique: BTreeSet<_> = ids.iter().copied().collect();
+        assert_eq!(ids.len(), unique.len());
+        assert!(
+            ids.windows(2)
+                .all(|pair| matches!(pair, [left, right] if left < right))
+        );
+    }
+
+    #[test]
+    fn live_dji_capture_is_not_claimed_as_implemented() {
+        let status = capabilities().iter().find_map(|capability| {
+            (capability.id == "capture.dji.flip.live").then_some(capability.status)
+        });
+        assert_eq!(status, Some(CapabilityStatus::Research));
+    }
+
+    #[test]
+    fn implementation_starts_with_contracts() {
+        assert!(
+            implementation_sequence()
+                .first()
+                .is_some_and(|step| step.contains("freeze"))
+        );
+    }
+}

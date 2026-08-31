@@ -1,0 +1,21 @@
+
+[package]
+name = "fdgr-cli"
+description = "Agent-friendly command-line interface for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "fdgr"
+path = "src/main.rs"
+
+[dependencies]
+fdgr-core = { path = "../fdgr-core" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/handoff_capsule.v1.json",
+  "title": "FDGR Handoff Capsule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "handoff_id",
+    "anchor",
+    "mission_ids",
+    "objective_frontier",
+    "question_frontier",
+    "active_work",
+    "unresolved_attention",
+    "grants",
+    "budget",
+    "rejected_options",
+    "minimum_safe_next_steps",
+    "references",
+    "digest"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.handoff_capsule/1"
+    },
+    "handoff_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "anchor": {
+      "$ref": "anchor_vector.schema.json"
+    },
+    "mission_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "objective_frontier": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "question_frontier": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "active_work": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "unresolved_attention": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "grants": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "budget": {
+      "type": "object"
+    },
+    "rejected_options": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "minimum_safe_next_steps": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

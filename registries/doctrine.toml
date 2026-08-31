@@ -1,0 +1,182 @@
+schema = "fdgr.doctrine.v1"
+revision = 1
+
+[[doctrine]]
+id = "BET-001"
+name = "One evidence universe"
+statement = "Capture history, clocks, calibration, geometry, semantics, archive state, subscriptions, branches, replay, and reports are projections of one ordered immutable evidence-capsule stream. There is no mutable “master mesh” or separate truth per subsystem."
+
+[[doctrine]]
+id = "BET-002"
+name = "Metric scale is a proof obligation"
+statement = "Geometry can be useful while relative. Metric units require an admitted scale witness and uncertainty. This single rule prevents an enormous class of plausible but false digital twins."
+
+[[doctrine]]
+id = "BET-003"
+name = "Live draft and offline convergence are one lineage"
+statement = "A bounded online lane publishes fast provisional geometry and coverage feedback. A deeper offline lane consumes original media, closes loops, refines poses/depth, and publishes a successor. Both cite the same evidence lineage; neither overwrites the other."
+
+[[doctrine]]
+id = "BET-004"
+name = "Models propose, geometry adjudicates"
+statement = "Foundation models provide strong priors. Classical constraints, independent evidence, held-out views, multi-model correlation policy, and uncertainty gates decide admission. The best model can change without changing the truth architecture."
+
+[[doctrine]]
+id = "BET-005"
+name = "Semantics are resolved from an evidence graph"
+statement = "Objects and utilities pass through explicit observation, hypothesis, resolution, rejection, and indeterminate states. Language and segmentation are contributors. Geometry, dimensions, topology, multi-view persistence, counterevidence, ontology-specific rules, and human confirmation can all matter."
+
+[[doctrine]]
+id = "BET-006"
+name = "Coverage makes missing knowledge explicit"
+statement = "The twin contains not just reconstructed surfaces but a certificate of what was seen, at what quality, from which views, and with what detectability. This supports honest absence claims and next-best-view capture planning."
+
+[[doctrine]]
+id = "BET-007"
+name = "Immutable content addressing makes large evidence economical"
+statement = "Original video, analysis media, geometry tiles, reports, and repair symbols are immutable objects with deduplication, temperature tiers, resumable replication, and provider-independent restore. Derived assets can be rebuilt; irreplaceable originals receive stronger custody."
+
+[[doctrine]]
+id = "BET-008"
+name = "Determinism is a product feature"
+statement = "Stable ordering, canonical codecs, exact model profiles, decision cards, replay identity, virtual time, and fault schedules make failures reproducible and results auditable. Nondeterminism is classified and bounded rather than ignored."
+
+[[doctrine]]
+id = "BET-009"
+name = "Agent-native is an architectural constraint"
+statement = "Compact anchored observations, stable schemas, progressive results, explanations, idempotent plans, obligations, continuations, and narrow MCP tools minimize token and retry cost. Agents never receive hidden omniscience or arbitrary low-level command authority."
+
+[[doctrine]]
+id = "BET-010"
+name = "Privacy scope travels with evidence"
+statement = "Detailed home geometry is sensitive. Local-first execution, least-privilege capture, private coordinates, redaction, remote-model prohibition by default, archive controls, and publication receipts are part of the model rather than UI settings."
+
+[[doctrine]]
+id = "GOAL-001"
+name = "Source-agnostic exact ingest"
+statement = "Accept original files, recorded preview, and admitted live streams while preserving exact bytes, source profiles, complete range accounting, timestamps, and gaps."
+
+[[doctrine]]
+id = "GOAL-002"
+name = "Fast useful feedback"
+statement = "Provide bounded-latency preview, image-quality, provisional geometry, and coverage suggestions without waiting for a converged offline reconstruction."
+
+[[doctrine]]
+id = "GOAL-003"
+name = "High-quality converged geometry"
+statement = "Use original evidence, multiple priors, robust refinement, fusion, topology, and held-out validation to produce accurate visible-surface geometry and useful exports."
+
+[[doctrine]]
+id = "GOAL-004"
+name = "Honest metric scale"
+statement = "Represent relative, estimated, witnessed, and surveyed scale explicitly. Prevent metric outputs when evidence is insufficient and propagate uncertainty into measurements."
+
+[[doctrine]]
+id = "GOAL-005"
+name = "Semantic digital twin"
+statement = "Resolve a practical home/property ontology including visible structure, openings, access, terrain, vegetation, and selected utility assets with provenance and counterevidence."
+
+[[doctrine]]
+id = "GOAL-006"
+name = "Explicit incompleteness"
+statement = "Quantify coverage, detectability, occlusion, dynamic content, image quality, geometry uncertainty, and unresolved semantic regions. Suggest additional capture rather than inventing certainty."
+
+[[doctrine]]
+id = "GOAL-007"
+name = "Durable and economical custody"
+statement = "Retain exact originals locally, replicate selected classes to B2/R2 or compatible stores, resume transfers, verify readback, use repair material where valuable, and prove restore."
+
+[[doctrine]]
+id = "GOAL-008"
+name = "Crash and cancellation correctness"
+statement = "After device, process, host, disk, database, network, or cloud failure, distinguish completed, failed, cancelled, pending, and indeterminate work without duplicating effects or corrupting roots."
+
+[[doctrine]]
+id = "GOAL-009"
+name = "Agent efficiency"
+statement = "Let an agent inspect, search, explain, reconstruct, measure, archive, export, and request more capture with bounded responses and few round trips."
+
+[[doctrine]]
+id = "GOAL-010"
+name = "Deterministic diagnosis"
+statement = "Given a compatible build, artifact set, and doctor bundle, reproduce core state transitions, policies, plans, and eligible outputs or precisely classify bounded numeric nondeterminism."
+
+[[doctrine]]
+id = "GOAL-011"
+name = "Closed, safe, auditable Rust core"
+statement = "Keep the production semantic trust domain in safe Rust under one runtime and a narrowly admitted dependency universe. Isolate unavoidable media/model/GPU/vendor stacks as processes."
+
+[[doctrine]]
+id = "GOAL-012"
+name = "Continual reinterpretation"
+statement = "Allow old captures to benefit from new calibration, geometry, semantic, and compression methods through branches and successor generations without losing history or provenance."
+
+[[doctrine]]
+id = "NONGOAL-001"
+name = "Autonomous flight in the initial architecture"
+statement = "FDGR initially observes media and advises a manual pilot. Sending flight-control commands requires a separate flight-safety architecture, regulatory analysis, device certification, geofencing, collision-risk model, human override, and effect qualification."
+
+[[doctrine]]
+id = "NONGOAL-002"
+name = "Bypassing vendor controls"
+statement = "The project will not bypass pairing, authentication, encryption, account access, DRM, regulatory region restrictions, or another person's system. Owner authorization does not erase protocol or safety boundaries."
+
+[[doctrine]]
+id = "NONGOAL-003"
+name = "Survey/legal certainty by default"
+statement = "A camera-based twin is not automatically a land survey, legal boundary record, code inspection, or engineering certification. Surveyed status is limited to an explicit domain and process."
+
+[[doctrine]]
+id = "NONGOAL-004"
+name = "Inferring hidden utilities as observed facts"
+statement = "Exterior imagery cannot establish unseen pipe, wire, duct, tank, panel, or interior equipment routes. The scene graph preserves unknown and inferred states."
+
+[[doctrine]]
+id = "NONGOAL-005"
+name = "One-model monoculture"
+statement = "No model family, checkpoint, vendor, or framework becomes the permanent architecture. Models are replaceable proposal producers."
+
+[[doctrine]]
+id = "NONGOAL-006"
+name = "One-vendor capture lock-in"
+statement = "DJI Flip is the motivating profile, not the data model. Generic files and cameras are first-class; other drones and capture systems can implement the same source contracts."
+
+[[doctrine]]
+id = "NONGOAL-007"
+name = "Cloud requirement"
+statement = "Every essential capture, reconstruction, query, report, and restore function works local-first. Cloud is an optional replica/collaboration tier."
+
+[[doctrine]]
+id = "NONGOAL-008"
+name = "Photorealism as geometry proof"
+statement = "A compelling render, Gaussian splat, texture, or novel view is not evidence of metric accuracy, surface completeness, or topology."
+
+[[doctrine]]
+id = "NONGOAL-009"
+name = "Hidden omniscience for agents"
+statement = "Agents see compact evidence-backed projections. They do not receive fabricated complete state, arbitrary filesystem/network/device access, or implicit authority from text."
+
+[[doctrine]]
+id = "NONGOAL-010"
+name = "General-purpose media/robotics platform"
+statement = "FDGR owns the drone-video-to-digital-twin workflow. It is not a general video editor, SLAM middleware framework, drone fleet controller, GIS server, or generic graph database."
+
+[[doctrine]]
+id = "BET-011"
+name = "Questions are the cognitive control plane"
+statement = "Missions decompose into objectives, objectives raise questions, questions expose evidence deficits, and plans are ranked by the value of resolving those deficits. Subsystems do not compete for the agent's attention through unrelated status surfaces."
+
+[[doctrine]]
+id = "BET-012"
+name = "One agent turn packet"
+statement = "Every success, progress event, and error projects synchronized world, epistemic, work, and system ledgers through one anchor-bound packet. The agent never reconstructs protocol state from scattered outputs."
+
+[[doctrine]]
+id = "GOAL-013"
+name = "First-try agent operation"
+statement = "Capabilities, profiles, schemas, affordances, error repairs, and maturity are self-describing so an agent can select the correct next protocol step without source inspection or deliberate failure."
+
+[[doctrine]]
+id = "GOAL-014"
+name = "Evidence-gated accretion"
+statement = "Episodes, surprises, cost calibration, lesson candidates, shadow evaluation, and rollback-capable policy epochs make future operation cheaper and better without turning memory into authority."

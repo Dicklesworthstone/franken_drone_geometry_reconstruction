@@ -1,0 +1,221 @@
+{
+  "schema": "fdgr.deep_traceability/1",
+  "revision": 1,
+  "purpose": "Map exact sibling mechanisms into the agent-centered FDGR abstraction tower.",
+  "projects": [
+    {
+      "name": "asupersync",
+      "commit": "7b6ff6e95685f2d614eb418e8f026033dee4317a",
+      "tree": "e028dff7ae88f49215566b8cf422ec2398deb450",
+      "mechanisms": [
+        "region ownership",
+        "Cx authority and budgets",
+        "request-drain-finalize cancellation",
+        "deterministic lab",
+        "ATP object graphs",
+        "progress certificates"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "frankensqlite",
+      "commit": "2d8a68b9ad82d685f8bacd9d5fe3c8fe5304a0e4",
+      "tree": "ca7a3fb70a9f590bc8bd65ff5069b915afe0201f",
+      "mechanisms": [
+        "MVCC generations",
+        "positive and negative witnesses",
+        "SSI-style dependency checks",
+        "semantic rebase and merge ladder",
+        "crash recovery"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "frankenfs",
+      "commit": "151ea2dabb37c26d4f21e1369e409b1a348ca00b",
+      "tree": "476cdc0083f122bf2d7a8f6394d9ff4e4b51d01d",
+      "mechanisms": [
+        "staged-visible-durable epochs",
+        "root-last publication",
+        "checkpoint custody",
+        "repair-plan sealing",
+        "same-binary evidence"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "frankensearch",
+      "commit": "de1dbc4b97ab55481e3605a2302e8a560f3e8248",
+      "tree": "4c2d6d9b7ef55bacc50f7948a0d06bcc938552f3",
+      "mechanisms": [
+        "progressive candidate/refinement ladder",
+        "immutable generations",
+        "explainable score ledgers",
+        "bounded context shaping"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "franken_markdown",
+      "commit": "d5029f558d4193a2b6c7607d1d7aef3ff44975b1",
+      "tree": "04f2ab20e9e7b7f84c28811e3597d370ff7dd38e",
+      "mechanisms": [
+        "stable source spans",
+        "deterministic multi-output publication",
+        "bounded parsers",
+        "machine/human report parity"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "frankengraphdb",
+      "commit": "a280bda6b904498ec60f9e0a4e9bcbbd667691e1",
+      "tree": "dc8214d26a24e725f00115a0beb37af9096469fd",
+      "mechanisms": [
+        "one version universe",
+        "branch-per-hypothesis",
+        "incremental derived views",
+        "temperature-tiered graph storage",
+        "plan certificates"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "franken_networkx",
+      "commit": "f3b2a3872dcebcc29155c483543aa6e4ef6b6663",
+      "tree": "ee6c1262cf7eb5d13567a6221f19afcf777b736e",
+      "mechanisms": [
+        "canonical graph semantics",
+        "algorithm tie-break policy",
+        "complexity witnesses",
+        "dynamic connectivity and cut/path algorithms"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "dwarf_fortress_mcp",
+      "commit": "30db7c5aa9f058818a6814abb1a51ca63a09e75a",
+      "tree": "7a699fe88c55a540b67776af42f2dfcd2be94ce0",
+      "mechanisms": [
+        "agent turn packet",
+        "objective-question-affordance loop",
+        "witnessed effect protocol",
+        "handoff and surprise records"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "fastmcp_rust",
+      "commit": "db1c17667faa27baeb5fa6208978f1a3e86e224d",
+      "tree": "d2ac16ad956c170008242c0513d6b0947fe2ccd5",
+      "mechanisms": [
+        "thin transport seam",
+        "request-scoped cancellation",
+        "stable schemas and outcomes",
+        "replaceable presentation"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "eidetic_engine_cli",
+      "commit": "386157ecd3b14f92338d7b39d2a8d956ff0db563",
+      "tree": "5e086352a42fc9099c11a90fc0630f7e02b90873",
+      "mechanisms": [
+        "context packs and Pack DNA",
+        "advisory memory strata",
+        "outcome feedback",
+        "agent ergonomics self-description"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    },
+    {
+      "name": "doodlestein_self_releaser",
+      "commit": "871758b7cf640ffe25f44675acb58d2c9f69e41f",
+      "tree": "f293d5f51eee72a5dc7ed8fe85b7755fcc6e6db0",
+      "mechanisms": [
+        "local qualification authority",
+        "exact source/artifact closure",
+        "resumable multi-platform release graph",
+        "negative controls"
+      ],
+      "fdgr_destinations": [
+        "agent abstraction tower",
+        "four ledgers",
+        "question/objective graph",
+        "Decision Frame",
+        "evidence/constraint/custody substrate"
+      ],
+      "admission": "design_transfer_requires_FDGR_specific_gate"
+    }
+  ]
+}

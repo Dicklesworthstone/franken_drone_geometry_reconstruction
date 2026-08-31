@@ -1,0 +1,63 @@
+
+schema = "fdgr.claims.v1"
+revision = 1
+
+[[claim]]
+id = "CLAIM-RAW-001"
+name = "Original bytes retained"
+required_evidence = ["raw_object_digest", "source_receipt", "local_retrieval_verification"]
+terminal_predicate = "The exact acquired byte range can be read back and hashes to the declared identity."
+
+[[claim]]
+id = "CLAIM-TIME-001"
+name = "Frame timeline continuous"
+required_evidence = ["packet_timeline", "decode_timeline", "discontinuity_scan", "clock_model"]
+terminal_predicate = "Every accepted frame is mapped to a named clock epoch with bounded residual and all gaps are explicit."
+
+[[claim]]
+id = "CLAIM-CAL-001"
+name = "Camera calibration admitted"
+required_evidence = ["calibration_basis", "reprojection_corpus", "distortion_policy", "temperature_or_zoom_scope"]
+terminal_predicate = "Calibration residuals satisfy the registered scope-specific gate and the lens state matches the capture."
+
+[[claim]]
+id = "CLAIM-POSE-001"
+name = "Camera pose generation admitted"
+required_evidence = ["anchor", "pose_graph", "reprojection_receipt", "trajectory_diagnostics", "decision_certificate"]
+terminal_predicate = "The pose graph is connected for the claimed domain, finite, deterministic, and passes residual and loop-consistency gates."
+
+[[claim]]
+id = "CLAIM-SCALE-001"
+name = "Metric scale witnessed"
+required_evidence = ["scale_witness", "transform", "residuals", "scope", "independence_class"]
+terminal_predicate = "A registered witness establishes the metric transform within its declared uncertainty and domain."
+
+[[claim]]
+id = "CLAIM-GEO-001"
+name = "Surface geometry admitted"
+required_evidence = ["pose_generation", "depth_or_correspondence_evidence", "fusion_receipt", "uncertainty_field", "coverage_certificate"]
+terminal_predicate = "Published geometry reconstructs held-out observations within the gate and carries spatial uncertainty and coverage."
+
+[[claim]]
+id = "CLAIM-SEM-001"
+name = "Semantic asset resolved"
+required_evidence = ["ontology_version", "multi_view_observations", "geometry_association", "resolver_policy", "counterevidence_scan"]
+terminal_predicate = "The asset satisfies the ontology-specific resolution gate and all supporting observations remain valid at the anchor."
+
+[[claim]]
+id = "CLAIM-ABS-001"
+name = "Asset absent from domain"
+required_evidence = ["authorized_domain", "coverage_certificate", "detectability_model", "negative_search_receipt"]
+terminal_predicate = "The complete claimed domain was observed with sufficient detectability and yielded no qualifying observation."
+
+[[claim]]
+id = "CLAIM-ARCH-001"
+name = "Cloud replica retrievable"
+required_evidence = ["upload_manifest", "provider_receipt", "head_receipt", "sampled_or_full_readback", "digest_verification"]
+terminal_predicate = "The object graph can be retrieved from the declared provider and independently reconstructs the published root."
+
+[[claim]]
+id = "CLAIM-READY-001"
+name = "Digital twin release qualified"
+required_evidence = ["all_child_claims", "compatibility_profile", "privacy_receipt", "benchmark_receipt", "recovery_drill"]
+terminal_predicate = "Every advertised readiness dimension has a current positive evidence receipt and no blocking negative evidence."
