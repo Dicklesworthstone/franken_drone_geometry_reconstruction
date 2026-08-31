@@ -21,3 +21,8 @@ __pycache__/
 .beads/.br_history/
 .beads/last-touched
 .beads/daemon.*
+
+# bv (beads viewer) local config and caches
+.bv/
+# br doctor per-run artifacts
+.doctor/
