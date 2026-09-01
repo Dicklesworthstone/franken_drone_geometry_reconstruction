@@ -6,7 +6,6 @@ use crate::{
     MEDIA_DECODE_RECEIPT_SCHEMA,
 };
 use fdgr_types::EvidenceDigest;
-use std::fmt::Write as _;
 
 /// Renders one receipt only after full validation against its exact decode plan.
 ///
@@ -40,21 +39,18 @@ pub fn render_media_decode_receipt_json(
     );
     match &input.framehash {
         Some(report) => {
-            write!(
-                output,
+            output.push_str(&format!(
                 "{{\"version\":{},\"hash_name\":\"{}\",\"record_count\":{},\"total_frame_bytes\":{},\"records\":[",
                 report.version,
                 report.hash_name,
                 report.records.len(),
                 report.total_frame_bytes,
-            )
-            .map_err(|error| DecodeReceiptError::JsonRendering(error.to_string()))?;
+            ));
             for (index, record) in report.records.iter().enumerate() {
                 if index > 0 {
                     output.push(',');
                 }
-                write!(
-                    output,
+                output.push_str(&format!(
                     "{{\"record_index\":{},\"stream_index\":{},\"dts\":{},\"pts\":{},\"duration\":{},\"byte_length\":{},\"digest\":\"{}\"}}",
                     record.record_index,
                     record.stream_index,
@@ -63,8 +59,7 @@ pub fn render_media_decode_receipt_json(
                     record.duration,
                     record.byte_length,
                     record.digest,
-                )
-                .map_err(|error| DecodeReceiptError::JsonRendering(error.to_string()))?;
+                ));
             }
             output.push_str("]}");
         }
