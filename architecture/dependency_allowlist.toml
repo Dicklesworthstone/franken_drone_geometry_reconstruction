@@ -7,6 +7,23 @@ c_cpp_ffi = false
 in_process_python = false
 hosted_github_actions_authority = false
 source_closure = "release/source_closure.lock.json"
+forbidden_linked_components = [
+  "ceres", "colmap", "cuda", "ffmpeg_libav", "opencv", "pytorch", "vendor_sdk"
+]
+
+[[external_process]]
+name = "ffmpeg"
+class = "media_oracle"
+status = "planned_profile_pin_requires_admission"
+network_default = false
+linked_in_process = false
+
+[[external_process]]
+name = "python_model_worker"
+class = "model_oracle"
+status = "research_only_exact_environment_required"
+network_default = false
+linked_in_process = false
 
 [[platform]]
 name = "rust-std"
