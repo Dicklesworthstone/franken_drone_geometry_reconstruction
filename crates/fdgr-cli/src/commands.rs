@@ -5,6 +5,8 @@ use crate::args::{
     parse_format, parse_import, parse_manifest_view, parse_media_inspect, parse_media_samples,
     parse_store_verify, parse_verify,
 };
+use crate::clock_args::{ClockFitCliOptions, parse_clock_fit, read_clock_anchor_table};
+use crate::clock_render::print_clock_model;
 use crate::decode_args::parse_media_decode_plan;
 use crate::decode_render::print_media_decode_plan;
 use crate::recorded_args::{
@@ -21,6 +23,7 @@ use crate::render::{
 use crate::sample_render::print_sample_window;
 use crate::stored_args::{parse_stored_media_inspect, parse_stored_media_samples};
 use crate::stored_render::{print_stored_media_inspection, print_stored_sample_window};
+use fdgr_clock::{ClockModelBasis, fit_clock_model};
 use fdgr_core::{VALIDATE_ID_SCHEMA, VERSION};
 use fdgr_evidence::build_file_manifest;
 use fdgr_media::{FourCc, inspect_iso_bmff_file, read_classic_sample_window_file};
@@ -39,6 +42,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
     };
     match command.as_str() {
         "capabilities" => print_capabilities(parse_format(rest)?),
+        "clock-fit" => clock_fit(rest),
         "doctor" => print_doctor(parse_format(rest)?),
         "file-manifest" => file_manifest(rest),
         "import-file" => import_file(rest),
@@ -69,6 +73,9 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
 fn print_complete_help() {
     print_help();
     println!(
+        "  fdgr clock-fit <anchors.tsv> --basis-digest <digest> --source-domain <id> --reference-domain <id> --source-epoch <n> --reference-epoch <n> --generation <n> --source-timescale <ticks-per-second> --reference-timescale <ticks-per-second> [fit gates] [--format text|json]"
+    );
+    println!(
         "  fdgr media-decode-plan <store-root> <recorded-media-root-manifest-digest> --track-id id --max-samples n --pixel-format gray8|rgb24|rgba|yuv420p --width pixels --height pixels --worker-executable-digest digest --worker-version-digest digest --profile-digest digest [bounded options] [--format text|json]"
     );
     println!(
@@ -89,6 +96,39 @@ fn print_complete_help() {
     println!(
         "  fdgr stored-media-samples <store-root> <manifest-digest> --track-id <id> [bounded options] [--format text|json]"
     );
+}
+
+fn clock_fit(arguments: &[String]) -> Result<(), String> {
+    let ClockFitCliOptions {
+        anchor_path,
+        basis_digest,
+        source_domain,
+        reference_domain,
+        source_epoch,
+        reference_epoch,
+        model_generation,
+        source_timescale,
+        reference_timescale,
+        fit,
+        format,
+    } = parse_clock_fit(arguments)?;
+    let table = read_clock_anchor_table(&anchor_path, &basis_digest)?;
+    let model = fit_clock_model(
+        ClockModelBasis {
+            basis_digest: table.digest,
+            source_domain,
+            reference_domain,
+            source_epoch,
+            reference_epoch,
+            model_generation,
+            source_timescale,
+            reference_timescale,
+        },
+        fit,
+        table.anchors,
+    )
+    .map_err(|error| format!("clock fit rejected: {error}"))?;
+    print_clock_model(&model, format)
 }
 
 fn file_manifest(arguments: &[String]) -> Result<(), String> {

@@ -2,6 +2,8 @@
 //! Agent-friendly deterministic CLI surfaces for FDGR.
 
 mod args;
+mod clock_args;
+mod clock_render;
 mod commands;
 mod decode_args;
 mod decode_render;

@@ -13,6 +13,8 @@ name = "fdgr"
 path = "src/main.rs"
 
 [dependencies]
+fdgr-clock = { path = "../fdgr-clock" }
+fdgr-codec = { path = "../fdgr-codec" }
 fdgr-core = { path = "../fdgr-core" }
 fdgr-evidence = { path = "../fdgr-evidence" }
 fdgr-media = { path = "../fdgr-media" }
