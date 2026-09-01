@@ -1,7 +1,7 @@
 #![forbid(unsafe_code)]
 //! Append-only reference ledger, anchors, replay, and bounded continuation pages.
 
-use crate::{ANCHOR_DOMAIN, EvidenceEvent, EventKind, LedgerError, MAX_PAGE_EVENTS};
+use crate::{ANCHOR_DOMAIN, EventKind, LedgerError, LedgerEvent, MAX_PAGE_EVENTS};
 use fdgr_codec::{Encoder, hash_domain};
 use fdgr_types::{DigestDomain, EvidenceDigest};
 use std::collections::BTreeSet;
@@ -76,7 +76,7 @@ pub struct EventPage {
     /// Exclusive sequence cursor supplied by the caller.
     pub after_sequence: Option<u64>,
     /// Events in canonical sequence order.
-    pub events: Vec<EvidenceEvent>,
+    pub events: Vec<LedgerEvent>,
     /// Exclusive sequence cursor for the next page, absent when complete.
     pub continuation_after: Option<u64>,
     /// Whether all events after the supplied cursor are present.
@@ -88,7 +88,7 @@ pub struct EventPage {
 pub struct ReferenceLedger {
     lineage: EvidenceDigest,
     epoch: u64,
-    events: Vec<EvidenceEvent>,
+    events: Vec<LedgerEvent>,
 }
 
 impl ReferenceLedger {
@@ -111,7 +111,7 @@ impl ReferenceLedger {
     pub fn replay(
         lineage: EvidenceDigest,
         epoch: u64,
-        events: Vec<EvidenceEvent>,
+        events: Vec<LedgerEvent>,
     ) -> Result<Self, LedgerError> {
         let ledger = Self {
             lineage,
@@ -145,7 +145,7 @@ impl ReferenceLedger {
         expected_anchor: &LedgerAnchor,
         kind: EventKind,
         payload_root: EvidenceDigest,
-    ) -> Result<EvidenceEvent, LedgerError> {
+    ) -> Result<LedgerEvent, LedgerError> {
         expected_anchor.validate()?;
         let observed_anchor = self.anchor()?;
         if expected_anchor != &observed_anchor {
@@ -159,7 +159,7 @@ impl ReferenceLedger {
         let sequence =
             u64::try_from(self.events.len()).map_err(|_| LedgerError::LengthOverflow)?;
         let previous = self.events.last().map(|event| event.event_id.clone());
-        let event = EvidenceEvent::create(
+        let event = LedgerEvent::create(
             self.lineage.clone(),
             self.epoch,
             sequence,
@@ -284,7 +284,7 @@ impl ReferenceLedger {
 
     /// Borrows events in canonical sequence order.
     #[must_use]
-    pub fn events(&self) -> &[EvidenceEvent] {
+    pub fn events(&self) -> &[LedgerEvent] {
         &self.events
     }
 }

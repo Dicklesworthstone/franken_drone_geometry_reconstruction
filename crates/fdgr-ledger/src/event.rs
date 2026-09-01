@@ -9,7 +9,7 @@ use fdgr_types::{DigestDomain, EvidenceDigest};
 
 /// Immutable append-only ledger event.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct EvidenceEvent {
+pub struct LedgerEvent {
     /// Stable lineage identity.
     pub lineage: EvidenceDigest,
     /// Observation epoch. Restore or ambiguous restart creates a successor epoch.
@@ -26,7 +26,7 @@ pub struct EvidenceEvent {
     pub event_id: EvidenceDigest,
 }
 
-impl EvidenceEvent {
+impl LedgerEvent {
     /// Creates and authenticates one event.
     ///
     /// # Errors
@@ -145,7 +145,7 @@ fn event_domain() -> Result<DigestDomain, LedgerError> {
     DigestDomain::parse(EVENT_DOMAIN).map_err(LedgerError::from)
 }
 
-fn encode_event_body(event: &EvidenceEvent, encoder: &mut Encoder) -> Result<(), LedgerError> {
+fn encode_event_body(event: &LedgerEvent, encoder: &mut Encoder) -> Result<(), LedgerError> {
     encoder.put_u16(EVENT_VERSION);
     encoder.put_digest(&event.lineage);
     encoder.put_u64(event.epoch);
@@ -159,7 +159,7 @@ fn encode_event_body(event: &EvidenceEvent, encoder: &mut Encoder) -> Result<(),
     Ok(())
 }
 
-fn compute_event_id(event: &EvidenceEvent) -> Result<EvidenceDigest, LedgerError> {
+fn compute_event_id(event: &LedgerEvent) -> Result<EvidenceDigest, LedgerError> {
     let mut encoder = Encoder::with_capacity(256);
     encode_event_body(event, &mut encoder)?;
     hash_domain(&event_domain()?, encoder.as_bytes()).map_err(LedgerError::from)
@@ -167,7 +167,7 @@ fn compute_event_id(event: &EvidenceEvent) -> Result<EvidenceDigest, LedgerError
 
 #[cfg(test)]
 mod tests {
-    use super::EvidenceEvent;
+    use super::LedgerEvent;
     use crate::EventKind;
     use fdgr_codec::hash_bytes;
 
@@ -176,7 +176,7 @@ mod tests {
         let kind = EventKind::parse("media_imported");
         assert!(kind.is_ok());
         if let Ok(kind) = kind {
-            let event = EvidenceEvent::create(
+            let event = LedgerEvent::create(
                 hash_bytes(b"lineage"),
                 3,
                 0,
@@ -190,7 +190,7 @@ mod tests {
                 assert!(encoded.is_ok());
                 if let Ok(encoded) = encoded {
                     assert!(matches!(
-                        EvidenceEvent::from_canonical_bytes(&encoded),
+                        LedgerEvent::from_canonical_bytes(&encoded),
                         Ok(ref decoded) if decoded == &event
                     ));
                 }
@@ -203,7 +203,7 @@ mod tests {
         let kind = EventKind::parse("bad_shape");
         assert!(kind.is_ok());
         if let Ok(kind) = kind {
-            assert!(EvidenceEvent::create(
+            assert!(LedgerEvent::create(
                 hash_bytes(b"lineage"),
                 0,
                 0,
@@ -212,7 +212,7 @@ mod tests {
                 hash_bytes(b"payload"),
             )
             .is_err());
-            assert!(EvidenceEvent::create(
+            assert!(LedgerEvent::create(
                 hash_bytes(b"lineage"),
                 0,
                 1,

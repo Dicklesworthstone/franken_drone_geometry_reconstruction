@@ -7,7 +7,7 @@ mod kind;
 mod ledger;
 
 pub use error::LedgerError;
-pub use event::EvidenceEvent;
+pub use event::LedgerEvent;
 pub use kind::{EventKind, EventKindError};
 pub use ledger::{EventPage, LedgerAnchor, ReferenceLedger};
 
