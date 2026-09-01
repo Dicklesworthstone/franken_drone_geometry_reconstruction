@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/object_manifest_view.v1.json",
+  "title": "FDGR Object Manifest View",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "object_length",
+    "chunk_size",
+    "object_digest",
+    "manifest_digest",
+    "chunk_count",
+    "chunk_offset",
+    "returned_chunks",
+    "omitted_before",
+    "omitted_after",
+    "complete",
+    "chunks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.object_manifest_view/1"
+    },
+    "object_length": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "chunk_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 67108864
+    },
+    "object_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "manifest_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "chunk_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "chunk_offset": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "returned_chunks": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4096
+    },
+    "omitted_before": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "omitted_after": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "chunks": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "#/$defs/chunk"
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "chunk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "offset",
+        "length",
+        "digest"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 67108864
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}
