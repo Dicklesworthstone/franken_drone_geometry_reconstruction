@@ -4,6 +4,7 @@
 //! This crate establishes filesystem semantics without claiming race-free hostile-path
 //! confinement. Production admission still requires the FrankenFS capability and fault gates.
 
+mod bytes;
 mod error;
 mod layout;
 mod store;
