@@ -1,0 +1,17 @@
+[package]
+name = "fdgr-source-file"
+description = "Authorized regular-file source adapter and evidence-ledger coordinator for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-ledger = { path = "../fdgr-ledger" }
+fdgr-object-store = { path = "../fdgr-object-store" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true

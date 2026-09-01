@@ -51,5 +51,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-source-file"
+version = "0.0.1"
+dependencies = [
+ "fdgr-ledger",
+ "fdgr-object-store",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-types"
 version = "0.0.1"
