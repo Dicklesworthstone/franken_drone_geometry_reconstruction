@@ -176,6 +176,12 @@ json_schema_id = "https://fdgr.dev/schemas/recorded_media_ingest.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-SCALE-MODEL"
+path = "schemas/scale_model.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/scale_model.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-SAMPLE-WINDOW"
 path = "schemas/sample_window.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/sample_window.v1.json"

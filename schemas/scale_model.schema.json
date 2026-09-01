@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/scale_model.v1.json",
+  "title": "FDGR scale witness resolution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "scale_digest",
+    "witness_basis_digest",
+    "geometry_root_digest",
+    "calibration_digest",
+    "scope_digest",
+    "model_generation",
+    "resolved",
+    "authority",
+    "candidate_scale_numerator_micrometers",
+    "candidate_scale_denominator_relative_nanounits",
+    "max_residual_ppm",
+    "min_independent_groups",
+    "min_witnessed_groups",
+    "min_surveyed_groups",
+    "median_residual_ppm",
+    "maximum_residual_ppm",
+    "scale_spread_ppm",
+    "declared_uncertainty_ppm",
+    "inlier_witness_ids",
+    "outlier_witness_ids",
+    "inlier_group_ids",
+    "conflicting_group_ids",
+    "witnesses",
+    "residuals"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.scale_model/1"},
+    "scale_digest": {"$ref": "#/$defs/digest"},
+    "witness_basis_digest": {"$ref": "#/$defs/digest"},
+    "geometry_root_digest": {"$ref": "#/$defs/digest"},
+    "calibration_digest": {"$ref": "#/$defs/digest"},
+    "scope_digest": {"$ref": "#/$defs/digest"},
+    "model_generation": {"type": "integer", "minimum": 1},
+    "resolved": {"type": "boolean"},
+    "authority": {"enum": ["relative_only", "estimated", "witnessed", "surveyed"]},
+    "candidate_scale_numerator_micrometers": {"$ref": "#/$defs/positive_i128"},
+    "candidate_scale_denominator_relative_nanounits": {"$ref": "#/$defs/positive_i128"},
+    "max_residual_ppm": {"type": "integer", "minimum": 1, "maximum": 10000000},
+    "min_independent_groups": {"type": "integer", "minimum": 2, "maximum": 65535},
+    "min_witnessed_groups": {"type": "integer", "minimum": 2, "maximum": 65535},
+    "min_surveyed_groups": {"type": "integer", "minimum": 2, "maximum": 65535},
+    "median_residual_ppm": {"type": "integer", "minimum": 0},
+    "maximum_residual_ppm": {"type": "integer", "minimum": 0},
+    "scale_spread_ppm": {"type": "integer", "minimum": 0},
+    "declared_uncertainty_ppm": {"type": "integer", "minimum": 0},
+    "inlier_witness_ids": {"$ref": "#/$defs/id_array"},
+    "outlier_witness_ids": {"$ref": "#/$defs/id_array"},
+    "inlier_group_ids": {"$ref": "#/$defs/group_array"},
+    "conflicting_group_ids": {"$ref": "#/$defs/group_array"},
+    "witnesses": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 256,
+      "items": {"$ref": "#/$defs/witness"}
+    },
+    "residuals": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 256,
+      "items": {"$ref": "#/$defs/residual"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"resolved": {"const": false}}},
+      "then": {"properties": {"authority": {"const": "relative_only"}}}
+    },
+    {
+      "if": {"properties": {"authority": {"enum": ["witnessed", "surveyed"]}}},
+      "then": {"properties": {"resolved": {"const": true}}}
+    }
+  ],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "positive_i128": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "id_array": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "group_array": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1, "maximum": 4294967295}
+    },
+    "witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "witness_id",
+        "evidence_digest",
+        "kind",
+        "metric_distance_micrometers",
+        "relative_distance_nanounits",
+        "uncertainty_micrometers",
+        "correlation_group"
+      ],
+      "properties": {
+        "witness_id": {"type": "integer", "minimum": 1},
+        "evidence_digest": {"$ref": "#/$defs/digest"},
+        "kind": {"enum": ["model_prior", "telemetry_baseline", "measured_baseline", "fiducial", "survey_control"]},
+        "metric_distance_micrometers": {"type": "integer", "minimum": 1, "maximum": 1000000000000000},
+        "relative_distance_nanounits": {"type": "integer", "minimum": 1, "maximum": 1000000000000000000},
+        "uncertainty_micrometers": {"type": "integer", "minimum": 0},
+        "correlation_group": {"type": "integer", "minimum": 1, "maximum": 4294967295}
+      }
+    },
+    "residual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["witness_id", "correlation_group", "residual_ppm", "inlier"],
+      "properties": {
+        "witness_id": {"type": "integer", "minimum": 1},
+        "correlation_group": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "residual_ppm": {"type": "integer", "minimum": 0},
+        "inlier": {"type": "boolean"}
+      }
+    }
+  }
+}
