@@ -1,4 +1,9 @@
-#![allow(clippy::cast_possible_truncation, clippy::indexing_slicing)]
+#![forbid(unsafe_code)]
+#![allow(
+    clippy::cast_lossless,
+    clippy::cast_possible_truncation,
+    clippy::indexing_slicing
+)]
 
 use super::{ParseLimits, inspect_iso_bmff};
 use crate::{FourCc, MediaError};
