@@ -128,12 +128,15 @@ statement = "Which cold-arrival, context-loss, uncertainty, error, and handoff s
 
 [[open_question]]
 id = "OPEN-026"
-question = "What Decision Frame density maximizes first-turn decision success across model context sizes without hiding meaningful alternatives?"
+name = "Decision Frame density"
+statement = "What Decision Frame density maximizes first-turn decision success across model context sizes without hiding meaningful alternatives?"
 
 [[open_question]]
 id = "OPEN-027"
-question = "Which visual, spoken, haptic, or controller-overlay pilot-card modalities minimize operator load for each admitted DJI profile?"
+name = "Pilot-card modality"
+statement = "Which visual, spoken, haptic, or controller-overlay pilot-card modalities minimize operator load for each admitted DJI profile?"
 
 [[open_question]]
 id = "OPEN-028"
-question = "How should epistemic-debt loss and question-sharing value be calibrated without allowing adaptive policy to suppress safety-critical uncertainty?"
+name = "Epistemic-debt calibration"
+statement = "How should epistemic-debt loss and question-sharing value be calibrated without allowing adaptive policy to suppress safety-critical uncertainty?"
