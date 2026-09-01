@@ -52,6 +52,7 @@ version = "0.0.1"
 name = "fdgr-media-custody"
 version = "0.0.1"
 dependencies = [
+ "fdgr-codec",
  "fdgr-evidence",
  "fdgr-media",
  "fdgr-object-store",
