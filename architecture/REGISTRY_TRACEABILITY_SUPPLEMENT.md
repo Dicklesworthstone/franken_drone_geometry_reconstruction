@@ -14,6 +14,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-MEDIA-DECODE-PLAN` | `registries/schemas.toml` | schemas/media_decode_plan.schema.json |
 | `SCHEMA-MEDIA-DECODE-RECEIPT` | `registries/schemas.toml` | schemas/media_decode_receipt.schema.json |
 | `SCHEMA-MEDIA-INSPECTION` | `registries/schemas.toml` | schemas/media_inspection.schema.json |
+| `SCHEMA-MEDIA-TIMELINE` | `registries/schemas.toml` | schemas/media_timeline.schema.json |
 | `SCHEMA-OBJECT-MANIFEST-VIEW` | `registries/schemas.toml` | schemas/object_manifest_view.schema.json |
 | `SCHEMA-RECORDED-MEDIA-INGEST` | `registries/schemas.toml` | schemas/recorded_media_ingest.schema.json |
 | `SCHEMA-SAMPLE-WINDOW` | `registries/schemas.toml` | schemas/sample_window.schema.json |

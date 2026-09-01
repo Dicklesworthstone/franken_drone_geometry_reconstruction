@@ -10,6 +10,7 @@ dependencies = [
  "fdgr-evidence",
  "fdgr-media",
  "fdgr-media-custody",
+ "fdgr-media-timeline",
  "fdgr-media-worker",
  "fdgr-object-store",
  "fdgr-recorded-media",

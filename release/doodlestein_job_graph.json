@@ -1,6 +1,6 @@
 {
   "schema": "fdgr.doodlestein_job_graph/1",
-  "revision": 4,
+  "revision": 5,
   "authority": "local_receipts_only",
   "hosted_github_actions_authority": false,
   "resumption_key": [
@@ -65,8 +65,18 @@
       "receipt_semantics": "diagnostic public-path evidence input proving root-last publication, independent replay, and corruption refusal; never standalone release authority"
     },
     {
+      "id": "recorded-media-timeline-e2e",
+      "needs": [
+        "rust-core"
+      ],
+      "command": "bash scripts/e2e/recorded_media_timeline.sh",
+      "host": "target-native",
+      "receipt_semantics": "exact-root deterministic timeline and partial-coverage evidence; never standalone release authority"
+    },
+    {
       "id": "agent-contract",
       "needs": [
+        "recorded-media-timeline-e2e",
         "rust-core"
       ],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_agent_contracts.py",

@@ -22,9 +22,9 @@ use std::collections::BTreeSet;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter, Write as _};
 
-include!("types.rs");
-include!("timeline_impl.rs");
-include!("build.rs");
-include!("helpers.rs");
-include!("error.rs");
-include!("tests.rs");
+include!("types.inc");
+include!("timeline_impl.inc");
+include!("build.inc");
+include!("helpers.inc");
+include!("error.inc");
+include!("tests.inc");

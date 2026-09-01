@@ -5,9 +5,74 @@
 use crate::args::OutputFormat;
 use crate::render::json_escape;
 use fdgr_media::{FourCc, IsoBmffSummary, MEDIA_INSPECTION_SCHEMA};
+use fdgr_media_timeline::{CanonicalSampleTimeline, MEDIA_TIMELINE_SCHEMA};
 use fdgr_recorded_media::{RECORDED_MEDIA_INGEST_SCHEMA, RecordedMediaIngestReceipt};
 use fdgr_recorded_media_verify::{VERIFIED_RECORDED_MEDIA_SCHEMA, VerifiedRecordedMedia};
 use std::fmt::Write as _;
+
+pub(crate) fn print_recorded_media_timeline(
+    timeline: &CanonicalSampleTimeline,
+    format: OutputFormat,
+) -> Result<(), String> {
+    match format {
+        OutputFormat::Text => {
+            let digest = timeline.digest().map_err(|error| error.to_string())?;
+            println!("schema\t{MEDIA_TIMELINE_SCHEMA}");
+            println!("timeline_digest\t{digest}");
+            println!(
+                "recorded_media_root_manifest_digest\t{}",
+                timeline.basis.recorded_media_root_manifest_digest
+            );
+            println!("source_manifest_digest\t{}", timeline.basis.source_manifest_digest);
+            println!("source_object_digest\t{}", timeline.basis.source_object_digest);
+            println!("source_object_length\t{}", timeline.basis.source_object_length);
+            println!("track_id\t{}", timeline.basis.track_id);
+            println!("timescale\t{}", timeline.basis.timescale);
+            println!("total_samples\t{}", timeline.total_samples);
+            println!("start_sample\t{}", timeline.start_sample);
+            println!("end_sample\t{}", timeline.end_sample);
+            println!("returned_samples\t{}", timeline.samples.len());
+            println!("reaches_track_end\t{}", timeline.reaches_track_end);
+            println!("covers_entire_track\t{}", timeline.covers_entire_track);
+            println!(
+                "prefix_unrepresented_samples\t{}",
+                timeline.prefix_unrepresented_samples
+            );
+            println!(
+                "suffix_unrepresented_samples\t{}",
+                timeline.suffix_unrepresented_samples
+            );
+            println!("gap_count\t{}", timeline.gaps.len());
+            println!("total_gap_duration\t{}", timeline.total_gap_duration);
+            println!("sync_sample_count\t{}", timeline.sync_sample_count);
+            println!(
+                "source_byte_order_reordered\t{}",
+                timeline.source_byte_order_reordered
+            );
+            println!("presentation_reordered\t{}", timeline.presentation_reordered);
+            for sample in &timeline.samples {
+                println!(
+                    "sample\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+                    sample.sample_index,
+                    sample.decode_time,
+                    sample.presentation_time,
+                    sample.composition_offset,
+                    sample.duration,
+                    sample.byte_offset,
+                    sample.byte_length,
+                    sample.is_sync,
+                    sample.sample_description_index,
+                    sample.decode_end,
+                );
+            }
+            Ok(())
+        }
+        OutputFormat::Json => {
+            println!("{}", timeline.to_json().map_err(|error| error.to_string())?);
+            Ok(())
+        }
+    }
+}
 
 pub(crate) fn print_recorded_media_ingest(
     receipt: &RecordedMediaIngestReceipt,

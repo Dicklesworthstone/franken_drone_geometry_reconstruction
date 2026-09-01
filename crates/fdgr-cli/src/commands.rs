@@ -7,8 +7,12 @@ use crate::args::{
 };
 use crate::decode_args::parse_media_decode_plan;
 use crate::decode_render::print_media_decode_plan;
-use crate::recorded_args::{parse_recorded_media_ingest, parse_recorded_media_verify};
-use crate::recorded_render::{print_recorded_media_ingest, print_verified_recorded_media};
+use crate::recorded_args::{
+    parse_recorded_media_ingest, parse_recorded_media_timeline, parse_recorded_media_verify,
+};
+use crate::recorded_render::{
+    print_recorded_media_ingest, print_recorded_media_timeline, print_verified_recorded_media,
+};
 use crate::render::{
     json_escape, print_capabilities, print_doctor, print_file_verification, print_help,
     print_import_receipt, print_manifest, print_media_inspection, print_plan_summary,
@@ -21,6 +25,7 @@ use fdgr_core::{VALIDATE_ID_SCHEMA, VERSION};
 use fdgr_evidence::build_file_manifest;
 use fdgr_media::{FourCc, inspect_iso_bmff_file, read_classic_sample_window_file};
 use fdgr_media_custody::{inspect_published_media, read_published_sample_window};
+use fdgr_media_timeline::{TimelineBasis, build_sample_timeline};
 use fdgr_media_worker::{MediaDecodePlan, MediaDecodePlanInput};
 use fdgr_object_store::LocalObjectStore;
 use fdgr_recorded_media::ingest_recorded_media;
@@ -41,6 +46,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
         "media-inspect" => media_inspect(rest),
         "media-samples" => media_samples(rest),
         "recorded-media-ingest" => recorded_media_ingest(rest),
+        "recorded-media-timeline" => recorded_media_timeline(rest),
         "recorded-media-verify" => recorded_media_verify(rest),
         "stored-media-inspect" => stored_media_inspect(rest),
         "stored-media-samples" => stored_media_samples(rest),
@@ -70,6 +76,9 @@ fn print_complete_help() {
     );
     println!(
         "  fdgr recorded-media-ingest <store-root> <source-path> [--source-chunk-size bytes] [--derived-chunk-size bytes] [bounded parser options] [--format text|json]"
+    );
+    println!(
+        "  fdgr recorded-media-timeline <store-root> <root-manifest-digest> --track-id <id> [--start-sample n] [--sample-limit n] [--max-window-records n] [--max-index-entries-scanned n] [bounded parser options] [--format text|json]"
     );
     println!(
         "  fdgr recorded-media-verify <store-root> <root-manifest-digest> [--format text|json]"
@@ -225,6 +234,47 @@ fn recorded_media_ingest(arguments: &[String]) -> Result<(), String> {
         )
     })?;
     print_recorded_media_ingest(&receipt, &verified, options.format)
+}
+
+fn recorded_media_timeline(arguments: &[String]) -> Result<(), String> {
+    let options = parse_recorded_media_timeline(arguments)?;
+    let store = LocalObjectStore::open(&options.store_root)
+        .map_err(|error| format!("store open failed: {error}"))?;
+    let verified = verify_recorded_media_root(&store, &options.root_manifest_digest)
+        .map_err(|error| format!("recorded-media verification failed: {error}"))?;
+    let source = read_published_sample_window(
+        &store,
+        &verified.root.source_manifest_digest,
+        options.request,
+        options.parse_limits,
+        options.window_limits,
+    )
+    .map_err(|error| format!("recorded-media timeline source refused: {error}"))?;
+    if source.manifest.manifest_digest != verified.root.source_manifest_digest
+        || source.manifest.object_digest != verified.root.source_object_digest
+        || source.manifest.object_length != verified.root.source_object_length
+    {
+        return Err("recorded-media timeline source identity drifted after root verification".to_owned());
+    }
+    if source.summary != verified.inspection.summary {
+        return Err(
+            "recorded-media timeline reinspection disagrees with the published inspection artifact"
+                .to_owned(),
+        );
+    }
+    let timeline = build_sample_timeline(
+        TimelineBasis {
+            recorded_media_root_manifest_digest: options.root_manifest_digest,
+            source_manifest_digest: source.manifest.manifest_digest.clone(),
+            source_object_digest: source.manifest.object_digest.clone(),
+            source_object_length: source.manifest.object_length,
+            track_id: source.window.track_id,
+            timescale: source.window.timescale,
+        },
+        &source.window,
+    )
+    .map_err(|error| format!("recorded-media timeline rejected: {error}"))?;
+    print_recorded_media_timeline(&timeline, options.format)
 }
 
 fn recorded_media_verify(arguments: &[String]) -> Result<(), String> {

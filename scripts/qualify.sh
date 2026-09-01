@@ -88,6 +88,9 @@ step 'Running workspace tests'
 step 'Running recorded-media public-path ingest and verification'
 CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
   bash scripts/e2e/recorded_media_ingest_and_verify.sh
+step 'Running custody-bound recorded-media timeline replay'
+CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
+  bash scripts/e2e/recorded_media_timeline.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then

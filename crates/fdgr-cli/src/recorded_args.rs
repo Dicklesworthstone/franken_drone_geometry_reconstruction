@@ -2,12 +2,15 @@
 //! CLI arguments for complete recorded-media publication and independent verification.
 
 use crate::args::OutputFormat;
-use fdgr_media::ParseLimits;
+use fdgr_media::{ParseLimits, SampleWindowLimits, SampleWindowRequest};
+use fdgr_media_timeline::MAX_TIMELINE_SAMPLES;
 use fdgr_recorded_media::{
     DEFAULT_DERIVED_CHUNK_SIZE, DEFAULT_SOURCE_CHUNK_SIZE, RecordedMediaIngestOptions,
 };
 use fdgr_types::EvidenceDigest;
 use std::path::PathBuf;
+
+const DEFAULT_TIMELINE_SAMPLE_LIMIT: usize = 512;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct RecordedMediaIngestCliOptions {
@@ -21,6 +24,16 @@ pub(crate) struct RecordedMediaIngestCliOptions {
 pub(crate) struct RecordedMediaVerifyCliOptions {
     pub(crate) store_root: PathBuf,
     pub(crate) root_manifest_digest: EvidenceDigest,
+    pub(crate) format: OutputFormat,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct RecordedMediaTimelineCliOptions {
+    pub(crate) store_root: PathBuf,
+    pub(crate) root_manifest_digest: EvidenceDigest,
+    pub(crate) request: SampleWindowRequest,
+    pub(crate) parse_limits: ParseLimits,
+    pub(crate) window_limits: SampleWindowLimits,
     pub(crate) format: OutputFormat,
 }
 
@@ -81,6 +94,73 @@ pub(crate) fn parse_recorded_media_verify(
     Ok(RecordedMediaVerifyCliOptions {
         store_root: PathBuf::from(store_root),
         root_manifest_digest,
+        format,
+    })
+}
+
+pub(crate) fn parse_recorded_media_timeline(
+    arguments: &[String],
+) -> Result<RecordedMediaTimelineCliOptions, String> {
+    let mut arguments = arguments.iter();
+    let usage = "usage: fdgr recorded-media-timeline <store-root> <root-manifest-digest> --track-id n [--start-sample n] [--sample-limit n] [--max-window-records n] [--max-index-entries-scanned n] [bounded parser options] [--format text|json]";
+    let store_root = arguments.next().ok_or_else(|| usage.to_owned())?;
+    let root_manifest_digest = arguments.next().ok_or_else(|| usage.to_owned())?;
+    let root_manifest_digest =
+        EvidenceDigest::parse(root_manifest_digest).map_err(|error| error.to_string())?;
+    let mut track_id = None;
+    let mut start_sample = 0_u64;
+    let mut sample_limit = DEFAULT_TIMELINE_SAMPLE_LIMIT;
+    let mut parse_limits = ParseLimits::default();
+    let mut window_limits = SampleWindowLimits::default();
+    let mut format = OutputFormat::Text;
+    while let Some(flag) = arguments.next() {
+        let value = next_value(&mut arguments, flag)?;
+        if set_parse_limit(&mut parse_limits, flag, value)? {
+            continue;
+        }
+        match flag.as_str() {
+            "--track-id" => track_id = Some(parse_nonzero_u32(value, "track id")?),
+            "--start-sample" => start_sample = parse_u64(value, "start sample")?,
+            "--sample-limit" => sample_limit = parse_usize(value, "sample limit")?,
+            "--max-window-records" => {
+                window_limits.max_records = parse_usize(value, "maximum window records")?;
+            }
+            "--max-index-entries-scanned" => {
+                window_limits.max_index_entries_scanned =
+                    parse_u64(value, "maximum index entries scanned")?;
+            }
+            "--format" => format = parse_format(value)?,
+            _ => return Err(format!("unknown recorded-media-timeline option {flag:?}")),
+        }
+    }
+    if sample_limit == 0 {
+        return Err("sample limit must be nonzero".to_owned());
+    }
+    if window_limits.max_records == 0 {
+        return Err("maximum window records must be nonzero".to_owned());
+    }
+    if sample_limit > window_limits.max_records {
+        return Err(format!(
+            "sample limit {sample_limit} exceeds maximum window records {}",
+            window_limits.max_records
+        ));
+    }
+    if window_limits.max_index_entries_scanned == 0 {
+        return Err("maximum index entries scanned must be nonzero".to_owned());
+    }
+    if sample_limit > MAX_TIMELINE_SAMPLES {
+        return Err("sample limit exceeds the canonical timeline hard ceiling".to_owned());
+    }
+    Ok(RecordedMediaTimelineCliOptions {
+        store_root: PathBuf::from(store_root),
+        root_manifest_digest,
+        request: SampleWindowRequest {
+            track_id: track_id.ok_or_else(|| "missing --track-id".to_owned())?,
+            start_sample,
+            max_samples: sample_limit,
+        },
+        parse_limits,
+        window_limits,
         format,
     })
 }
@@ -155,7 +235,10 @@ fn parse_usize(value: &str, label: &str) -> Result<usize, String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{parse_recorded_media_ingest, parse_recorded_media_verify};
+    use super::{
+        parse_recorded_media_ingest, parse_recorded_media_timeline,
+        parse_recorded_media_verify,
+    };
     use crate::args::OutputFormat;
 
     const DIGEST: &str =
@@ -224,5 +307,38 @@ mod tests {
         ));
         let invalid = vec!["store".to_owned(), "not-a-digest".to_owned()];
         assert!(parse_recorded_media_verify(&invalid).is_err());
+    }
+
+    #[test]
+    fn timeline_parser_requires_identity_track_and_explicit_bounds() {
+        let arguments = vec![
+            "store".to_owned(),
+            DIGEST.to_owned(),
+            "--track-id".to_owned(),
+            "7".to_owned(),
+            "--start-sample".to_owned(),
+            "2".to_owned(),
+            "--sample-limit".to_owned(),
+            "3".to_owned(),
+            "--max-window-records".to_owned(),
+            "4".to_owned(),
+            "--max-index-entries-scanned".to_owned(),
+            "99".to_owned(),
+            "--format".to_owned(),
+            "json".to_owned(),
+        ];
+        assert!(matches!(
+            parse_recorded_media_timeline(&arguments),
+            Ok(ref value)
+                if value.root_manifest_digest.as_str() == DIGEST
+                    && value.request.track_id == 7
+                    && value.request.start_sample == 2
+                    && value.request.max_samples == 3
+                    && value.window_limits.max_records == 4
+                    && value.window_limits.max_index_entries_scanned == 99
+                    && value.format == OutputFormat::Json
+        ));
+        let missing_track = vec!["store".to_owned(), DIGEST.to_owned()];
+        assert!(parse_recorded_media_timeline(&missing_track).is_err());
     }
 }

@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/media_timeline.v1.json",
+  "title": "FDGR custody-bound canonical media timeline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "timeline_digest",
+    "recorded_media_root_manifest_digest",
+    "source_manifest_digest",
+    "source_object_digest",
+    "source_object_length",
+    "track_id",
+    "timescale",
+    "total_samples",
+    "start_sample",
+    "end_sample",
+    "requested_max_samples",
+    "returned_samples",
+    "reaches_track_end",
+    "covers_entire_track",
+    "prefix_unrepresented_samples",
+    "suffix_unrepresented_samples",
+    "index_entries_scanned",
+    "total_gap_duration",
+    "sync_sample_count",
+    "source_byte_order_reordered",
+    "presentation_reordered",
+    "has_negative_presentation_time",
+    "decode_start",
+    "decode_end",
+    "presentation_start_ticks",
+    "presentation_end_ticks",
+    "sample_description_indices",
+    "gaps",
+    "samples"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.media_timeline/1"
+    },
+    "timeline_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "recorded_media_root_manifest_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "source_manifest_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "source_object_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "source_object_length": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "track_id": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4294967295
+    },
+    "timescale": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4294967295
+    },
+    "total_samples": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "start_sample": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "end_sample": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requested_max_samples": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000,
+      "description": "Diagnostic request ceiling; excluded from the semantic timeline digest."
+    },
+    "returned_samples": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "reaches_track_end": {
+      "type": "boolean"
+    },
+    "covers_entire_track": {
+      "type": "boolean"
+    },
+    "prefix_unrepresented_samples": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "suffix_unrepresented_samples": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "index_entries_scanned": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Diagnostic source-index work count; excluded from the semantic timeline digest."
+    },
+    "total_gap_duration": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sync_sample_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source_byte_order_reordered": {
+      "type": "boolean"
+    },
+    "presentation_reordered": {
+      "type": "boolean"
+    },
+    "has_negative_presentation_time": {
+      "type": "boolean"
+    },
+    "decode_start": {
+      "$ref": "#/$defs/optional_u64"
+    },
+    "decode_end": {
+      "$ref": "#/$defs/optional_u64"
+    },
+    "presentation_start_ticks": {
+      "$ref": "#/$defs/optional_i128_string"
+    },
+    "presentation_end_ticks": {
+      "$ref": "#/$defs/optional_i128_string"
+    },
+    "sample_description_indices": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 4294967295
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "maxItems": 999999,
+      "items": {
+        "$ref": "#/$defs/gap"
+      }
+    },
+    "samples": {
+      "type": "array",
+      "maxItems": 1000000,
+      "items": {
+        "$ref": "#/$defs/sample"
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "optional_u64": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "i128_string": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)$",
+      "maxLength": 40
+    },
+    "optional_i128_string": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/i128_string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "after_sample_index",
+        "before_sample_index",
+        "start_decode_time",
+        "end_decode_time",
+        "duration"
+      ],
+      "properties": {
+        "after_sample_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "before_sample_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start_decode_time": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_decode_time": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_index",
+        "decode_time",
+        "presentation_time_ticks",
+        "composition_offset_ticks",
+        "duration",
+        "decode_end",
+        "presentation_end_ticks",
+        "byte_offset",
+        "byte_end",
+        "byte_length",
+        "is_sync",
+        "sample_description_index"
+      ],
+      "properties": {
+        "sample_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decode_time": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "presentation_time_ticks": {
+          "$ref": "#/$defs/i128_string"
+        },
+        "composition_offset_ticks": {
+          "$ref": "#/$defs/i128_string"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "decode_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "presentation_end_ticks": {
+          "$ref": "#/$defs/i128_string"
+        },
+        "byte_offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "is_sync": {
+          "type": "boolean"
+        },
+        "sample_description_index": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        }
+      }
+    }
+  }
+}
