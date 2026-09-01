@@ -1,6 +1,6 @@
 {
   "schema": "fdgr.doodlestein_job_graph/1",
-  "revision": 2,
+  "revision": 3,
   "authority": "local_receipts_only",
   "hosted_github_actions_authority": false,
   "resumption_key": [
@@ -15,30 +15,42 @@
     {
       "id": "repo-policy",
       "needs": [],
-      "command": "python3 scripts/validate_repo.py",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_repo.py",
       "host": "any-local"
+    },
+    {
+      "id": "registry-contracts",
+      "needs": [
+        "repo-policy"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_registry_contracts.py",
+      "host": "any-local",
+      "receipt_semantics": "immutable mutation-suite evidence input; never standalone release authority"
     },
     {
       "id": "dependency-policy",
       "needs": [
-        "repo-policy"
+        "repo-policy",
+        "registry-contracts"
       ],
-      "command": "python3 scripts/check_dependency_policy.py",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_dependency_policy.py",
       "host": "any-local"
     },
     {
       "id": "generated-contracts",
       "needs": [
-        "repo-policy"
+        "repo-policy",
+        "registry-contracts"
       ],
-      "command": "python3 scripts/generate_traceability.py --check && python3 scripts/export_beads_bootstrap.py --output .beads/bootstrap.jsonl --check",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/generate_traceability.py --check && PYTHONDONTWRITEBYTECODE=1 python3 scripts/export_beads_bootstrap.py --output .beads/bootstrap.jsonl --check",
       "host": "any-local"
     },
     {
       "id": "rust-core",
       "needs": [
         "dependency-policy",
-        "generated-contracts"
+        "generated-contracts",
+        "registry-contracts"
       ],
       "command": "cargo fmt --all --check && cargo check --workspace --all-targets --locked && cargo clippy --workspace --all-targets --locked -- -D warnings && cargo test --workspace --all-targets --locked",
       "host": "target-native"
@@ -48,7 +60,7 @@
       "needs": [
         "rust-core"
       ],
-      "command": "python3 scripts/validate_agent_contracts.py",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_agent_contracts.py",
       "host": "target-native"
     },
     {
@@ -64,10 +76,10 @@
       "needs": [
         "agent-scenarios"
       ],
-      "command": "python3 scripts/emit_local_qualification_receipt.py --out qualification/fdgr-local-qualification.json",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/emit_local_qualification_receipt.py --out qualification/fdgr-local-qualification.json",
       "host": "release-coordinator",
       "receipt_semantics": "identity_seal_after_successful_predecessor_receipts; not standalone qualification proof"
     }
   ],
-  "promotion_rule": "No partial job graph or hosted badge may publish a release root."
+  "promotion_rule": "No partial job graph, mutation-suite receipt, or hosted badge may publish a release root."
 }
