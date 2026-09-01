@@ -21,9 +21,17 @@ Anchor-pinned projections support:
 - PageRank, HITS, PPR, centrality, spectral diagnostics;
 - graph edit/difference and branch merge witnesses;
 - treewidth/elimination heuristics;
+- exact geometric and visibility graphs over declared coordinate frames;
 - submodular/set-cover/orienteering algorithms for active perception and context selection.
 
 Uses include pose connectivity, fragile topology, room/portal inference, utility relations, visibility, capture routing, question sharing, provenance, obligation critical paths, and multi-agent conflicts.
+
+The machine registry carries all 22 source semantic families through explicit
+`source_family_ordinal` values. Published identities are not inferred from that order:
+`GALG-020` remains temporal graphs, `GALG-021` remains submodular selection, and
+`GALG-022` names geometric and visibility graphs. Optimized `franken_networkx` transfers remain
+unadmitted until `GATE-015` plus package-local differential, adversarial, complexity-witness,
+snapshot, cancellation, and local-qualification evidence pass.
 
 ## 3. Progressive algorithms
 
