@@ -114,3 +114,15 @@ id = "SCHEMA-ANCHOR-VECTOR"
 path = "schemas/anchor_vector.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/anchor_vector.v1.json"
 status = "normative_target"
+
+[[public_schema]]
+id = "SCHEMA-FILE-VERIFICATION"
+path = "schemas/file_verification.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/file_verification.v1.json"
+status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-OBJECT-MANIFEST-VIEW"
+path = "schemas/object_manifest_view.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/object_manifest_view.v1.json"
+status = "reference_source"
