@@ -4,9 +4,13 @@
 use std::process::Command;
 
 /// Stable schema identifier for the current capability document.
-pub const CAPABILITIES_SCHEMA: &str = "fdgr.capabilities.v1";
+pub const CAPABILITIES_SCHEMA: &str = "fdgr.capabilities/1";
 /// Stable schema identifier for doctor output.
-pub const DOCTOR_SCHEMA: &str = "fdgr.doctor.v1";
+pub const DOCTOR_SCHEMA: &str = "fdgr.doctor/1";
+/// Stable schema identifier for the implementation-plan summary.
+pub const PLAN_SUMMARY_SCHEMA: &str = "fdgr.plan_summary/1";
+/// Stable schema identifier for digest-validation output.
+pub const VALIDATE_ID_SCHEMA: &str = "fdgr.validate_id/1";
 /// Current package version.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -195,8 +199,25 @@ pub fn implementation_sequence() -> &'static [&'static str] {
 
 #[cfg(test)]
 mod tests {
-    use super::{CapabilityStatus, capabilities, implementation_sequence};
+    use super::{
+        CAPABILITIES_SCHEMA, CapabilityStatus, DOCTOR_SCHEMA, PLAN_SUMMARY_SCHEMA,
+        VALIDATE_ID_SCHEMA, capabilities, implementation_sequence,
+    };
     use std::collections::BTreeSet;
+
+    #[test]
+    fn public_schema_ids_use_canonical_slash_versions() {
+        for schema in [
+            CAPABILITIES_SCHEMA,
+            DOCTOR_SCHEMA,
+            PLAN_SUMMARY_SCHEMA,
+            VALIDATE_ID_SCHEMA,
+        ] {
+            assert!(schema.starts_with("fdgr."));
+            assert!(schema.ends_with("/1"));
+            assert!(!schema.contains(".v1"));
+        }
+    }
 
     #[test]
     fn capability_ids_are_unique_and_ordered() {
