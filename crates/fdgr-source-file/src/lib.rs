@@ -1,6 +1,10 @@
 #![forbid(unsafe_code)]
 //! Authorized regular-file source adapter and evidence-ledger coordinator.
 //!
+//! This layer records that exact file bytes and a specific chunk representation were published.
+//! It does not claim a distinct media-acquisition occurrence, capture session, device source, or
+//! acquisition metadata. Those require the later original-media capsule contract.
+//!
 //! Exact bytes are published before their ledger event. If the append basis becomes stale after
 //! storage, the adapter reports `StoredAwaitingLedger` and preserves both the durable evidence and
 //! the current anchor needed for reconciliation. It never pretends filesystem publication rolled
@@ -12,8 +16,8 @@ use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 use std::path::Path;
 
-/// Canonical semantic event kind for a published original-file representation.
-pub const ORIGINAL_MEDIA_IMPORTED_KIND: &str = "original_media_imported";
+/// Canonical semantic event kind for a published file representation.
+pub const SOURCE_FILE_PUBLISHED_KIND: &str = "source_file_published";
 
 /// Immutable result of publishing exact source bytes, before ledger append.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -27,7 +31,7 @@ pub struct StoredSourceFile {
 pub enum SourceFileImportStatus {
     /// Evidence is published and a new ledger event was appended.
     Completed,
-    /// Evidence and the same semantic event were already present.
+    /// Evidence and the same semantic publication event were already present.
     AlreadyRecorded,
     /// Evidence is published, but the supplied ledger basis is stale.
     StoredAwaitingLedger,
@@ -52,7 +56,7 @@ pub struct SourceFileImportOutcome {
     pub status: SourceFileImportStatus,
     /// Durable evidence publication receipt.
     pub storage: ImportReceipt,
-    /// New or existing event when the ledger already records the import.
+    /// New or existing event when the ledger already records the publication.
     pub event: Option<LedgerEvent>,
     /// Exact current ledger anchor after the attempt.
     pub anchor: LedgerAnchor,
@@ -63,7 +67,7 @@ pub struct SourceFileImportOutcome {
 /// # Errors
 ///
 /// Returns a typed store/source/manifest/publication error.
-pub fn store_original_file(
+pub fn store_source_file(
     store: &mut LocalObjectStore,
     source: impl AsRef<Path>,
     chunk_size: u32,
@@ -74,19 +78,20 @@ pub fn store_original_file(
 
 /// Records previously stored evidence against an optimistic ledger anchor.
 ///
-/// If the same event already exists, this is an idempotent success independent of the supplied
-/// anchor. If the event is new and the supplied anchor is stale, durable evidence remains visible
-/// and the result is `StoredAwaitingLedger` rather than an error or blind retry.
+/// If the same representation-publication event already exists, this is an idempotent success
+/// independent of the supplied anchor. This deliberately deduplicates storage publication, not
+/// acquisition occurrences. If the event is new and the supplied anchor is stale, durable evidence
+/// remains visible and the result is `StoredAwaitingLedger` rather than an error or blind retry.
 ///
 /// # Errors
 ///
 /// Returns a typed event-kind, anchor-validation, or ledger-identity error.
-pub fn record_stored_original(
+pub fn record_stored_source(
     ledger: &mut ReferenceLedger,
     expected_anchor: &LedgerAnchor,
     stored: &StoredSourceFile,
 ) -> Result<SourceFileImportOutcome, SourceFileError> {
-    let kind = EventKind::parse(ORIGINAL_MEDIA_IMPORTED_KIND).map_err(LedgerError::from)?;
+    let kind = EventKind::parse(SOURCE_FILE_PUBLISHED_KIND).map_err(LedgerError::from)?;
     if let Some(existing) = ledger.events().iter().find(|event| {
         event.kind == kind && event.payload_root == stored.receipt.manifest_digest
     }) {
@@ -122,7 +127,8 @@ pub fn record_stored_original(
     })
 }
 
-/// Performs the reference end-to-end file import when the append basis is current at entry.
+/// Performs the reference end-to-end file-publication step when the append basis is current at
+/// entry.
 ///
 /// This convenience path checks the ledger basis before filesystem work, then stores and records.
 /// More concurrent implementations must preserve the same `StoredAwaitingLedger` outcome if the
@@ -131,7 +137,7 @@ pub fn record_stored_original(
 /// # Errors
 ///
 /// Returns a typed stale-entry, store, event-kind, or ledger error.
-pub fn import_original_file(
+pub fn import_source_file(
     store: &mut LocalObjectStore,
     ledger: &mut ReferenceLedger,
     expected_anchor: &LedgerAnchor,
@@ -148,8 +154,8 @@ pub fn import_original_file(
             observed_count: current.event_count,
         }));
     }
-    let stored = store_original_file(store, source, chunk_size)?;
-    record_stored_original(ledger, expected_anchor, &stored)
+    let stored = store_source_file(store, source, chunk_size)?;
+    record_stored_source(ledger, expected_anchor, &stored)
 }
 
 /// Stable file-source adapter failures.
@@ -194,8 +200,8 @@ impl From<LedgerError> for SourceFileError {
 #[cfg(all(test, unix))]
 mod tests {
     use super::{
-        SourceFileImportStatus, import_original_file, record_stored_original,
-        store_original_file,
+        SOURCE_FILE_PUBLISHED_KIND, SourceFileImportStatus, import_source_file,
+        record_stored_source, store_source_file,
     };
     use fdgr_codec::hash_bytes;
     use fdgr_ledger::{EventKind, ReferenceLedger};
@@ -219,7 +225,7 @@ mod tests {
         if fs::create_dir_all(&root).is_err() {
             return None;
         }
-        let source = root.join("source.mp4");
+        let source = root.join("source.bin");
         if fs::write(&source, bytes).is_err() {
             return None;
         }
@@ -228,7 +234,7 @@ mod tests {
 
     #[test]
     fn import_publishes_evidence_then_records_manifest_root() {
-        let prepared = prepare("complete", b"synthetic original media");
+        let prepared = prepare("complete", b"synthetic source bytes");
         assert!(prepared.is_some());
         if let Some((root, source)) = prepared {
             let store = LocalObjectStore::open(root.join("store"));
@@ -238,7 +244,7 @@ mod tests {
                 let anchor = ledger.anchor();
                 assert!(anchor.is_ok());
                 if let Ok(anchor) = anchor {
-                    let outcome = import_original_file(
+                    let outcome = import_source_file(
                         &mut store,
                         &mut ledger,
                         &anchor,
@@ -254,6 +260,7 @@ mod tests {
                                     value.event.as_ref(),
                                     Some(event)
                                         if event.payload_root == value.storage.manifest_digest
+                                            && event.kind.as_str() == SOURCE_FILE_PUBLISHED_KIND
                                 )
                     ));
                     if let Ok(outcome) = outcome {
@@ -277,7 +284,7 @@ mod tests {
             if let Ok(mut store) = store {
                 let mut ledger = ReferenceLedger::new(hash_bytes(b"capture-lineage"), 0);
                 let stale = ledger.anchor();
-                let stored = store_original_file(&mut store, &source, 5);
+                let stored = store_source_file(&mut store, &source, 5);
                 assert!(stale.is_ok());
                 assert!(stored.is_ok());
                 if let (Ok(stale), Ok(stored)) = (stale, stored) {
@@ -288,7 +295,7 @@ mod tests {
                     if let (Ok(current), Ok(kind)) = (current, kind) {
                         assert!(ledger.append(&current, kind, hash_bytes(b"other")).is_ok());
                     }
-                    let outcome = record_stored_original(&mut ledger, &stale, &stored);
+                    let outcome = record_stored_source(&mut ledger, &stale, &stored);
                     assert!(matches!(
                         outcome,
                         Ok(ref value)
@@ -300,7 +307,7 @@ mod tests {
                     assert!(fresh.is_ok());
                     if let Ok(fresh) = fresh {
                         assert!(matches!(
-                            record_stored_original(&mut ledger, &fresh, &stored),
+                            record_stored_source(&mut ledger, &fresh, &stored),
                             Ok(ref value)
                                 if value.status == SourceFileImportStatus::Completed
                                     && value.anchor.event_count == 2
@@ -324,7 +331,7 @@ mod tests {
                 let first_anchor = ledger.anchor();
                 assert!(first_anchor.is_ok());
                 if let Ok(first_anchor) = first_anchor {
-                    assert!(import_original_file(
+                    assert!(import_source_file(
                         &mut store,
                         &mut ledger,
                         &first_anchor,
@@ -333,13 +340,13 @@ mod tests {
                     )
                     .is_ok());
                 }
-                let stored = store_original_file(&mut store, &source, 4);
+                let stored = store_source_file(&mut store, &source, 4);
                 let current = ledger.anchor();
                 assert!(stored.is_ok());
                 assert!(current.is_ok());
                 if let (Ok(stored), Ok(current)) = (stored, current) {
                     assert!(matches!(
-                        record_stored_original(&mut ledger, &current, &stored),
+                        record_stored_source(&mut ledger, &current, &stored),
                         Ok(ref value)
                             if value.status == SourceFileImportStatus::AlreadyRecorded
                                 && value.anchor.event_count == 1
