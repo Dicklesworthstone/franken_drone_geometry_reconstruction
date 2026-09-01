@@ -7,9 +7,11 @@
 mod error;
 mod layout;
 mod store;
+mod verified;
 
 pub use error::ObjectStoreError;
 pub use store::{ImportReceipt, LocalObjectStore, StoreEntryStatus};
+pub use verified::VerifiedObject;
 
 /// Public schema identity for successful local import receipts.
 pub const IMPORT_RECEIPT_SCHEMA: &str = "fdgr.local_import_receipt/1";
