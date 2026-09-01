@@ -1,0 +1,17 @@
+[package]
+name = "fdgr-media-timeline"
+description = "Canonical custody-bound sample timeline reference for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-media = { path = "../fdgr-media" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true
