@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "crates/fdgr-types",
+    "crates/fdgr-codec",
     "crates/fdgr-core",
     "crates/fdgr-cli",
 ]

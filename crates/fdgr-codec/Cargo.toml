@@ -1,0 +1,15 @@
+[package]
+name = "fdgr-codec"
+description = "Dependency-free canonical encoding and SHA-256 identities for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true

@@ -11,6 +11,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-codec"
+version = "0.0.1"
+dependencies = [
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-core"
 version = "0.0.1"
 dependencies = [
