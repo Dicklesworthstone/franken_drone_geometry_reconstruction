@@ -83,8 +83,8 @@ pub fn capabilities() -> &'static [Capability] {
         },
         Capability {
             id: "capture.original.import",
-            description: "ingest exact original drone media and metadata into immutable evidence",
-            status: CapabilityStatus::Planned,
+            description: "preserve exact original media bytes in immutable local custody before any derived work",
+            status: CapabilityStatus::ReferenceSource,
         },
         Capability {
             id: "evidence.ledger.append",
@@ -117,6 +117,16 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::Planned,
         },
         Capability {
+            id: "media.decode.plan",
+            description: "compile authority-free bounded decode plans against independently verified recorded-media roots and exact video sample domains",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "media.decode.receipt.validate",
+            description: "validate identity-bound framehash evidence, termination, resource use, output-root publication, and semantic completion without treating process exit as success",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "media.index.classic_samples",
             description: "expand bounded exact classic sample windows with timing and byte-range evidence",
             status: CapabilityStatus::ReferenceSource,
@@ -140,6 +150,16 @@ pub fn capabilities() -> &'static [Capability] {
             id: "media.normalize",
             description: "supervise ffmpeg/ffprobe sidecars and publish deterministic media renditions",
             status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "media.recorded.ingest",
+            description: "publish original media, native inspection, and a root-last recorded-media graph, then independently verify its complete closure",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "media.recorded.verify",
+            description: "reconstruct and authenticate a recorded-media graph from only its published root manifest identity",
+            status: CapabilityStatus::ReferenceSource,
         },
         Capability {
             id: "repository.doctor",
@@ -193,7 +213,7 @@ pub fn doctor() -> Vec<DoctorFinding> {
             "tool.ffmpeg",
             "ffmpeg",
             &["-version"],
-            "ffmpeg is available",
+            "ffmpeg is available, but FDGR process supervision and profile admission remain separate gates",
             "ffmpeg was not found; external decode and media normalization remain unavailable",
         ),
         executable_check(
@@ -304,15 +324,20 @@ mod tests {
     #[test]
     fn reference_capabilities_remain_explicit() {
         for id in [
+            "capture.original.import",
             "evidence.ledger.append",
             "evidence.ledger.replay",
             "evidence.manifest.build",
             "evidence.manifest.verify",
             "evidence.store.local",
+            "media.decode.plan",
+            "media.decode.receipt.validate",
             "media.index.classic_samples",
             "media.index.published_samples",
             "media.inspect.iso_bmff",
             "media.inspect.published",
+            "media.recorded.ingest",
+            "media.recorded.verify",
         ] {
             let status = capabilities()
                 .iter()
