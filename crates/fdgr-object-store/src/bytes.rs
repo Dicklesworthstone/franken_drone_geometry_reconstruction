@@ -8,7 +8,7 @@ use crate::layout::{
 };
 use crate::{ImportReceipt, LocalObjectStore, MAX_STAGING_ATTEMPTS, ObjectStoreError};
 use fdgr_evidence::{ObjectManifest, encode_manifest};
-use fdgr_types::EvidenceDigest;
+use fdgr_types::{EvidenceDigest, PublicationStage};
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -23,7 +23,9 @@ impl LocalObjectStore {
     ///
     /// # Errors
     ///
-    /// Returns a typed manifest, staging, filesystem, collision, verification, or cleanup error.
+    /// Returns a typed manifest, staging, filesystem, collision, verification, or publication
+    /// error. Cleanup failures after root publication are reported in the successful receipt
+    /// rather than misrepresented as a failed publication.
     pub fn import_bytes(
         &mut self,
         bytes: &[u8],
@@ -32,7 +34,7 @@ impl LocalObjectStore {
         let manifest = ObjectManifest::build(bytes, chunk_size)?;
         let manifest_bytes = encode_manifest(&manifest)?;
         let staging_directory = allocate_staging_directory(self.root(), &manifest.manifest_digest)?;
-        let staging_entry = staging_directory
+        let staging_name = staging_directory
             .file_name()
             .and_then(|value| value.to_str())
             .ok_or_else(|| ObjectStoreError::InvalidStoreRoot(staging_directory.clone()))?
@@ -61,39 +63,31 @@ impl LocalObjectStore {
             &staged_object,
             &staged_manifest,
         )?;
-        fs::remove_file(&staged_manifest).map_err(|error| {
-            io_error(
-                "remove_published_staged_byte_manifest",
-                &staged_manifest,
-                error,
-            )
-        })?;
-        fs::remove_file(&staged_object).map_err(|error| {
-            io_error(
-                "remove_published_staged_byte_object",
-                &staged_object,
-                error,
-            )
-        })?;
-        fs::remove_dir(&staging_directory).map_err(|error| {
-            io_error(
-                "remove_published_byte_staging_directory",
-                &staging_directory,
-                error,
-            )
-        })?;
-        sync_directory(&staging_root(self.root()))?;
+
+        let manifest_stage_removed = fs::remove_file(&staged_manifest).is_ok();
+        let object_stage_removed = fs::remove_file(&staged_object).is_ok();
+        let stage_removed = fs::remove_dir(&staging_directory).is_ok();
+        let staging_synced = sync_directory(&staging_root(self.root())).is_ok();
+        let staging_cleanup_complete = manifest_stage_removed
+            && object_stage_removed
+            && stage_removed
+            && staging_synced;
+        let staging_entry = (!staging_cleanup_complete).then_some(staging_name);
+        let chunk_count = u64::try_from(manifest.chunks.len())
+            .map_err(|_| fdgr_evidence::ManifestError::LengthOverflow)?;
+
         Ok(ImportReceipt {
             schema: crate::IMPORT_RECEIPT_SCHEMA,
             object_digest: manifest.object_digest,
             manifest_digest: manifest.manifest_digest,
             object_length: manifest.object_length,
             chunk_size: manifest.chunk_size,
-            chunk_count: manifest.chunks.len(),
+            chunk_count,
             object_created,
             manifest_created,
-            staging_entry: Some(staging_entry),
-            staging_cleanup_complete: true,
+            staging_entry,
+            staging_cleanup_complete,
+            stage: PublicationStage::Published,
         })
     }
 }
@@ -281,6 +275,7 @@ fn verify_published_manifest(
 #[cfg(all(test, unix))]
 mod tests {
     use crate::LocalObjectStore;
+    use fdgr_types::PublicationStage;
     use std::fs;
     use std::io::Read;
     use std::path::PathBuf;
@@ -305,6 +300,9 @@ mod tests {
             let first = store.import_bytes(b"canonical derived bytes", 8);
             assert!(first.is_ok());
             if let Ok(first) = first {
+                assert_eq!(first.stage, PublicationStage::Published);
+                assert!(first.staging_cleanup_complete);
+                assert!(first.staging_entry.is_none());
                 let second = store.import_bytes(b"canonical derived bytes", 8);
                 assert!(matches!(
                     second,
@@ -313,6 +311,7 @@ mod tests {
                             && receipt.manifest_digest == first.manifest_digest
                             && !receipt.object_created
                             && !receipt.manifest_created
+                            && receipt.stage == PublicationStage::Published
                 ));
                 let object = store.open_verified_object(&first.manifest_digest);
                 assert!(object.is_ok());
