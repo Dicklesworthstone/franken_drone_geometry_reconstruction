@@ -43,6 +43,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-media"
+version = "0.0.1"
+
+[[package]]
 name = "fdgr-object-store"
 version = "0.0.1"
 dependencies = [

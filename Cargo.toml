@@ -5,6 +5,7 @@ members = [
     "crates/fdgr-evidence",
     "crates/fdgr-ledger",
     "crates/fdgr-object-store",
+    "crates/fdgr-media",
     "crates/fdgr-source-file",
     "crates/fdgr-core",
     "crates/fdgr-cli",
