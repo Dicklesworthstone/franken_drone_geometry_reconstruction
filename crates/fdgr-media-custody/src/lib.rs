@@ -5,6 +5,13 @@
 //! native media parser. It never reopens the original source path and it carries both logical and
 //! representation identities into every derived result.
 
+mod artifact;
+
+pub use artifact::{
+    MediaArtifactError, PublishedMediaInspection, PublishedSampleWindow,
+    encode_stored_media_inspection, encode_stored_sample_window,
+    publish_stored_media_inspection, publish_stored_sample_window,
+};
 use fdgr_evidence::ObjectManifest;
 use fdgr_media::{
     IsoBmffSummary, MediaError, ParseLimits, SampleIndexError, SampleWindowLimits,
