@@ -216,25 +216,91 @@ pub fn hash_bytes(bytes: &[u8]) -> EvidenceDigest {
     hash.finalize()
 }
 
+/// Streaming length-framed domain-separated identity state.
+#[derive(Clone, Debug)]
+pub struct DomainHasher {
+    hash: Sha256,
+    expected_payload_bytes: u64,
+    observed_payload_bytes: u64,
+}
+
+impl DomainHasher {
+    /// Creates a streaming domain hash for an exact payload length.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`CodecError::LengthOverflow`] if the domain length cannot fit in the
+    /// canonical `u64` field.
+    pub fn new(
+        domain: &DigestDomain,
+        expected_payload_bytes: u64,
+    ) -> Result<Self, CodecError> {
+        let domain_length = u64::try_from(domain.as_str().len())
+            .map_err(|_| CodecError::LengthOverflow)?;
+        let mut hash = Sha256::new();
+        hash.update(b"FDGR\0");
+        hash.update(&domain_length.to_be_bytes());
+        hash.update(domain.as_str().as_bytes());
+        hash.update(&expected_payload_bytes.to_be_bytes());
+        Ok(Self {
+            hash,
+            expected_payload_bytes,
+            observed_payload_bytes: 0,
+        })
+    }
+
+    /// Adds the next exact payload segment.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`CodecError::LengthOverflow`] if the observed length cannot be represented,
+    /// or [`CodecError::DomainLengthMismatch`] before hashing bytes beyond the declared length.
+    pub fn update(&mut self, bytes: &[u8]) -> Result<(), CodecError> {
+        let length = u64::try_from(bytes.len()).map_err(|_| CodecError::LengthOverflow)?;
+        let observed = self
+            .observed_payload_bytes
+            .checked_add(length)
+            .ok_or(CodecError::LengthOverflow)?;
+        if observed > self.expected_payload_bytes {
+            return Err(CodecError::DomainLengthMismatch {
+                expected: self.expected_payload_bytes,
+                observed,
+            });
+        }
+        self.hash.update(bytes);
+        self.observed_payload_bytes = observed;
+        Ok(())
+    }
+
+    /// Finalizes only if the exact declared payload length was observed.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`CodecError::DomainLengthMismatch`] when the stream ended early.
+    pub fn finalize(self) -> Result<EvidenceDigest, CodecError> {
+        if self.observed_payload_bytes != self.expected_payload_bytes {
+            return Err(CodecError::DomainLengthMismatch {
+                expected: self.expected_payload_bytes,
+                observed: self.observed_payload_bytes,
+            });
+        }
+        Ok(self.hash.finalize())
+    }
+}
+
 /// Computes a length-framed, domain-separated SHA-256 identity.
 ///
 /// # Errors
 ///
-/// Returns [`CodecError::LengthOverflow`] if the in-memory domain or payload length cannot be
-/// represented as the canonical `u64` length field.
+/// Returns a typed length error if the payload cannot be represented by the canonical framing.
 pub fn hash_domain(
     domain: &DigestDomain,
     payload: &[u8],
 ) -> Result<EvidenceDigest, CodecError> {
-    let domain_length = u64::try_from(domain.as_str().len()).map_err(|_| CodecError::LengthOverflow)?;
     let payload_length = u64::try_from(payload.len()).map_err(|_| CodecError::LengthOverflow)?;
-    let mut hash = Sha256::new();
-    hash.update(b"FDGR\0");
-    hash.update(&domain_length.to_be_bytes());
-    hash.update(domain.as_str().as_bytes());
-    hash.update(&payload_length.to_be_bytes());
-    hash.update(payload);
-    Ok(hash.finalize())
+    let mut hash = DomainHasher::new(domain, payload_length)?;
+    hash.update(payload)?;
+    hash.finalize()
 }
 
 /// Deterministic fixed-width encoder used by canonical FDGR reference formats.
@@ -526,6 +592,13 @@ pub enum CodecError {
         /// Number of bytes available at the cursor.
         remaining: usize,
     },
+    /// A domain-separated stream did not contain its exact declared payload length.
+    DomainLengthMismatch {
+        /// Declared payload bytes.
+        expected: u64,
+        /// Observed payload bytes.
+        observed: u64,
+    },
     /// A decoded field exceeded its configured hard limit.
     BoundExceeded {
         /// Stable field identifier.
@@ -553,6 +626,10 @@ impl Display for CodecError {
             Self::UnexpectedEof { needed, remaining } => write!(
                 formatter,
                 "canonical payload ended early: needed {needed} bytes, {remaining} remain"
+            ),
+            Self::DomainLengthMismatch { expected, observed } => write!(
+                formatter,
+                "domain-separated payload declared {expected} bytes but observed {observed}"
             ),
             Self::BoundExceeded {
                 field,
@@ -609,7 +686,8 @@ const fn small_sigma1(value: u32) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::{
-        CodecError, DecodeLimits, Decoder, Encoder, Sha256, hash_bytes, hash_domain,
+        CodecError, DecodeLimits, Decoder, DomainHasher, Encoder, Sha256, hash_bytes,
+        hash_domain,
     };
     use fdgr_types::DigestDomain;
 
@@ -647,6 +725,45 @@ mod tests {
             let left_hash = hash_domain(&left, b"same");
             let right_hash = hash_domain(&right, b"same");
             assert!(matches!((left_hash, right_hash), (Ok(left), Ok(right)) if left != right));
+        }
+    }
+
+    #[test]
+    fn streaming_domain_hash_requires_exact_length() {
+        let domain = DigestDomain::parse("fdgr.stream/1");
+        assert!(domain.is_ok());
+        if let Ok(domain) = domain {
+            let state = DomainHasher::new(&domain, 5);
+            assert!(state.is_ok());
+            if let Ok(mut state) = state {
+                assert!(state.update(b"hello").is_ok());
+                assert_eq!(state.finalize(), hash_domain(&domain, b"hello"));
+            }
+
+            let short = DomainHasher::new(&domain, 5);
+            assert!(short.is_ok());
+            if let Ok(mut short) = short {
+                assert!(short.update(b"hell").is_ok());
+                assert!(matches!(
+                    short.finalize(),
+                    Err(CodecError::DomainLengthMismatch {
+                        expected: 5,
+                        observed: 4
+                    })
+                ));
+            }
+
+            let long = DomainHasher::new(&domain, 4);
+            assert!(long.is_ok());
+            if let Ok(mut long) = long {
+                assert!(matches!(
+                    long.update(b"hello"),
+                    Err(CodecError::DomainLengthMismatch {
+                        expected: 4,
+                        observed: 5
+                    })
+                ));
+            }
         }
     }
 
