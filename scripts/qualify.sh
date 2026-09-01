@@ -7,7 +7,8 @@ Usage: ./scripts/qualify.sh [--mode static|full|release] [--sibling-root PATH] [
 
 static   Validate design, registries, schemas, mutation controls, generated artifacts, scripts,
          and diff hygiene.
-full     Run static checks plus the pinned Rust format/check/Clippy/test lanes (default).
+full     Run static checks plus the pinned Rust format/check/Clippy/test and local public-path E2E
+         lanes (default).
 release  Run full checks, require a clean checkout, verify production-admitted sibling pins, and
          seal exact source/contract/toolchain/host identities. Doodlestein predecessor receipts
          remain the authority for step success.
@@ -53,12 +54,14 @@ python3 scripts/validate_agent_contracts.py
 step 'Compiling Python sources without creating repository artifacts'
 python3 - <<'PY'
 from pathlib import Path
-for path in sorted(Path('scripts').glob('*.py')):
+for path in sorted(Path('scripts').rglob('*.py')):
     compile(path.read_text(encoding='utf-8'), str(path), 'exec')
 print('PASS: Python sources compile')
 PY
 step 'Checking shell syntax and diff hygiene'
-for script in scripts/*.sh; do bash -n "$script"; done
+while IFS= read -r -d '' script; do
+  bash -n "$script"
+done < <(find scripts -type f -name '*.sh' -print0)
 git diff --check
 pass 'Static FDGR contract qualification completed'
 
@@ -82,6 +85,9 @@ step 'Running Clippy with warnings denied'
 "$CARGO" clippy --workspace --all-targets --locked -- -D warnings
 step 'Running workspace tests'
 "$CARGO" test --workspace --all-targets --locked
+step 'Running recorded-media public-path ingest and verification'
+CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
+  bash scripts/e2e/recorded_media_ingest_and_verify.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then
