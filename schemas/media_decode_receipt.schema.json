@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/media_decode_receipt.v1.json",
+  "title": "FDGR validated media decode worker receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "receipt_digest",
+    "plan_digest",
+    "worker_executable_digest",
+    "worker_version_digest",
+    "profile_digest",
+    "termination",
+    "exit_code",
+    "indeterminate",
+    "semantic_completion",
+    "framehash_object_digest",
+    "output_root_manifest_digest",
+    "output_root_object_digest",
+    "wall_time_ms",
+    "peak_memory_bytes",
+    "stderr_digest",
+    "framehash"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.media_decode_receipt/1"
+    },
+    "receipt_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "plan_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "worker_executable_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "worker_version_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "profile_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "termination": {
+      "enum": [
+        "succeeded",
+        "failed",
+        "timed_out",
+        "cancelled_before_dispatch",
+        "cancelled_during_execution",
+        "killed_after_grace",
+        "spawn_failed",
+        "indeterminate"
+      ]
+    },
+    "exit_code": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647,
+          "not": {
+            "const": 0
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "indeterminate": {
+      "type": "boolean"
+    },
+    "semantic_completion": {
+      "type": "boolean"
+    },
+    "framehash_object_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_root_manifest_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_root_object_digest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "wall_time_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "peak_memory_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "stderr_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "framehash": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/framehash"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "framehash_object_digest": {
+              "$ref": "#/$defs/digest"
+            },
+            "framehash": {
+              "$ref": "#/$defs/framehash"
+            }
+          }
+        },
+        {
+          "properties": {
+            "framehash_object_digest": {
+              "type": "null"
+            },
+            "framehash": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "const": "succeeded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "type": "null"
+          },
+          "indeterminate": {
+            "const": false
+          },
+          "semantic_completion": {
+            "const": true
+          },
+          "framehash_object_digest": {
+            "$ref": "#/$defs/digest"
+          },
+          "framehash": {
+            "$ref": "#/$defs/framehash"
+          },
+          "output_root_manifest_digest": {
+            "$ref": "#/$defs/digest"
+          },
+          "output_root_object_digest": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "type": "integer",
+            "not": {
+              "const": 0
+            }
+          },
+          "indeterminate": {
+            "const": false
+          },
+          "semantic_completion": {
+            "const": false
+          },
+          "output_root_manifest_digest": {
+            "type": "null"
+          },
+          "output_root_object_digest": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "enum": [
+              "timed_out",
+              "cancelled_during_execution",
+              "killed_after_grace",
+              "indeterminate"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "type": "null"
+          },
+          "indeterminate": {
+            "const": true
+          },
+          "semantic_completion": {
+            "const": false
+          },
+          "output_root_manifest_digest": {
+            "type": "null"
+          },
+          "output_root_object_digest": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "enum": ["cancelled_before_dispatch", "spawn_failed"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "type": "null"
+          },
+          "indeterminate": {
+            "const": false
+          },
+          "semantic_completion": {
+            "const": false
+          },
+          "output_root_manifest_digest": {
+            "type": "null"
+          },
+          "output_root_object_digest": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^(?!0{64}$)[0-9a-f]{64}$"
+    },
+    "framehash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "hash_name",
+        "record_count",
+        "total_frame_bytes",
+        "records"
+      ],
+      "properties": {
+        "version": {
+          "const": 2
+        },
+        "hash_name": {
+          "const": "SHA256"
+        },
+        "record_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "total_frame_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1000000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "record_index",
+              "stream_index",
+              "dts",
+              "pts",
+              "duration",
+              "byte_length",
+              "digest"
+            ],
+            "properties": {
+              "record_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "stream_index": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295
+              },
+              "dts": {
+                "type": "integer"
+              },
+              "pts": {
+                "type": "integer"
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "byte_length": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "digest": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
