@@ -12,8 +12,9 @@
 )]
 //! Correlation-aware metric scale witness resolution for FDGR.
 //!
-//! Scale candidates remain hypotheses until independent witness classes earn metric authority.
-//! Conflicting groups are retained and metric mapping fails closed.
+//! Scale candidates remain hypotheses until independent, internally consistent witness groups earn
+//! metric authority. Conflicting groups and exact witnesses are retained, and metric mapping fails
+//! closed unless witnessed or surveyed authority is established.
 
 use fdgr_codec::{CodecError, Encoder, hash_domain};
 use fdgr_types::{DigestDomain, DomainError, EvidenceDigest, ScaleStatus};
@@ -119,11 +120,11 @@ pub struct ScaleWitness {
 pub struct ScaleFitOptions {
     /// Maximum ratio residual before witness uncertainty is added.
     pub max_residual_ppm: u64,
-    /// Minimum independent groups for a resolved candidate.
+    /// Minimum internally consistent independent groups for a resolved candidate.
     pub min_independent_groups: u16,
-    /// Minimum independent witnessed-or-surveyed groups for metric authority.
+    /// Minimum internally consistent witnessed-or-surveyed groups for metric authority.
     pub min_witnessed_groups: u16,
-    /// Minimum independent survey-control groups for surveyed authority.
+    /// Minimum internally consistent survey-control groups for surveyed authority.
     pub min_surveyed_groups: u16,
 }
 
@@ -138,7 +139,7 @@ impl Default for ScaleFitOptions {
     }
 }
 
-/// Residual retained for every witness.
+/// Residual retained for every exact witness.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ScaleWitnessResidual {
     /// Witness identity.
@@ -147,7 +148,7 @@ pub struct ScaleWitnessResidual {
     pub correlation_group: u32,
     /// Ratio residual relative to the candidate.
     pub residual_ppm: u64,
-    /// Whether the exact witness passed the final gate.
+    /// Whether the exact witness and its whole correlation group were admitted.
     pub inlier: bool,
 }
 
@@ -160,9 +161,9 @@ pub struct ScaleModel {
     pub options: ScaleFitOptions,
     /// Canonically sorted original witnesses.
     pub witnesses: Vec<ScaleWitness>,
-    /// Whether enough mutually consistent independent groups resolved the candidate.
+    /// Whether enough internally consistent independent groups resolved the candidate.
     pub resolved: bool,
-    /// Metric authority. Conflicted candidates are always `RelativeOnly`.
+    /// Metric authority. Unresolved candidates are always `RelativeOnly`.
     pub authority: ScaleStatus,
     /// Candidate micrometer numerator.
     pub candidate_scale_numerator_micrometers: i128,
@@ -170,21 +171,21 @@ pub struct ScaleModel {
     pub candidate_scale_denominator_relative_nanounits: i128,
     /// One robust representative witness per correlation group.
     pub representative_witness_ids: Vec<u64>,
-    /// Exact inlier witness identities.
+    /// Exact witnesses admitted after whole-group consistency checks.
     pub inlier_witness_ids: Vec<u64>,
-    /// Exact outlier/conflicting witness identities.
+    /// Exact witnesses rejected by residual or whole-group conflict.
     pub outlier_witness_ids: Vec<u64>,
-    /// Retained independent groups.
+    /// Internally consistent retained groups.
     pub inlier_group_ids: Vec<u32>,
-    /// Conflicting independent groups.
+    /// Rejected or internally conflicting groups.
     pub conflicting_group_ids: Vec<u32>,
-    /// Residual evidence for every witness.
+    /// Residual evidence for every exact witness.
     pub residuals: Vec<ScaleWitnessResidual>,
-    /// Median inlier residual.
+    /// Median admitted residual.
     pub median_residual_ppm: u64,
-    /// Maximum inlier residual.
+    /// Maximum admitted residual.
     pub maximum_residual_ppm: u64,
-    /// Maximum inlier pairwise spread around the candidate.
+    /// Maximum retained representative spread around the candidate.
     pub scale_spread_ppm: u64,
     /// Conservative relative scale uncertainty.
     pub declared_uncertainty_ppm: u64,
@@ -226,6 +227,15 @@ pub enum ScaleError {
         actual: u128,
         /// Maximum value.
         maximum: u128,
+    },
+    /// A configured group minimum was too small to establish independence.
+    MinimumGroupCountTooSmall {
+        /// Stable field name.
+        field: &'static str,
+        /// Observed count.
+        actual: u16,
+        /// Required minimum.
+        minimum: u16,
     },
     /// Too few witnesses were supplied.
     TooFewWitnesses {
@@ -283,17 +293,54 @@ pub enum ScaleError {
 impl Display for ScaleError {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            Self::ZeroIdentity { field } => write!(formatter, "scale identity {field} must not be all zero"),
+            Self::ZeroIdentity { field } => {
+                write!(formatter, "scale identity {field} must not be all zero")
+            }
             Self::ZeroValue { field } => write!(formatter, "scale field {field} must be nonzero"),
-            Self::BoundExceeded { field, actual, maximum } => write!(formatter, "scale field {field} is {actual}; maximum is {maximum}"),
-            Self::TooFewWitnesses { actual, minimum } => write!(formatter, "scale resolution received {actual} witnesses; at least {minimum} are required"),
-            Self::TooManyWitnesses { actual, maximum } => write!(formatter, "scale resolution received {actual} witnesses; maximum is {maximum}"),
-            Self::DuplicateWitnessId { witness_id } => write!(formatter, "scale witness identity {witness_id} is duplicated"),
-            Self::InsufficientIndependentGroups { actual, minimum } => write!(formatter, "scale resolution contains {actual} independent groups; at least {minimum} are required"),
+            Self::BoundExceeded {
+                field,
+                actual,
+                maximum,
+            } => write!(formatter, "scale field {field} is {actual}; maximum is {maximum}"),
+            Self::MinimumGroupCountTooSmall {
+                field,
+                actual,
+                minimum,
+            } => write!(
+                formatter,
+                "scale field {field} is {actual}; at least {minimum} independent groups are required"
+            ),
+            Self::TooFewWitnesses { actual, minimum } => write!(
+                formatter,
+                "scale resolution received {actual} witnesses; at least {minimum} are required"
+            ),
+            Self::TooManyWitnesses { actual, maximum } => write!(
+                formatter,
+                "scale resolution received {actual} witnesses; maximum is {maximum}"
+            ),
+            Self::DuplicateWitnessId { witness_id } => {
+                write!(formatter, "scale witness identity {witness_id} is duplicated")
+            }
+            Self::InsufficientIndependentGroups { actual, minimum } => write!(
+                formatter,
+                "scale resolution contains {actual} independent groups; at least {minimum} are required"
+            ),
             Self::NonPositiveScale => formatter.write_str("scale candidate must be positive"),
-            Self::ArithmeticOverflow { field } => write!(formatter, "scale arithmetic overflowed while computing {field}"),
-            Self::MetricAuthorityRequired { authority, resolved } => write!(formatter, "metric distance requires witnessed or surveyed resolved scale; authority is {} and resolved is {resolved}", scale_status_text(*authority)),
-            Self::DerivedMismatch { field } => write!(formatter, "scale derived field {field} disagrees with deterministic replay"),
+            Self::ArithmeticOverflow { field } => {
+                write!(formatter, "scale arithmetic overflowed while computing {field}")
+            }
+            Self::MetricAuthorityRequired {
+                authority,
+                resolved,
+            } => write!(
+                formatter,
+                "metric distance requires witnessed or surveyed resolved scale; authority is {} and resolved is {resolved}",
+                scale_status_text(*authority)
+            ),
+            Self::DerivedMismatch { field } => write!(
+                formatter,
+                "scale derived field {field} disagrees with deterministic replay"
+            ),
             Self::Codec(error) => write!(formatter, "scale codec error: {error}"),
             Self::Domain(error) => write!(formatter, "scale identity-domain error: {error}"),
             Self::JsonRendering(error) => write!(formatter, "scale JSON rendering failed: {error}"),
@@ -336,10 +383,23 @@ struct GroupRepresentative {
     relative_distance_nanounits: u64,
     uncertainty_micrometers: u64,
     correlation_group: u32,
-    authority_rank: u8,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct ExactClassification {
+    admitted_witness_ids: Vec<u64>,
+    rejected_witness_ids: Vec<u64>,
+    clean_group_ids: BTreeSet<u32>,
+    conflicting_group_ids: BTreeSet<u32>,
+    residuals: Vec<ScaleWitnessResidual>,
 }
 
 /// Resolves a deterministic scale candidate while retaining conflicts and authority boundaries.
+///
+/// Correlation groups receive one representative vote during robust fitting. After a candidate is
+/// formed, every exact witness is checked. A group is admitted only if its representative passed
+/// and every exact witness in that group passed its uncertainty-aware gate. This prevents a
+/// correlated high-grade outlier from lending authority to a lower-grade inlier in the same group.
 ///
 /// # Errors
 ///
@@ -360,82 +420,94 @@ pub fn resolve_scale(
             minimum: 2,
         });
     }
+
     let initial_candidate = median_representative_ratio(&representatives)?;
     ensure_positive(initial_candidate)?;
-    let initial_groups = classify_groups(
+    let initial_representative_groups = classify_representative_groups(
         &representatives,
         initial_candidate,
         options.max_residual_ppm,
     )?;
+    let first_exact = classify_exact_witnesses(
+        &witnesses,
+        initial_candidate,
+        &initial_representative_groups,
+        options.max_residual_ppm,
+    )?;
     let required_groups = usize::from(options.min_independent_groups);
-    let (candidate, final_groups) = if initial_groups.len() >= required_groups {
+
+    let (candidate, representative_groups, exact) = if first_exact.clean_group_ids.len()
+        >= required_groups
+    {
         let retained = representatives
             .iter()
-            .filter(|value| initial_groups.contains(&value.correlation_group))
+            .filter(|value| first_exact.clean_group_ids.contains(&value.correlation_group))
             .cloned()
             .collect::<Vec<_>>();
         let candidate = median_representative_ratio(&retained)?;
-        let groups = classify_groups(&representatives, candidate, options.max_residual_ppm)?;
-        (candidate, groups)
+        ensure_positive(candidate)?;
+        let groups = classify_representative_groups(
+            &representatives,
+            candidate,
+            options.max_residual_ppm,
+        )?;
+        let exact = classify_exact_witnesses(
+            &witnesses,
+            candidate,
+            &groups,
+            options.max_residual_ppm,
+        )?;
+        (candidate, groups, exact)
     } else {
-        (initial_candidate, initial_groups)
+        (
+            initial_candidate,
+            initial_representative_groups,
+            first_exact,
+        )
     };
-    ensure_positive(candidate)?;
-    let resolved = final_groups.len() >= required_groups;
-    let all_groups = representatives
+
+    let resolved = exact.clean_group_ids.len() >= required_groups;
+    let inlier_group_ids = exact.clean_group_ids.iter().copied().collect::<Vec<_>>();
+    let conflicting_group_ids = exact
+        .conflicting_group_ids
         .iter()
-        .map(|value| value.correlation_group)
-        .collect::<BTreeSet<_>>();
-    let inlier_group_ids = final_groups.iter().copied().collect::<Vec<_>>();
-    let conflicting_group_ids = all_groups.difference(&final_groups).copied().collect::<Vec<_>>();
+        .copied()
+        .collect::<Vec<_>>();
     let representative_witness_ids = representatives
         .iter()
         .map(|value| value.witness_id)
         .collect::<Vec<_>>();
-    let mut inlier_witness_ids = Vec::new();
-    let mut outlier_witness_ids = Vec::new();
-    let mut residuals = Vec::with_capacity(witnesses.len());
-    let mut inlier_residuals = Vec::new();
-    let mut maximum_uncertainty_ppm = 0_u64;
-    for witness in &witnesses {
-        let residual_ppm = ratio_residual_ppm(
-            witness.metric_distance_micrometers,
-            witness.relative_distance_nanounits,
-            candidate,
-        )?;
-        let uncertainty_ppm = witness_uncertainty_ppm(witness)?;
-        let threshold = options
-            .max_residual_ppm
-            .checked_add(uncertainty_ppm)
-            .ok_or(ScaleError::ArithmeticOverflow {
-                field: "witness_residual_threshold",
-            })?;
-        let inlier = final_groups.contains(&witness.correlation_group)
-            && residual_ppm <= threshold;
-        if inlier {
-            inlier_witness_ids.push(witness.witness_id);
-            inlier_residuals.push(residual_ppm);
-            maximum_uncertainty_ppm = maximum_uncertainty_ppm.max(uncertainty_ppm);
-        } else {
-            outlier_witness_ids.push(witness.witness_id);
-        }
-        residuals.push(ScaleWitnessResidual {
-            witness_id: witness.witness_id,
-            correlation_group: witness.correlation_group,
-            residual_ppm,
-            inlier,
-        });
-    }
-    inlier_residuals.sort_unstable();
-    let median_residual_ppm = if inlier_residuals.is_empty() {
-        0
-    } else {
-        inlier_residuals[inlier_residuals.len().saturating_sub(1) / 2]
-    };
-    let maximum_residual_ppm = inlier_residuals.iter().copied().max().unwrap_or(0);
+
+    let mut admitted_residuals = exact
+        .residuals
+        .iter()
+        .filter(|value| value.inlier)
+        .map(|value| value.residual_ppm)
+        .collect::<Vec<_>>();
+    admitted_residuals.sort_unstable();
+    let median_residual_ppm = admitted_residuals
+        .get(admitted_residuals.len().saturating_sub(1) / 2)
+        .copied()
+        .unwrap_or(0);
+    let maximum_residual_ppm = admitted_residuals.iter().copied().max().unwrap_or(0);
+
+    let admitted = exact
+        .admitted_witness_ids
+        .iter()
+        .copied()
+        .collect::<BTreeSet<_>>();
+    let maximum_uncertainty_ppm = witnesses
+        .iter()
+        .filter(|value| admitted.contains(&value.witness_id))
+        .map(witness_uncertainty_ppm)
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .max()
+        .unwrap_or(0);
+
     let retained_representatives = representatives
         .iter()
-        .filter(|value| final_groups.contains(&value.correlation_group))
+        .filter(|value| exact.clean_group_ids.contains(&value.correlation_group))
         .cloned()
         .collect::<Vec<_>>();
     let scale_spread_ppm = if retained_representatives.len() >= 2 {
@@ -449,16 +521,29 @@ pub fn resolve_scale(
         .ok_or(ScaleError::ArithmeticOverflow {
             field: "declared_uncertainty_ppm",
         })?;
+
     let authority = if resolved {
-        authority_for_groups(
-            &representatives,
-            &final_groups,
+        authority_for_exact_inliers(
+            &witnesses,
+            &admitted,
+            &exact.clean_group_ids,
             options.min_witnessed_groups,
             options.min_surveyed_groups,
         )
     } else {
         ScaleStatus::RelativeOnly
     };
+
+    let all_representative_groups = representatives
+        .iter()
+        .map(|value| value.correlation_group)
+        .collect::<BTreeSet<_>>();
+    if !representative_groups.is_subset(&all_representative_groups) {
+        return Err(ScaleError::DerivedMismatch {
+            field: "representative_groups",
+        });
+    }
+
     Ok(ScaleModel {
         basis,
         options,
@@ -468,11 +553,11 @@ pub fn resolve_scale(
         candidate_scale_numerator_micrometers: candidate.numerator,
         candidate_scale_denominator_relative_nanounits: candidate.denominator,
         representative_witness_ids,
-        inlier_witness_ids,
-        outlier_witness_ids,
+        inlier_witness_ids: exact.admitted_witness_ids,
+        outlier_witness_ids: exact.rejected_witness_ids,
         inlier_group_ids,
         conflicting_group_ids,
-        residuals,
+        residuals: exact.residuals,
         median_residual_ppm,
         maximum_residual_ppm,
         scale_spread_ppm,
@@ -732,10 +817,10 @@ fn validate_options(options: ScaleFitOptions) -> Result<(), ScaleError> {
         ("min_surveyed_groups", options.min_surveyed_groups),
     ] {
         if value < 2 {
-            return Err(ScaleError::BoundExceeded {
+            return Err(ScaleError::MinimumGroupCountTooSmall {
                 field,
-                actual: u128::from(value),
-                maximum: u128::from(u16::MAX),
+                actual: value,
+                minimum: 2,
             });
         }
     }
@@ -832,8 +917,8 @@ fn group_representatives(
     for (group, mut members) in groups {
         members.sort_by(|left, right| {
             compare_ratio(
-                ratio_from_witness(left),
-                ratio_from_witness(right),
+                &ratio_from_witness(left),
+                &ratio_from_witness(right),
             )
             .then(left.witness_id.cmp(&right.witness_id))
         });
@@ -847,23 +932,20 @@ fn group_representatives(
             .map(|value| value.uncertainty_micrometers)
             .max()
             .unwrap_or(0);
-        let authority_rank = members
-            .iter()
-            .map(|value| value.kind.authority_rank())
-            .max()
-            .unwrap_or(1);
         output.push(GroupRepresentative {
             witness_id: selected.witness_id,
             metric_distance_micrometers: selected.metric_distance_micrometers,
             relative_distance_nanounits: selected.relative_distance_nanounits,
             uncertainty_micrometers,
             correlation_group: group,
-            authority_rank,
         });
     }
     output.sort_by(|left, right| {
-        compare_ratio(ratio_from_representative(left), ratio_from_representative(right))
-            .then(left.correlation_group.cmp(&right.correlation_group))
+        compare_ratio(
+            &ratio_from_representative(left),
+            &ratio_from_representative(right),
+        )
+        .then(left.correlation_group.cmp(&right.correlation_group))
     });
     Ok(output)
 }
@@ -888,7 +970,7 @@ fn median_representative_ratio(
         .ok_or(ScaleError::NonPositiveScale)
 }
 
-fn classify_groups(
+fn classify_representative_groups(
     representatives: &[GroupRepresentative],
     candidate: Ratio,
     max_residual_ppm: u64,
@@ -913,28 +995,103 @@ fn classify_groups(
     Ok(groups)
 }
 
-fn authority_for_groups(
-    representatives: &[GroupRepresentative],
-    groups: &BTreeSet<u32>,
+fn classify_exact_witnesses(
+    witnesses: &[ScaleWitness],
+    candidate: Ratio,
+    representative_groups: &BTreeSet<u32>,
+    max_residual_ppm: u64,
+) -> Result<ExactClassification, ScaleError> {
+    let mut provisional = Vec::with_capacity(witnesses.len());
+    let mut group_pass: BTreeMap<u32, (bool, bool)> = BTreeMap::new();
+    let all_groups = witnesses
+        .iter()
+        .map(|value| value.correlation_group)
+        .collect::<BTreeSet<_>>();
+
+    for witness in witnesses {
+        let residual_ppm = ratio_residual_ppm(
+            witness.metric_distance_micrometers,
+            witness.relative_distance_nanounits,
+            candidate,
+        )?;
+        let uncertainty_ppm = witness_uncertainty_ppm(witness)?;
+        let threshold = max_residual_ppm
+            .checked_add(uncertainty_ppm)
+            .ok_or(ScaleError::ArithmeticOverflow {
+                field: "witness_residual_threshold",
+            })?;
+        let passes = representative_groups.contains(&witness.correlation_group)
+            && residual_ppm <= threshold;
+        let state = group_pass
+            .entry(witness.correlation_group)
+            .or_insert((false, false));
+        if passes {
+            state.0 = true;
+        } else {
+            state.1 = true;
+        }
+        provisional.push((witness, residual_ppm, passes));
+    }
+
+    let clean_group_ids = group_pass
+        .iter()
+        .filter_map(|(group, (pass, fail))| (*pass && !*fail).then_some(*group))
+        .collect::<BTreeSet<_>>();
+    let conflicting_group_ids = all_groups
+        .difference(&clean_group_ids)
+        .copied()
+        .collect::<BTreeSet<_>>();
+    let mut admitted_witness_ids = Vec::new();
+    let mut rejected_witness_ids = Vec::new();
+    let mut residuals = Vec::with_capacity(provisional.len());
+    for (witness, residual_ppm, passes) in provisional {
+        let inlier = passes && clean_group_ids.contains(&witness.correlation_group);
+        if inlier {
+            admitted_witness_ids.push(witness.witness_id);
+        } else {
+            rejected_witness_ids.push(witness.witness_id);
+        }
+        residuals.push(ScaleWitnessResidual {
+            witness_id: witness.witness_id,
+            correlation_group: witness.correlation_group,
+            residual_ppm,
+            inlier,
+        });
+    }
+    Ok(ExactClassification {
+        admitted_witness_ids,
+        rejected_witness_ids,
+        clean_group_ids,
+        conflicting_group_ids,
+        residuals,
+    })
+}
+
+fn authority_for_exact_inliers(
+    witnesses: &[ScaleWitness],
+    admitted_witness_ids: &BTreeSet<u64>,
+    clean_group_ids: &BTreeSet<u32>,
     min_witnessed_groups: u16,
     min_surveyed_groups: u16,
 ) -> ScaleStatus {
-    let mut witnessed = 0_usize;
-    let mut surveyed = 0_usize;
-    for representative in representatives {
-        if !groups.contains(&representative.correlation_group) {
+    let mut witnessed_groups = BTreeSet::new();
+    let mut surveyed_groups = BTreeSet::new();
+    for witness in witnesses {
+        if !admitted_witness_ids.contains(&witness.witness_id)
+            || !clean_group_ids.contains(&witness.correlation_group)
+        {
             continue;
         }
-        if representative.authority_rank >= 2 {
-            witnessed = witnessed.saturating_add(1);
+        if witness.kind.authority_rank() >= 2 {
+            witnessed_groups.insert(witness.correlation_group);
         }
-        if representative.authority_rank >= 3 {
-            surveyed = surveyed.saturating_add(1);
+        if witness.kind.authority_rank() >= 3 {
+            surveyed_groups.insert(witness.correlation_group);
         }
     }
-    if surveyed >= usize::from(min_surveyed_groups) {
+    if surveyed_groups.len() >= usize::from(min_surveyed_groups) {
         ScaleStatus::Surveyed
-    } else if witnessed >= usize::from(min_witnessed_groups) {
+    } else if witnessed_groups.len() >= usize::from(min_witnessed_groups) {
         ScaleStatus::Witnessed
     } else {
         ScaleStatus::Estimated
@@ -1265,7 +1422,7 @@ mod tests {
     }
 
     #[test]
-    fn survey_control_requires_independent_groups() {
+    fn survey_control_requires_independent_clean_groups() {
         let model = resolve_scale(
             basis(3),
             options(),
@@ -1278,7 +1435,7 @@ mod tests {
     }
 
     #[test]
-    fn correlated_duplicates_receive_one_vote() {
+    fn internally_conflicting_group_is_excluded_whole() {
         let model = resolve_scale(
             basis(4),
             options(),
@@ -1289,7 +1446,22 @@ mod tests {
                 witness(4, ScaleWitnessKind::Fiducial, 3_000_000, 3_000_000_000, 3),
             ],
         );
-        assert!(matches!(model, Ok(ref value) if value.representative_witness_ids.len() == 3 && value.inlier_group_ids.len() >= 2));
+        assert!(matches!(model, Ok(ref value) if value.resolved && value.authority == ScaleStatus::Witnessed && value.inlier_group_ids == vec![2, 3] && value.conflicting_group_ids == vec![1] && value.outlier_witness_ids == vec![1, 2]));
+    }
+
+    #[test]
+    fn rejected_high_grade_correlated_witness_cannot_elevate_authority() {
+        let model = resolve_scale(
+            basis(5),
+            options(),
+            vec![
+                witness(1, ScaleWitnessKind::ModelPrior, 1_000_000, 1_000_000_000, 1),
+                witness(2, ScaleWitnessKind::SurveyControl, 10_000_000, 1_000_000_000, 1),
+                witness(3, ScaleWitnessKind::ModelPrior, 2_000_000, 2_000_000_000, 2),
+                witness(4, ScaleWitnessKind::ModelPrior, 3_000_000, 3_000_000_000, 3),
+            ],
+        );
+        assert!(matches!(model, Ok(ref value) if value.resolved && value.authority == ScaleStatus::Estimated && value.conflicting_group_ids == vec![1] && matches!(value.map_relative_distance(1_000_000_000), Err(ScaleError::MetricAuthorityRequired { .. }))));
     }
 
     #[test]
@@ -1297,7 +1469,7 @@ mod tests {
         let mut strict = options();
         strict.min_independent_groups = 3;
         let model = resolve_scale(
-            basis(5),
+            basis(6),
             strict,
             vec![
                 witness(1, ScaleWitnessKind::MeasuredBaseline, 1_000_000, 1_000_000_000, 1),
@@ -1316,12 +1488,16 @@ mod tests {
         ];
         let mut reversed = witnesses.clone();
         reversed.reverse();
-        let left = resolve_scale(basis(6), options(), witnesses);
-        let right = resolve_scale(basis(6), options(), reversed);
-        let other_basis = resolve_scale(basis(7), options(), vec![
-            witness(1, ScaleWitnessKind::MeasuredBaseline, 1_000_000, 1_000_000_000, 1),
-            witness(2, ScaleWitnessKind::Fiducial, 2_000_000, 2_000_000_000, 2),
-        ]);
+        let left = resolve_scale(basis(7), options(), witnesses);
+        let right = resolve_scale(basis(7), options(), reversed);
+        let other_basis = resolve_scale(
+            basis(8),
+            options(),
+            vec![
+                witness(1, ScaleWitnessKind::MeasuredBaseline, 1_000_000, 1_000_000_000, 1),
+                witness(2, ScaleWitnessKind::Fiducial, 2_000_000, 2_000_000_000, 2),
+            ],
+        );
         assert!(matches!((left, right, other_basis), (Ok(left), Ok(right), Ok(other)) if left == right && left.digest() == right.digest() && left.digest() != other.digest() && matches!(left.to_json(), Ok(ref json) if json.contains("fdgr.scale_model/1"))));
     }
 }
