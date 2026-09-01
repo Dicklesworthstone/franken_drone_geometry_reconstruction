@@ -3,6 +3,14 @@
 version = 4
 
 [[package]]
+name = "fdgr-calibration"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-cli"
 version = "0.0.1"
 dependencies = [
