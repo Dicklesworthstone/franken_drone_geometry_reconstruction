@@ -4,7 +4,7 @@
 
 use crate::args::OutputFormat;
 use crate::render::json_escape;
-use fdgr_media::{FourCc, IsoBmffSummary};
+use fdgr_media::{FourCc, IsoBmffSummary, MEDIA_INSPECTION_SCHEMA};
 use fdgr_recorded_media::{RECORDED_MEDIA_INGEST_SCHEMA, RecordedMediaIngestReceipt};
 use fdgr_recorded_media_verify::{VERIFIED_RECORDED_MEDIA_SCHEMA, VerifiedRecordedMedia};
 use std::fmt::Write as _;
@@ -121,6 +121,7 @@ fn print_decoded_child_identity(
 }
 
 fn print_media_summary_text(summary: &IsoBmffSummary) {
+    println!("media_schema\t{MEDIA_INSPECTION_SCHEMA}");
     println!("media_scope\tcontainer_metadata_and_classic_sample_tables");
     println!("media_decode_performed\tfalse");
     println!("media_file_length\t{}", summary.file_length);
@@ -243,7 +244,7 @@ fn push_media_summary_json(
 ) -> Result<(), String> {
     write!(
         output,
-        "{{\"scope\":\"container_metadata_and_classic_sample_tables\",\"decode_performed\":false,\"file_length\":{},\"major_brand\":{},\"minor_version\":{},\"compatible_brands\":[",
+        "{{\"schema\":\"{MEDIA_INSPECTION_SCHEMA}\",\"scope\":\"container_metadata_and_classic_sample_tables\",\"decode_performed\":false,\"file_length\":{},\"major_brand\":{},\"minor_version\":{},\"compatible_brands\":[",
         summary.file_length,
         optional_fourcc_json(summary.major_brand),
         optional_u32_json(summary.minor_version)
@@ -272,18 +273,25 @@ fn push_media_summary_json(
         }
         write!(
             output,
-            "{{\"track_id\":{},\"handler_type\":\"{}\",\"codec\":{},\"timescale\":{},\"duration\":{},\"width_pixels\":{},\"height_pixels\":{},\"sample_count\":{},\"total_sample_bytes\":{},\"chunk_count\":{},\"sync_sample_count\":{}}}",
+            "{{\"track_id\":{},\"handler_type\":\"{}\",\"codec\":{},\"timescale\":{},\"duration\":{},\"width_fixed_16_16\":{},\"height_fixed_16_16\":{},\"width_pixels\":{},\"height_pixels\":{},\"sample_count\":{},\"decode_duration\":{},\"composition_sample_count\":{},\"total_sample_bytes\":{},\"constant_sample_size\":{},\"chunk_count\":{},\"sync_sample_count\":{},\"sample_description_count\":{},\"sample_to_chunk_entry_count\":{}}}",
             track.track_id,
             json_escape(&track.handler_type.to_string()),
             optional_fourcc_json(track.codec),
             track.timescale,
             track.duration,
+            track.width_fixed_16_16,
+            track.height_fixed_16_16,
             track.width_pixels(),
             track.height_pixels(),
             optional_u64_json(track.sample_count),
+            optional_u64_json(track.decode_duration),
+            optional_u64_json(track.composition_sample_count),
             optional_u64_json(track.total_sample_bytes),
+            optional_u32_json(track.constant_sample_size),
             optional_u64_json(track.chunk_count),
-            optional_u64_json(track.sync_sample_count)
+            optional_u64_json(track.sync_sample_count),
+            optional_u32_json(track.sample_description_count),
+            optional_u64_json(track.sample_to_chunk_entry_count)
         )
         .map_err(|error| error.to_string())?;
     }
@@ -313,10 +321,10 @@ fn optional_u64_text(value: Option<u64>) -> String {
 #[cfg(test)]
 mod tests {
     use super::push_media_summary_json;
-    use fdgr_media::{FourCc, IsoBmffSummary};
+    use fdgr_media::{FourCc, IsoBmffSummary, MEDIA_INSPECTION_SCHEMA};
 
     #[test]
-    fn media_summary_json_is_deterministic_and_explicit_about_decode_scope() {
+    fn media_summary_json_is_deterministic_and_schema_complete() {
         let summary = IsoBmffSummary {
             file_length: 10,
             major_brand: Some(FourCc::new(*b"isom")),
@@ -333,6 +341,7 @@ mod tests {
         assert!(push_media_summary_json(&mut first, &summary).is_ok());
         assert!(push_media_summary_json(&mut second, &summary).is_ok());
         assert_eq!(first, second);
+        assert!(first.contains(MEDIA_INSPECTION_SCHEMA));
         assert!(first.contains("\"decode_performed\":false"));
         assert!(first.contains("\"track_count\":0"));
     }
