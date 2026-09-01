@@ -7,6 +7,7 @@ use fdgr_core::{
     PLAN_SUMMARY_SCHEMA, STORE_VERIFICATION_SCHEMA, VERSION,
 };
 use fdgr_evidence::ObjectManifest;
+use fdgr_media::{FourCc, IsoBmffSummary, MEDIA_INSPECTION_SCHEMA};
 use fdgr_object_store::{IMPORT_RECEIPT_SCHEMA, ImportReceipt};
 use std::fmt::Write as _;
 
@@ -243,6 +244,169 @@ pub(crate) fn print_import_receipt(receipt: ImportReceipt, format: OutputFormat)
     }
 }
 
+#[allow(clippy::too_many_lines)]
+pub(crate) fn print_media_inspection(
+    summary: &IsoBmffSummary,
+    format: OutputFormat,
+) -> Result<(), String> {
+    match format {
+        OutputFormat::Text => {
+            println!("schema\t{MEDIA_INSPECTION_SCHEMA}");
+            println!("scope\tcontainer_metadata_and_classic_sample_tables");
+            println!("decode_performed\tfalse");
+            println!("file_length\t{}", summary.file_length);
+            println!(
+                "major_brand\t{}",
+                display_optional_fourcc(summary.major_brand)
+            );
+            println!(
+                "minor_version\t{}",
+                display_optional_u32(summary.minor_version)
+            );
+            for brand in &summary.compatible_brands {
+                println!("compatible_brand\t{brand}");
+            }
+            println!("movie_timescale\t{}", summary.movie_timescale);
+            println!("movie_duration\t{}", summary.movie_duration);
+            println!("fragmented\t{}", summary.fragmented);
+            println!("boxes_visited\t{}", summary.boxes_visited);
+            println!("track_count\t{}", summary.tracks.len());
+            for (index, track) in summary.tracks.iter().enumerate() {
+                println!("track\t{index}\ttrack_id\t{}", track.track_id);
+                println!("track\t{index}\thandler_type\t{}", track.handler_type);
+                println!(
+                    "track\t{index}\tcodec\t{}",
+                    display_optional_fourcc(track.codec)
+                );
+                println!("track\t{index}\ttimescale\t{}", track.timescale);
+                println!("track\t{index}\tduration\t{}", track.duration);
+                println!("track\t{index}\twidth_pixels\t{}", track.width_pixels());
+                println!("track\t{index}\theight_pixels\t{}", track.height_pixels());
+                println!(
+                    "track\t{index}\tsample_count\t{}",
+                    display_optional_u64(track.sample_count)
+                );
+                println!(
+                    "track\t{index}\tdecode_duration\t{}",
+                    display_optional_u64(track.decode_duration)
+                );
+                println!(
+                    "track\t{index}\tcomposition_sample_count\t{}",
+                    display_optional_u64(track.composition_sample_count)
+                );
+                println!(
+                    "track\t{index}\ttotal_sample_bytes\t{}",
+                    display_optional_u64(track.total_sample_bytes)
+                );
+                println!(
+                    "track\t{index}\tconstant_sample_size\t{}",
+                    display_optional_u32(track.constant_sample_size)
+                );
+                println!(
+                    "track\t{index}\tchunk_count\t{}",
+                    display_optional_u64(track.chunk_count)
+                );
+                println!(
+                    "track\t{index}\tsync_sample_count\t{}",
+                    display_optional_u64(track.sync_sample_count)
+                );
+                println!(
+                    "track\t{index}\tsample_description_count\t{}",
+                    display_optional_u32(track.sample_description_count)
+                );
+                println!(
+                    "track\t{index}\tsample_to_chunk_entry_count\t{}",
+                    display_optional_u64(track.sample_to_chunk_entry_count)
+                );
+            }
+        }
+        OutputFormat::Json => {
+            let mut output = format!(
+                "{{\"schema\":\"{}\",\"scope\":\"container_metadata_and_classic_sample_tables\",\"decode_performed\":false,\"file_length\":{},\"major_brand\":{},\"minor_version\":{},\"compatible_brands\":[",
+                json_escape(MEDIA_INSPECTION_SCHEMA),
+                summary.file_length,
+                json_optional_fourcc(summary.major_brand),
+                json_optional_u32(summary.minor_version)
+            );
+            for (index, brand) in summary.compatible_brands.iter().enumerate() {
+                if index > 0 {
+                    output.push(',');
+                }
+                write!(output, "\"{}\"", json_escape(&brand.to_string()))
+                    .map_err(|error| error.to_string())?;
+            }
+            write!(
+                output,
+                "],\"movie_timescale\":{},\"movie_duration\":{},\"fragmented\":{},\"boxes_visited\":{},\"track_count\":{},\"tracks\":[",
+                summary.movie_timescale,
+                summary.movie_duration,
+                summary.fragmented,
+                summary.boxes_visited,
+                summary.tracks.len()
+            )
+            .map_err(|error| error.to_string())?;
+            for (index, track) in summary.tracks.iter().enumerate() {
+                if index > 0 {
+                    output.push(',');
+                }
+                write!(
+                    output,
+                    "{{\"track_id\":{},\"handler_type\":\"{}\",\"codec\":{},\"timescale\":{},\"duration\":{},\"width_fixed_16_16\":{},\"height_fixed_16_16\":{},\"width_pixels\":{},\"height_pixels\":{},\"sample_count\":{},\"decode_duration\":{},\"composition_sample_count\":{},\"total_sample_bytes\":{},\"constant_sample_size\":{},\"chunk_count\":{},\"sync_sample_count\":{},\"sample_description_count\":{},\"sample_to_chunk_entry_count\":{}}}",
+                    track.track_id,
+                    json_escape(&track.handler_type.to_string()),
+                    json_optional_fourcc(track.codec),
+                    track.timescale,
+                    track.duration,
+                    track.width_fixed_16_16,
+                    track.height_fixed_16_16,
+                    track.width_pixels(),
+                    track.height_pixels(),
+                    json_optional_u64(track.sample_count),
+                    json_optional_u64(track.decode_duration),
+                    json_optional_u64(track.composition_sample_count),
+                    json_optional_u64(track.total_sample_bytes),
+                    json_optional_u32(track.constant_sample_size),
+                    json_optional_u64(track.chunk_count),
+                    json_optional_u64(track.sync_sample_count),
+                    json_optional_u32(track.sample_description_count),
+                    json_optional_u64(track.sample_to_chunk_entry_count)
+                )
+                .map_err(|error| error.to_string())?;
+            }
+            output.push_str("]}");
+            println!("{output}");
+        }
+    }
+    Ok(())
+}
+
+fn display_optional_fourcc(value: Option<FourCc>) -> String {
+    value.map_or_else(|| "unknown".to_owned(), |code| code.to_string())
+}
+
+fn display_optional_u32(value: Option<u32>) -> String {
+    value.map_or_else(|| "unknown".to_owned(), |number| number.to_string())
+}
+
+fn display_optional_u64(value: Option<u64>) -> String {
+    value.map_or_else(|| "unknown".to_owned(), |number| number.to_string())
+}
+
+fn json_optional_fourcc(value: Option<FourCc>) -> String {
+    value.map_or_else(
+        || "null".to_owned(),
+        |code| format!("\"{}\"", json_escape(&code.to_string())),
+    )
+}
+
+fn json_optional_u32(value: Option<u32>) -> String {
+    value.map_or_else(|| "null".to_owned(), |number| number.to_string())
+}
+
+fn json_optional_u64(value: Option<u64>) -> String {
+    value.map_or_else(|| "null".to_owned(), |number| number.to_string())
+}
+
 pub(crate) fn print_plan_summary(format: OutputFormat) -> Result<(), String> {
     match format {
         OutputFormat::Text => {
@@ -284,6 +448,7 @@ pub(crate) fn print_help() {
            fdgr doctor [--format text|json]\n  \
            fdgr file-manifest <path> [--chunk-size bytes] [--chunk-offset n] [--chunk-limit n] [--format text|json]\n  \
            fdgr import-file <store-root> <path> [--chunk-size bytes] [--format text|json]\n  \
+           fdgr media-inspect <path> [--max-boxes n] [--max-depth n] [--max-tracks n] [--max-table-entries n] [--max-table-bytes n] [--max-compatible-brands n] [--max-sample-descriptions n] [--format text|json]\n  \
            fdgr verify-file <path> --object-digest <digest> --manifest-digest <digest> [--chunk-size bytes] [--format text|json]\n  \
            fdgr verify-store <store-root> <manifest-digest> [--format text|json]\n  \
            fdgr plan-summary [--format text|json]\n  \
@@ -342,10 +507,20 @@ const fn hex_digit(value: u32) -> char {
 
 #[cfg(test)]
 mod tests {
-    use super::json_escape;
+    use super::{json_escape, json_optional_fourcc};
+    use fdgr_media::FourCc;
 
     #[test]
     fn json_escape_handles_control_characters() {
         assert_eq!(json_escape("a\n\"b\\c\0"), "a\\n\\\"b\\\\c\\u0000");
+    }
+
+    #[test]
+    fn optional_fourcc_is_valid_json() {
+        assert_eq!(
+            json_optional_fourcc(Some(FourCc::new(*b"avc1"))),
+            "\"avc1\""
+        );
+        assert_eq!(json_optional_fourcc(None), "null");
     }
 }

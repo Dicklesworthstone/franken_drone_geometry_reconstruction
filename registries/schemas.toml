@@ -128,6 +128,12 @@ json_schema_id = "https://fdgr.dev/schemas/local_import_receipt.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-MEDIA-INSPECTION"
+path = "schemas/media_inspection.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/media_inspection.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-OBJECT-MANIFEST-VIEW"
 path = "schemas/object_manifest_view.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/object_manifest_view.v1.json"

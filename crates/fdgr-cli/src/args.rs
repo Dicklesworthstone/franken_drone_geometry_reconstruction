@@ -2,6 +2,7 @@
 //! Deterministic CLI argument parsing without a third-party command framework.
 
 use fdgr_evidence::DEFAULT_CHUNK_SIZE;
+use fdgr_media::ParseLimits;
 use fdgr_types::EvidenceDigest;
 use std::path::PathBuf;
 
@@ -44,6 +45,13 @@ pub(crate) struct ImportOptions {
 pub(crate) struct StoreVerifyOptions {
     pub(crate) store_root: PathBuf,
     pub(crate) manifest_digest: EvidenceDigest,
+    pub(crate) format: OutputFormat,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct MediaInspectOptions {
+    pub(crate) path: PathBuf,
+    pub(crate) limits: ParseLimits,
     pub(crate) format: OutputFormat,
 }
 
@@ -191,6 +199,48 @@ pub(crate) fn parse_store_verify(
     })
 }
 
+pub(crate) fn parse_media_inspect(
+    arguments: &[String],
+) -> Result<MediaInspectOptions, String> {
+    let mut arguments = arguments.iter();
+    let path = arguments.next().ok_or_else(|| {
+        "usage: fdgr media-inspect <path> [bounded options] [--format text|json]".to_owned()
+    })?;
+    let mut limits = ParseLimits::default();
+    let mut format = OutputFormat::Text;
+    while let Some(flag) = arguments.next() {
+        let value = arguments
+            .next()
+            .ok_or_else(|| format!("missing value for {flag}"))?;
+        match flag.as_str() {
+            "--max-boxes" => limits.max_boxes = parse_u64(value, "maximum box count")?,
+            "--max-depth" => limits.max_depth = parse_usize(value, "maximum box depth")?,
+            "--max-tracks" => limits.max_tracks = parse_usize(value, "maximum track count")?,
+            "--max-table-entries" => {
+                limits.max_table_entries = parse_u64(value, "maximum table entry count")?;
+            }
+            "--max-table-bytes" => {
+                limits.max_table_bytes = parse_u64(value, "maximum table byte count")?;
+            }
+            "--max-compatible-brands" => {
+                limits.max_compatible_brands =
+                    parse_usize(value, "maximum compatible brand count")?;
+            }
+            "--max-sample-descriptions" => {
+                limits.max_sample_descriptions =
+                    parse_u64(value, "maximum sample description count")?;
+            }
+            "--format" => format = parse_format_value(value)?,
+            _ => return Err(format!("unknown media-inspect option {flag:?}")),
+        }
+    }
+    Ok(MediaInspectOptions {
+        path: PathBuf::from(path),
+        limits,
+        format,
+    })
+}
+
 fn parse_format_value(value: &str) -> Result<OutputFormat, String> {
     match value {
         "text" => Ok(OutputFormat::Text),
@@ -205,6 +255,12 @@ fn parse_u32(value: &str, label: &str) -> Result<u32, String> {
         .map_err(|error| format!("invalid {label} {value:?}: {error}"))
 }
 
+fn parse_u64(value: &str, label: &str) -> Result<u64, String> {
+    value
+        .parse::<u64>()
+        .map_err(|error| format!("invalid {label} {value:?}: {error}"))
+}
+
 fn parse_usize(value: &str, label: &str) -> Result<usize, String> {
     value
         .parse::<usize>()
@@ -214,7 +270,8 @@ fn parse_usize(value: &str, label: &str) -> Result<usize, String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        OutputFormat, parse_import, parse_manifest_view, parse_store_verify, parse_verify,
+        OutputFormat, parse_import, parse_manifest_view, parse_media_inspect, parse_store_verify,
+        parse_verify,
     };
 
     #[test]
@@ -257,5 +314,41 @@ mod tests {
     fn store_verify_rejects_noncanonical_digest() {
         let arguments = vec!["store".to_owned(), "not-a-digest".to_owned()];
         assert!(parse_store_verify(&arguments).is_err());
+    }
+
+    #[test]
+    fn media_inspect_exposes_hard_bounds() {
+        let arguments = vec![
+            "flight.mp4".to_owned(),
+            "--max-boxes".to_owned(),
+            "99".to_owned(),
+            "--max-depth".to_owned(),
+            "7".to_owned(),
+            "--max-tracks".to_owned(),
+            "5".to_owned(),
+            "--max-table-entries".to_owned(),
+            "1234".to_owned(),
+            "--max-table-bytes".to_owned(),
+            "4096".to_owned(),
+            "--max-compatible-brands".to_owned(),
+            "8".to_owned(),
+            "--max-sample-descriptions".to_owned(),
+            "4".to_owned(),
+            "--format".to_owned(),
+            "json".to_owned(),
+        ];
+        assert!(matches!(
+            parse_media_inspect(&arguments),
+            Ok(ref value)
+                if value.path.to_string_lossy() == "flight.mp4"
+                    && value.format == OutputFormat::Json
+                    && value.limits.max_boxes == 99
+                    && value.limits.max_depth == 7
+                    && value.limits.max_tracks == 5
+                    && value.limits.max_table_entries == 1234
+                    && value.limits.max_table_bytes == 4096
+                    && value.limits.max_compatible_brands == 8
+                    && value.limits.max_sample_descriptions == 4
+        ));
     }
 }

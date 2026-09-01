@@ -2,14 +2,17 @@
 //! Command dispatch and semantic operations for the current CLI.
 
 use crate::args::{
-    parse_format, parse_import, parse_manifest_view, parse_store_verify, parse_verify,
+    parse_format, parse_import, parse_manifest_view, parse_media_inspect, parse_store_verify,
+    parse_verify,
 };
 use crate::render::{
     json_escape, print_capabilities, print_doctor, print_file_verification, print_help,
-    print_import_receipt, print_manifest, print_plan_summary, print_store_verification,
+    print_import_receipt, print_manifest, print_media_inspection, print_plan_summary,
+    print_store_verification,
 };
 use fdgr_core::{VALIDATE_ID_SCHEMA, VERSION};
 use fdgr_evidence::build_file_manifest;
+use fdgr_media::inspect_iso_bmff_file;
 use fdgr_object_store::LocalObjectStore;
 use fdgr_types::EvidenceDigest;
 
@@ -23,6 +26,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
         "doctor" => print_doctor(parse_format(rest)?),
         "file-manifest" => file_manifest(rest),
         "import-file" => import_file(rest),
+        "media-inspect" => media_inspect(rest),
         "verify-file" => verify_file(rest),
         "verify-store" => verify_store(rest),
         "plan-summary" => print_plan_summary(parse_format(rest)?),
@@ -82,6 +86,13 @@ fn import_file(arguments: &[String]) -> Result<(), String> {
         .map_err(|error| format!("file import failed: {error}"))?;
     print_import_receipt(receipt, options.format);
     Ok(())
+}
+
+fn media_inspect(arguments: &[String]) -> Result<(), String> {
+    let options = parse_media_inspect(arguments)?;
+    let summary = inspect_iso_bmff_file(&options.path, options.limits)
+        .map_err(|error| format!("media inspection failed: {error}"))?;
+    print_media_inspection(&summary, options.format)
 }
 
 fn verify_store(arguments: &[String]) -> Result<(), String> {

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/media_inspection.v1.json",
+  "title": "FDGR bounded media inspection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "scope",
+    "decode_performed",
+    "file_length",
+    "major_brand",
+    "minor_version",
+    "compatible_brands",
+    "movie_timescale",
+    "movie_duration",
+    "fragmented",
+    "boxes_visited",
+    "track_count",
+    "tracks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.media_inspection/1"
+    },
+    "scope": {
+      "const": "container_metadata_and_classic_sample_tables"
+    },
+    "decode_performed": {
+      "const": false
+    },
+    "file_length": {
+      "type": "integer",
+      "minimum": 8
+    },
+    "major_brand": {
+      "oneOf": [
+        {"type": "string", "minLength": 1, "maxLength": 16},
+        {"type": "null"}
+      ]
+    },
+    "minor_version": {
+      "oneOf": [
+        {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        {"type": "null"}
+      ]
+    },
+    "compatible_brands": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "maxLength": 16}
+    },
+    "movie_timescale": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4294967295
+    },
+    "movie_duration": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "fragmented": {
+      "type": "boolean"
+    },
+    "boxes_visited": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "track_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tracks": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/track_summary"}
+    }
+  },
+  "$defs": {
+    "optional_u32": {
+      "oneOf": [
+        {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        {"type": "null"}
+      ]
+    },
+    "optional_u64": {
+      "oneOf": [
+        {"type": "integer", "minimum": 0},
+        {"type": "null"}
+      ]
+    },
+    "optional_fourcc": {
+      "oneOf": [
+        {"type": "string", "minLength": 1, "maxLength": 16},
+        {"type": "null"}
+      ]
+    },
+    "track_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "track_id",
+        "handler_type",
+        "codec",
+        "timescale",
+        "duration",
+        "width_fixed_16_16",
+        "height_fixed_16_16",
+        "width_pixels",
+        "height_pixels",
+        "sample_count",
+        "decode_duration",
+        "composition_sample_count",
+        "total_sample_bytes",
+        "constant_sample_size",
+        "chunk_count",
+        "sync_sample_count",
+        "sample_description_count",
+        "sample_to_chunk_entry_count"
+      ],
+      "properties": {
+        "track_id": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "handler_type": {"type": "string", "minLength": 1, "maxLength": 16},
+        "codec": {"$ref": "#/$defs/optional_fourcc"},
+        "timescale": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "duration": {"type": "integer", "minimum": 0},
+        "width_fixed_16_16": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "height_fixed_16_16": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "width_pixels": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "height_pixels": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "sample_count": {"$ref": "#/$defs/optional_u64"},
+        "decode_duration": {"$ref": "#/$defs/optional_u64"},
+        "composition_sample_count": {"$ref": "#/$defs/optional_u64"},
+        "total_sample_bytes": {"$ref": "#/$defs/optional_u64"},
+        "constant_sample_size": {"$ref": "#/$defs/optional_u32"},
+        "chunk_count": {"$ref": "#/$defs/optional_u64"},
+        "sync_sample_count": {"$ref": "#/$defs/optional_u64"},
+        "sample_description_count": {"$ref": "#/$defs/optional_u32"},
+        "sample_to_chunk_entry_count": {"$ref": "#/$defs/optional_u64"}
+      }
+    }
+  }
+}

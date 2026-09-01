@@ -117,6 +117,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::Planned,
         },
         Capability {
+            id: "media.inspect.iso_bmff",
+            description: "inspect bounded ISO BMFF metadata and classic sample-table consistency without decoding",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "media.normalize",
             description: "supervise ffmpeg/ffprobe sidecars and publish deterministic media renditions",
             status: CapabilityStatus::Planned,
@@ -174,14 +179,14 @@ pub fn doctor() -> Vec<DoctorFinding> {
             "ffmpeg",
             &["-version"],
             "ffmpeg is available",
-            "ffmpeg was not found; media normalization remains unavailable",
+            "ffmpeg was not found; external decode and media normalization remain unavailable",
         ),
         executable_check(
             "tool.ffprobe",
             "ffprobe",
             &["-version"],
-            "ffprobe is available",
-            "ffprobe was not found; media inspection remains unavailable",
+            "ffprobe is available for differential media inspection",
+            "ffprobe was not found; native bounded inspection remains available but oracle comparison is unavailable",
         ),
         executable_check(
             "tool.python3",
@@ -282,13 +287,14 @@ mod tests {
     }
 
     #[test]
-    fn evidence_capabilities_are_reference_source_only() {
+    fn reference_capabilities_remain_explicit() {
         for id in [
             "evidence.ledger.append",
             "evidence.ledger.replay",
             "evidence.manifest.build",
             "evidence.manifest.verify",
             "evidence.store.local",
+            "media.inspect.iso_bmff",
         ] {
             let status = capabilities()
                 .iter()

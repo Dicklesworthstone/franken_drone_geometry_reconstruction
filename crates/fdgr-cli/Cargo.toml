@@ -15,6 +15,7 @@ path = "src/main.rs"
 [dependencies]
 fdgr-core = { path = "../fdgr-core" }
 fdgr-evidence = { path = "../fdgr-evidence" }
+fdgr-media = { path = "../fdgr-media" }
 fdgr-object-store = { path = "../fdgr-object-store" }
 fdgr-types = { path = "../fdgr-types" }
 
