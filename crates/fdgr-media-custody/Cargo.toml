@@ -9,6 +9,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
 fdgr-evidence = { path = "../fdgr-evidence" }
 fdgr-media = { path = "../fdgr-media" }
 fdgr-object-store = { path = "../fdgr-object-store" }
