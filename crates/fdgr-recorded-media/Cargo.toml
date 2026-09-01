@@ -1,0 +1,18 @@
+[package]
+name = "fdgr-recorded-media"
+description = "Recorded-media ingest and immutable inspection orchestration for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-media = { path = "../fdgr-media" }
+fdgr-media-custody = { path = "../fdgr-media-custody" }
+fdgr-object-store = { path = "../fdgr-object-store" }
+
+[lints]
+workspace = true
