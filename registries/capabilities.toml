@@ -109,10 +109,10 @@ status = "planned_sensitive"
 
 [[capability]]
 id = "CAP-PILOT-GUIDANCE"
-name = "Human pilot guidance"
-summary = "Read-only authority to generate bounded evidence-gain pilot cards for an operator-present session; grants no aircraft control."
+authority = "generate bounded evidence-gain pilot cards for an operator-present session; grants no aircraft-control authority"
+status = "planned_sensitive"
 
 [[capability]]
 id = "CAP-SPATIAL-EXPAND"
-name = "Spatial handle expansion"
-summary = "Read-only authority to expand an authorized spatial/semantic handle across registered abstraction neighbors without leaking restricted geometry."
+authority = "expand an authorized spatial/semantic handle across registered abstraction neighbors without leaking restricted geometry"
+status = "planned_sensitive"
