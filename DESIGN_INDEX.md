@@ -21,6 +21,7 @@ manifest, ADRs, and machine registries.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — compact synthetic system map.
 - [`COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md`](COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md) — normative plan and traceability.
 - [`architecture/SEMANTICS_MANIFEST.md`](architecture/SEMANTICS_MANIFEST.md) — identity, anchors, time, space, epistemics, authority, publication.
+- [`architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md`](architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md) — stable IDs introduced after the plan's embedded revision-0.4 appendix.
 - [`FRANKENSTACK_DEEP_DIVE.md`](FRANKENSTACK_DEEP_DIVE.md) — project-by-project and compound design synthesis.
 - [`DEPENDENCY_POLICY.md`](DEPENDENCY_POLICY.md) — strict safe-Rust closed universe.
 - [`LOCAL_QUALIFICATION_AND_RELEASE.md`](LOCAL_QUALIFICATION_AND_RELEASE.md) — Doodlestein-native release authority.
