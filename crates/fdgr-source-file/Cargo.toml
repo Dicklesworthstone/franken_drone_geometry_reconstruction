@@ -13,5 +13,8 @@ fdgr-ledger = { path = "../fdgr-ledger" }
 fdgr-object-store = { path = "../fdgr-object-store" }
 fdgr-types = { path = "../fdgr-types" }
 
+[dev-dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+
 [lints]
 workspace = true
