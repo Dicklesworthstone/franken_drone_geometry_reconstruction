@@ -9,4 +9,6 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | Stable ID | Normative registry | Compact label |
 |---|---|---|
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
+| `SCHEMA-FILE-VERIFICATION` | `registries/schemas.toml` | schemas/file_verification.schema.json |
+| `SCHEMA-OBJECT-MANIFEST-VIEW` | `registries/schemas.toml` | schemas/object_manifest_view.schema.json |
 <!-- END GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->
