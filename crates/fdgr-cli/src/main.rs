@@ -1,7 +1,9 @@
 #![forbid(unsafe_code)]
 //! Agent-friendly deterministic CLI surfaces for the FDGR scaffold.
 
-use fdgr_core::{CAPABILITIES_SCHEMA, DOCTOR_SCHEMA, VERSION};
+use fdgr_core::{
+    CAPABILITIES_SCHEMA, DOCTOR_SCHEMA, PLAN_SUMMARY_SCHEMA, VALIDATE_ID_SCHEMA, VERSION,
+};
 use fdgr_types::EvidenceDigest;
 use std::env;
 use std::fmt::Write as _;
@@ -147,7 +149,8 @@ fn print_plan_summary(format: OutputFormat) -> Result<(), String> {
         }
         OutputFormat::Json => {
             let mut output = format!(
-                "{{\"schema\":\"fdgr.plan_summary.v1\",\"version\":\"{}\",\"steps\":[",
+                "{{\"schema\":\"{}\",\"version\":\"{}\",\"steps\":[",
+                json_escape(PLAN_SUMMARY_SCHEMA),
                 json_escape(VERSION)
             );
             for (index, step) in fdgr_core::implementation_sequence().iter().enumerate() {
@@ -176,7 +179,8 @@ fn validate_id(arguments: &[String]) -> Result<(), String> {
     match EvidenceDigest::parse(value) {
         Ok(digest) => {
             println!(
-                "{{\"schema\":\"fdgr.validate_id.v1\",\"valid\":true,\"digest\":\"{}\"}}",
+                "{{\"schema\":\"{}\",\"valid\":true,\"digest\":\"{}\"}}",
+                json_escape(VALIDATE_ID_SCHEMA),
                 digest.as_str()
             );
             Ok(())
