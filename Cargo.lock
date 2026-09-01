@@ -62,6 +62,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-media-worker"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-object-store"
 version = "0.0.1"
 dependencies = [
