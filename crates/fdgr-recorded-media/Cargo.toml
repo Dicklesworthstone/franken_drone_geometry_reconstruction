@@ -13,6 +13,7 @@ fdgr-codec = { path = "../fdgr-codec" }
 fdgr-media = { path = "../fdgr-media" }
 fdgr-media-custody = { path = "../fdgr-media-custody" }
 fdgr-object-store = { path = "../fdgr-object-store" }
+fdgr-types = { path = "../fdgr-types" }
 
 [lints]
 workspace = true
