@@ -2,6 +2,7 @@
 members = [
     "crates/fdgr-types",
     "crates/fdgr-codec",
+    "crates/fdgr-evidence",
     "crates/fdgr-core",
     "crates/fdgr-cli",
 ]
