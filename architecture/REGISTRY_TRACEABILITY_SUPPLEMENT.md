@@ -10,5 +10,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 |---|---|---|
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
 | `SCHEMA-FILE-VERIFICATION` | `registries/schemas.toml` | schemas/file_verification.schema.json |
+| `SCHEMA-LOCAL-IMPORT-RECEIPT` | `registries/schemas.toml` | schemas/local_import_receipt.schema.json |
 | `SCHEMA-OBJECT-MANIFEST-VIEW` | `registries/schemas.toml` | schemas/object_manifest_view.schema.json |
+| `SCHEMA-STORE-VERIFICATION` | `registries/schemas.toml` | schemas/store_verification.schema.json |
 <!-- END GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->
