@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/store_verification.v1.json",
+  "title": "FDGR Store Verification Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "verified",
+    "object_length",
+    "chunk_size",
+    "chunk_count",
+    "object_digest",
+    "manifest_digest"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.store_verification/1"
+    },
+    "verified": {
+      "const": true
+    },
+    "object_length": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "chunk_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 67108864
+    },
+    "chunk_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "object_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "manifest_digest": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
