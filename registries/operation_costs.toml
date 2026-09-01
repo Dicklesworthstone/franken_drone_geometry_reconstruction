@@ -1,4 +1,3 @@
-
 schema = "fdgr.operation_costs.v1"
 revision = 1
 
@@ -77,26 +76,22 @@ id = "OP-EPISODE-CLOSE"
 dominant_dimensions = ["plans", "obligations", "evidence", "surprises", "cost_categories"]
 required_receipts = ["start_end_anchors", "predicted_observed_delta", "actual_cost", "outcome", "lesson_candidates"]
 
-[[operation_cost]]
+[[operation]]
 id = "OP-DECISION-FRAME"
-name = "Decision Frame build"
-unit = "frame"
-required_dimensions = ["canonical_reads", "derived_queries", "graph_operations", "output_tokens"]
+dominant_dimensions = ["canonical_reads", "derived_queries", "graph_operations", "output_tokens"]
+required_receipts = ["anchor_vector", "objective_questions", "candidate_frontier", "selection_policy", "budget", "decision_frame_digest"]
 
-[[operation_cost]]
+[[operation]]
 id = "OP-ATTENTION-REFRESH"
-name = "Attention and epistemic-debt refresh"
-unit = "refresh"
-required_dimensions = ["derived_queries", "graph_operations", "output_tokens"]
+dominant_dimensions = ["derived_queries", "graph_operations", "output_tokens"]
+required_receipts = ["anchor_vector", "epistemic_debt_root", "attention_policy", "ranked_attention", "suppression_state", "budget"]
 
-[[operation_cost]]
+[[operation]]
 id = "OP-SPATIAL-EXPAND"
-name = "Spatial handle expansion"
-unit = "expansion"
-required_dimensions = ["canonical_reads", "graph_operations", "output_tokens"]
+dominant_dimensions = ["canonical_reads", "graph_operations", "output_tokens"]
+required_receipts = ["spatial_handle", "anchor_vector", "authorization_scope", "expanded_neighbors", "coverage", "budget"]
 
-[[operation_cost]]
+[[operation]]
 id = "OP-PILOT-CARD"
-name = "Human pilot card"
-unit = "card"
-required_dimensions = ["derived_queries", "operator_attention", "flight_time", "output_tokens"]
+dominant_dimensions = ["derived_queries", "operator_attention", "flight_time", "output_tokens"]
+required_receipts = ["question_bundle", "evidence_gain", "quality_conditions", "risk_constraints", "stop_abort_predicates", "operator_attention_budget"]
