@@ -1,0 +1,18 @@
+[package]
+name = "fdgr-media-custody"
+description = "Custody-preserving media inspection over verified FDGR objects"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-evidence = { path = "../fdgr-evidence" }
+fdgr-media = { path = "../fdgr-media" }
+fdgr-object-store = { path = "../fdgr-object-store" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true

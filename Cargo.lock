@@ -48,6 +48,16 @@ name = "fdgr-media"
 version = "0.0.1"
 
 [[package]]
+name = "fdgr-media-custody"
+version = "0.0.1"
+dependencies = [
+ "fdgr-evidence",
+ "fdgr-media",
+ "fdgr-object-store",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-object-store"
 version = "0.0.1"
 dependencies = [
