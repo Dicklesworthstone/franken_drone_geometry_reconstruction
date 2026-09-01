@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/calibration_model.v1.json",
+  "title": "FDGR camera calibration model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "calibration_digest",
+    "evidence_digest",
+    "calibration_epoch",
+    "model_generation",
+    "source_width",
+    "source_height",
+    "pixel_convention",
+    "fx_nano_pixels",
+    "fy_nano_pixels",
+    "cx_nano_pixels",
+    "cy_nano_pixels",
+    "distortion_model",
+    "distortion_coefficients_nano",
+    "shutter_model",
+    "readout_direction",
+    "readout_time_ns",
+    "reference_phase_nano",
+    "rotation_nano",
+    "translation_micrometers",
+    "camera_profile_digest",
+    "lens_state_digest",
+    "minimum_temperature_millicelsius",
+    "maximum_temperature_millicelsius",
+    "observation_count",
+    "median_reprojection_nano_pixels",
+    "maximum_reprojection_nano_pixels",
+    "declared_uncertainty_nano_pixels"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.calibration_model/1"},
+    "calibration_digest": {"$ref": "#/$defs/digest"},
+    "evidence_digest": {"$ref": "#/$defs/digest"},
+    "calibration_epoch": {"type": "integer", "minimum": 1},
+    "model_generation": {"type": "integer", "minimum": 1},
+    "source_width": {"type": "integer", "minimum": 1, "maximum": 65535},
+    "source_height": {"type": "integer", "minimum": 1, "maximum": 65535},
+    "pixel_convention": {"const": "top_left_half_pixel"},
+    "fx_nano_pixels": {"type": "integer", "minimum": 1, "maximum": 1000000000000000},
+    "fy_nano_pixels": {"type": "integer", "minimum": 1, "maximum": 1000000000000000},
+    "cx_nano_pixels": {"type": "integer"},
+    "cy_nano_pixels": {"type": "integer"},
+    "distortion_model": {"enum": ["none", "brown_conrady"]},
+    "distortion_coefficients_nano": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "prefixItems": [
+        {"type": "integer", "minimum": -1000000000000, "maximum": 1000000000000},
+        {"type": "integer", "minimum": -1000000000000, "maximum": 1000000000000},
+        {"type": "integer", "minimum": -1000000000000, "maximum": 1000000000000},
+        {"type": "integer", "minimum": -1000000000000, "maximum": 1000000000000},
+        {"type": "integer", "minimum": -1000000000000, "maximum": 1000000000000}
+      ]
+    },
+    "shutter_model": {"enum": ["global", "rolling"]},
+    "readout_direction": {
+      "oneOf": [
+        {"type": "null"},
+        {"enum": ["top_to_bottom", "bottom_to_top", "left_to_right", "right_to_left"]}
+      ]
+    },
+    "readout_time_ns": {"type": "integer", "minimum": 0, "maximum": 10000000000},
+    "reference_phase_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+    "rotation_nano": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {"type": "integer"}
+    },
+    "translation_micrometers": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"type": "integer", "minimum": -1000000000, "maximum": 1000000000}
+    },
+    "camera_profile_digest": {"$ref": "#/$defs/digest"},
+    "lens_state_digest": {"$ref": "#/$defs/digest"},
+    "minimum_temperature_millicelsius": {"type": "integer", "minimum": -100000, "maximum": 200000},
+    "maximum_temperature_millicelsius": {"type": "integer", "minimum": -100000, "maximum": 200000},
+    "observation_count": {"type": "integer", "minimum": 1},
+    "median_reprojection_nano_pixels": {"type": "integer", "minimum": 0},
+    "maximum_reprojection_nano_pixels": {"type": "integer", "minimum": 0},
+    "declared_uncertainty_nano_pixels": {"type": "integer", "minimum": 0}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"distortion_model": {"const": "none"}}},
+      "then": {
+        "properties": {
+          "distortion_coefficients_nano": {
+            "prefixItems": [
+              {"const": 0}, {"const": 0}, {"const": 0}, {"const": 0}, {"const": 0}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"shutter_model": {"const": "global"}}},
+      "then": {
+        "properties": {
+          "readout_direction": {"type": "null"},
+          "readout_time_ns": {"const": 0},
+          "reference_phase_nano": {"const": 0}
+        }
+      },
+      "else": {
+        "properties": {
+          "readout_direction": {"enum": ["top_to_bottom", "bottom_to_top", "left_to_right", "right_to_left"]},
+          "readout_time_ns": {"type": "integer", "minimum": 1, "maximum": 10000000000}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
