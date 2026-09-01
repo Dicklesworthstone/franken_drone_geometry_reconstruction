@@ -162,6 +162,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "media.timeline.classic",
+            description: "derive a canonical custody-bound DTS/PTS timeline with explicit partial coverage, gaps, reordering, and source byte spans",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "repository.doctor",
             description: "inspect local prerequisite executables without mutating the host",
             status: CapabilityStatus::Scaffolded,
@@ -170,6 +175,11 @@ pub fn capabilities() -> &'static [Capability] {
             id: "semantics.resolve.assets",
             description: "resolve evidence-linked home assets and utility observations",
             status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "sensor.clock.fit",
+            description: "fit a robust epoch-aware affine clock model from exact content-addressed synchronization anchors without extrapolation",
+            status: CapabilityStatus::ReferenceSource,
         },
     ]
 }
@@ -266,13 +276,13 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "freeze identities, claims, clocks, coordinates, scale witnesses, and publication contracts",
         "build a deterministic reference evidence ledger and content-addressed publication oracle",
         "import original recorded media with exact-byte preservation and timestamp accounting",
+        "derive canonical media timelines and explicit clock epochs before joining telemetry",
         "supervise ffmpeg and model workers through bounded process-sidecar protocols",
         "publish relative online geometry before admitting any metric claim",
         "add calibration, telemetry, and independent scale-witness fusion",
         "admit one offline geometry model through differential and license gates",
         "add pose-graph refinement, fusion, uncertainty, and coverage certificates",
-        "add semantic observations and multi-view resolution into an evidence-linked scene graph",
-        "add resumable cloud replication, agent surfaces, live adapters, and optimization in that order",
+        "add semantic observations, archive recovery, and agent surfaces in dependency order",
     ]
 }
 
@@ -338,6 +348,8 @@ mod tests {
             "media.inspect.published",
             "media.recorded.ingest",
             "media.recorded.verify",
+            "media.timeline.classic",
+            "sensor.clock.fit",
         ] {
             let status = capabilities()
                 .iter()

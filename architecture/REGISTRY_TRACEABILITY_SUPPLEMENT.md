@@ -9,6 +9,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | Stable ID | Normative registry | Compact label |
 |---|---|---|
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
+| `SCHEMA-CLOCK-MODEL` | `registries/schemas.toml` | schemas/clock_model.schema.json |
 | `SCHEMA-FILE-VERIFICATION` | `registries/schemas.toml` | schemas/file_verification.schema.json |
 | `SCHEMA-LOCAL-IMPORT-RECEIPT` | `registries/schemas.toml` | schemas/local_import_receipt.schema.json |
 | `SCHEMA-MEDIA-DECODE-PLAN` | `registries/schemas.toml` | schemas/media_decode_plan.schema.json |

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/clock_model.v1.json",
+  "title": "FDGR robust clock model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "model_digest",
+    "basis_digest",
+    "source_domain",
+    "reference_domain",
+    "source_epoch",
+    "reference_epoch",
+    "model_generation",
+    "source_timescale",
+    "reference_timescale",
+    "max_residual_ticks",
+    "max_drift_ppm",
+    "min_independent_groups",
+    "rate_numerator",
+    "rate_denominator",
+    "offset_numerator",
+    "source_support_start_ticks",
+    "source_support_end_ticks",
+    "reference_support_start_ticks",
+    "reference_support_end_ticks",
+    "drift_ppm",
+    "rate_spread_ppm",
+    "median_abs_residual_ticks",
+    "max_abs_residual_ticks",
+    "declared_uncertainty_ticks",
+    "inlier_anchor_ids",
+    "outlier_anchor_ids",
+    "inlier_group_ids",
+    "outlier_group_ids",
+    "residuals"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.clock_model/1"},
+    "model_digest": {"$ref": "#/$defs/digest"},
+    "basis_digest": {"$ref": "#/$defs/digest"},
+    "source_domain": {"$ref": "#/$defs/domain"},
+    "reference_domain": {"$ref": "#/$defs/domain"},
+    "source_epoch": {"type": "integer", "minimum": 1},
+    "reference_epoch": {"type": "integer", "minimum": 1},
+    "model_generation": {"type": "integer", "minimum": 1},
+    "source_timescale": {"type": "integer", "minimum": 1, "maximum": 1000000000000},
+    "reference_timescale": {"type": "integer", "minimum": 1, "maximum": 1000000000000},
+    "max_residual_ticks": {"type": "integer", "minimum": 1, "maximum": 1000000000000},
+    "max_drift_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "min_independent_groups": {"type": "integer", "minimum": 2, "maximum": 65535},
+    "rate_numerator": {"$ref": "#/$defs/i128"},
+    "rate_denominator": {"$ref": "#/$defs/positive_i128"},
+    "offset_numerator": {"$ref": "#/$defs/i128"},
+    "source_support_start_ticks": {"$ref": "#/$defs/i128"},
+    "source_support_end_ticks": {"$ref": "#/$defs/i128"},
+    "reference_support_start_ticks": {"$ref": "#/$defs/i128"},
+    "reference_support_end_ticks": {"$ref": "#/$defs/i128"},
+    "drift_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "rate_spread_ppm": {"type": "integer", "minimum": 0},
+    "median_abs_residual_ticks": {"type": "integer", "minimum": 0},
+    "max_abs_residual_ticks": {"type": "integer", "minimum": 0},
+    "declared_uncertainty_ticks": {"type": "integer", "minimum": 0, "maximum": 1000000000000},
+    "inlier_anchor_ids": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "outlier_anchor_ids": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "inlier_group_ids": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1, "maximum": 4294967295}
+    },
+    "outlier_group_ids": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1, "maximum": 4294967295}
+    },
+    "residuals": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 256,
+      "items": {"$ref": "#/$defs/residual"}
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "domain": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z](?:[a-z0-9]|[._-](?=[a-z0-9]))*$"
+    },
+    "i128": {"type": "string", "pattern": "^-?(?:0|[1-9][0-9]*)$"},
+    "positive_i128": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "residual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anchor_id", "correlation_group", "residual_ticks", "inlier"],
+      "properties": {
+        "anchor_id": {"type": "integer", "minimum": 1},
+        "correlation_group": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "residual_ticks": {"type": "integer", "minimum": 0},
+        "inlier": {"type": "boolean"}
+      }
+    }
+  }
+}

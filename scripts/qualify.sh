@@ -91,6 +91,9 @@ CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
 step 'Running custody-bound recorded-media timeline replay'
 CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
   bash scripts/e2e/recorded_media_timeline.sh
+step 'Running content-addressed robust clock fitting'
+CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
+  bash scripts/e2e/clock_fit.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then
