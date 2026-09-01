@@ -11,6 +11,10 @@ pub const DOCTOR_SCHEMA: &str = "fdgr.doctor/1";
 pub const PLAN_SUMMARY_SCHEMA: &str = "fdgr.plan_summary/1";
 /// Stable schema identifier for digest-validation output.
 pub const VALIDATE_ID_SCHEMA: &str = "fdgr.validate_id/1";
+/// Stable schema identifier for bounded object-manifest views.
+pub const OBJECT_MANIFEST_VIEW_SCHEMA: &str = "fdgr.object_manifest_view/1";
+/// Stable schema identifier for exact file-verification receipts.
+pub const FILE_VERIFICATION_SCHEMA: &str = "fdgr.file_verification/1";
 /// Current package version.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -25,11 +29,13 @@ pub struct Capability {
     pub status: CapabilityStatus,
 }
 
-/// Capability maturity. Source presence never implies implementation.
+/// Capability maturity. Source presence never implies qualification.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CapabilityStatus {
-    /// Implemented and covered by the scaffold's local tests.
+    /// Implemented in the minimal executable scaffold.
     Scaffolded,
+    /// Deterministic reference source exists but native qualification is still separate evidence.
+    ReferenceSource,
     /// Normatively designed but not implemented.
     Planned,
     /// Requires external evidence before admission.
@@ -42,13 +48,14 @@ impl CapabilityStatus {
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Scaffolded => "scaffolded",
+            Self::ReferenceSource => "reference_source",
             Self::Planned => "planned",
             Self::Research => "research",
         }
     }
 }
 
-/// Returns the deterministic capability registry exposed by the initial CLI.
+/// Returns the deterministic capability registry exposed by the CLI.
 #[must_use]
 pub fn capabilities() -> &'static [Capability] {
     &[
@@ -63,6 +70,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::Scaffolded,
         },
         Capability {
+            id: "canonical.sha256.compute",
+            description: "compute dependency-free streaming SHA-256 and domain-separated identities",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "capture.dji.flip.live",
             description: "acquire an owner-authorized DJI Flip live-view stream through an admitted adapter",
             status: CapabilityStatus::Research,
@@ -71,6 +83,16 @@ pub fn capabilities() -> &'static [Capability] {
             id: "capture.original.import",
             description: "ingest exact original drone media and metadata into immutable evidence",
             status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "evidence.manifest.build",
+            description: "build bounded streaming chunk manifests with separate logical and representation identities",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "evidence.manifest.verify",
+            description: "verify exact files, chunk ordering, lengths, and identities without whole-file buffering",
+            status: CapabilityStatus::ReferenceSource,
         },
         Capability {
             id: "geometry.reconstruct.metric",
@@ -200,8 +222,9 @@ pub fn implementation_sequence() -> &'static [&'static str] {
 #[cfg(test)]
 mod tests {
     use super::{
-        CAPABILITIES_SCHEMA, CapabilityStatus, DOCTOR_SCHEMA, PLAN_SUMMARY_SCHEMA,
-        VALIDATE_ID_SCHEMA, capabilities, implementation_sequence,
+        CAPABILITIES_SCHEMA, CapabilityStatus, DOCTOR_SCHEMA, FILE_VERIFICATION_SCHEMA,
+        OBJECT_MANIFEST_VIEW_SCHEMA, PLAN_SUMMARY_SCHEMA, VALIDATE_ID_SCHEMA, capabilities,
+        implementation_sequence,
     };
     use std::collections::BTreeSet;
 
@@ -212,6 +235,8 @@ mod tests {
             DOCTOR_SCHEMA,
             PLAN_SUMMARY_SCHEMA,
             VALIDATE_ID_SCHEMA,
+            OBJECT_MANIFEST_VIEW_SCHEMA,
+            FILE_VERIFICATION_SCHEMA,
         ] {
             assert!(schema.starts_with("fdgr."));
             assert!(schema.ends_with("/1"));
@@ -221,10 +246,7 @@ mod tests {
 
     #[test]
     fn capability_ids_are_unique_and_ordered() {
-        let ids: Vec<_> = capabilities()
-            .iter()
-            .map(|capability| capability.id)
-            .collect();
+        let ids: Vec<_> = capabilities().iter().map(|capability| capability.id).collect();
         let unique: BTreeSet<_> = ids.iter().copied().collect();
         assert_eq!(ids.len(), unique.len());
         assert!(
@@ -239,6 +261,16 @@ mod tests {
             (capability.id == "capture.dji.flip.live").then_some(capability.status)
         });
         assert_eq!(status, Some(CapabilityStatus::Research));
+    }
+
+    #[test]
+    fn evidence_capabilities_are_reference_source_only() {
+        for id in ["evidence.manifest.build", "evidence.manifest.verify"] {
+            let status = capabilities()
+                .iter()
+                .find_map(|capability| (capability.id == id).then_some(capability.status));
+            assert_eq!(status, Some(CapabilityStatus::ReferenceSource));
+        }
     }
 
     #[test]
