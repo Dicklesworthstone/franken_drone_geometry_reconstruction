@@ -5,7 +5,8 @@ usage() {
   cat <<'EOF'
 Usage: ./scripts/qualify.sh [--mode static|full|release] [--sibling-root PATH] [--receipt-out PATH]
 
-static   Validate design, registries, schemas, generated artifacts, scripts, and diff hygiene.
+static   Validate design, registries, schemas, mutation controls, generated artifacts, scripts,
+         and diff hygiene.
 full     Run static checks plus the pinned Rust format/check/Clippy/test lanes (default).
 release  Run full checks, require a clean checkout, verify production-admitted sibling pins, and
          seal exact source/contract/toolchain/host identities. Doodlestein predecessor receipts
@@ -37,12 +38,15 @@ pass() { printf '%bPASS: %s%b\n' "$GREEN" "$1" "$RESET"; }
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+export PYTHONDONTWRITEBYTECODE=1
 
 step 'Checking generated traceability and Beads bootstrap'
 python3 scripts/generate_traceability.py --check
 python3 scripts/export_beads_bootstrap.py --output .beads/bootstrap.jsonl --check
 step 'Validating closed dependency universe'
 python3 scripts/check_dependency_policy.py
+step 'Exercising registry schema, typed-reference, and authority mutation controls'
+python3 scripts/test_registry_contracts.py
 step 'Validating repository and agent contracts'
 python3 scripts/validate_repo.py
 python3 scripts/validate_agent_contracts.py
