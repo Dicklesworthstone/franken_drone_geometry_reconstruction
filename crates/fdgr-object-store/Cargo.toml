@@ -1,0 +1,16 @@
+[package]
+name = "fdgr-object-store"
+description = "Reference immutable local object store with root-last publication for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-evidence = { path = "../fdgr-evidence" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true

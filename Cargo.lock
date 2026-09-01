@@ -42,5 +42,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-object-store"
+version = "0.0.1"
+dependencies = [
+ "fdgr-evidence",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-types"
 version = "0.0.1"

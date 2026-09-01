@@ -4,6 +4,7 @@ members = [
     "crates/fdgr-codec",
     "crates/fdgr-evidence",
     "crates/fdgr-ledger",
+    "crates/fdgr-object-store",
     "crates/fdgr-core",
     "crates/fdgr-cli",
 ]
