@@ -129,6 +129,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-scale"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-source-file"
 version = "0.0.1"
 dependencies = [
