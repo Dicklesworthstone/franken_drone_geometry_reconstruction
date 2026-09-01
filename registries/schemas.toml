@@ -140,6 +140,12 @@ json_schema_id = "https://fdgr.dev/schemas/object_manifest_view.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-SAMPLE-WINDOW"
+path = "schemas/sample_window.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/sample_window.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-STORE-VERIFICATION"
 path = "schemas/store_verification.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/store_verification.v1.json"

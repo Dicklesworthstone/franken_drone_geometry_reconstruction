@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/sample_window.v1.json",
+  "title": "FDGR bounded classic sample window",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "scope",
+    "decode_performed",
+    "source_file_length",
+    "source_fragmented",
+    "track_id",
+    "timescale",
+    "total_samples",
+    "start_sample",
+    "requested_max_samples",
+    "returned_samples",
+    "complete",
+    "index_entries_scanned",
+    "samples"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.sample_window/1"
+    },
+    "scope": {
+      "const": "classic_sample_tables"
+    },
+    "decode_performed": {
+      "const": false
+    },
+    "source_file_length": {
+      "type": "integer",
+      "minimum": 8
+    },
+    "source_fragmented": {
+      "type": "boolean"
+    },
+    "track_id": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4294967295
+    },
+    "timescale": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4294967295
+    },
+    "total_samples": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "start_sample": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requested_max_samples": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "returned_samples": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "index_entries_scanned": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "samples": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/sample_record"}
+    }
+  },
+  "$defs": {
+    "sample_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_index",
+        "decode_time",
+        "composition_time",
+        "duration",
+        "byte_offset",
+        "byte_length",
+        "is_sync",
+        "sample_description_index"
+      ],
+      "properties": {
+        "sample_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decode_time": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "composition_time": {
+          "type": "integer"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "byte_offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "is_sync": {
+          "type": "boolean"
+        },
+        "sample_description_index": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        }
+      }
+    }
+  }
+}

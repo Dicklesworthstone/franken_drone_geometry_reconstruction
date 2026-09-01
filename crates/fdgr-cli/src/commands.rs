@@ -2,23 +2,24 @@
 //! Command dispatch and semantic operations for the current CLI.
 
 use crate::args::{
-    parse_format, parse_import, parse_manifest_view, parse_media_inspect, parse_store_verify,
-    parse_verify,
+    parse_format, parse_import, parse_manifest_view, parse_media_inspect, parse_media_samples,
+    parse_store_verify, parse_verify,
 };
 use crate::render::{
     json_escape, print_capabilities, print_doctor, print_file_verification, print_help,
     print_import_receipt, print_manifest, print_media_inspection, print_plan_summary,
     print_store_verification,
 };
+use crate::sample_render::print_sample_window;
 use fdgr_core::{VALIDATE_ID_SCHEMA, VERSION};
 use fdgr_evidence::build_file_manifest;
-use fdgr_media::inspect_iso_bmff_file;
+use fdgr_media::{inspect_iso_bmff_file, read_classic_sample_window_file};
 use fdgr_object_store::LocalObjectStore;
 use fdgr_types::EvidenceDigest;
 
 pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
     let Some((command, rest)) = arguments.split_first() else {
-        print_help();
+        print_complete_help();
         return Ok(());
     };
     match command.as_str() {
@@ -27,6 +28,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
         "file-manifest" => file_manifest(rest),
         "import-file" => import_file(rest),
         "media-inspect" => media_inspect(rest),
+        "media-samples" => media_samples(rest),
         "verify-file" => verify_file(rest),
         "verify-store" => verify_store(rest),
         "plan-summary" => print_plan_summary(parse_format(rest)?),
@@ -36,11 +38,18 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
             Ok(())
         }
         "help" | "--help" | "-h" => {
-            print_help();
+            print_complete_help();
             Ok(())
         }
         other => Err(format!("unknown command {other:?}; run `fdgr help`")),
     }
+}
+
+fn print_complete_help() {
+    print_help();
+    println!(
+        "  fdgr media-samples <path> --track-id <id> [--start-sample n] [--sample-limit n] [--max-window-records n] [--max-index-entries-scanned n] [bounded parser options] [--format text|json]"
+    );
 }
 
 fn file_manifest(arguments: &[String]) -> Result<(), String> {
@@ -93,6 +102,18 @@ fn media_inspect(arguments: &[String]) -> Result<(), String> {
     let summary = inspect_iso_bmff_file(&options.path, options.limits)
         .map_err(|error| format!("media inspection failed: {error}"))?;
     print_media_inspection(&summary, options.format)
+}
+
+fn media_samples(arguments: &[String]) -> Result<(), String> {
+    let options = parse_media_samples(arguments)?;
+    let (summary, window) = read_classic_sample_window_file(
+        &options.path,
+        options.request,
+        options.parse_limits,
+        options.window_limits,
+    )
+    .map_err(|error| format!("sample-window inspection failed: {error}"))?;
+    print_sample_window(&summary, &window, options.format)
 }
 
 fn verify_store(arguments: &[String]) -> Result<(), String> {

@@ -2,12 +2,13 @@
 //! Deterministic CLI argument parsing without a third-party command framework.
 
 use fdgr_evidence::DEFAULT_CHUNK_SIZE;
-use fdgr_media::ParseLimits;
+use fdgr_media::{ParseLimits, SampleWindowLimits, SampleWindowRequest};
 use fdgr_types::EvidenceDigest;
 use std::path::PathBuf;
 
 pub(crate) const DEFAULT_CHUNK_VIEW_LIMIT: usize = 32;
 pub(crate) const MAX_CHUNK_VIEW_LIMIT: usize = 4096;
+pub(crate) const DEFAULT_SAMPLE_VIEW_LIMIT: usize = 128;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum OutputFormat {
@@ -52,6 +53,15 @@ pub(crate) struct StoreVerifyOptions {
 pub(crate) struct MediaInspectOptions {
     pub(crate) path: PathBuf,
     pub(crate) limits: ParseLimits,
+    pub(crate) format: OutputFormat,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct MediaSamplesOptions {
+    pub(crate) path: PathBuf,
+    pub(crate) request: SampleWindowRequest,
+    pub(crate) parse_limits: ParseLimits,
+    pub(crate) window_limits: SampleWindowLimits,
     pub(crate) format: OutputFormat,
 }
 
@@ -212,24 +222,10 @@ pub(crate) fn parse_media_inspect(
         let value = arguments
             .next()
             .ok_or_else(|| format!("missing value for {flag}"))?;
+        if set_media_parse_limit(&mut limits, flag, value)? {
+            continue;
+        }
         match flag.as_str() {
-            "--max-boxes" => limits.max_boxes = parse_u64(value, "maximum box count")?,
-            "--max-depth" => limits.max_depth = parse_usize(value, "maximum box depth")?,
-            "--max-tracks" => limits.max_tracks = parse_usize(value, "maximum track count")?,
-            "--max-table-entries" => {
-                limits.max_table_entries = parse_u64(value, "maximum table entry count")?;
-            }
-            "--max-table-bytes" => {
-                limits.max_table_bytes = parse_u64(value, "maximum table byte count")?;
-            }
-            "--max-compatible-brands" => {
-                limits.max_compatible_brands =
-                    parse_usize(value, "maximum compatible brand count")?;
-            }
-            "--max-sample-descriptions" => {
-                limits.max_sample_descriptions =
-                    parse_u64(value, "maximum sample description count")?;
-            }
             "--format" => format = parse_format_value(value)?,
             _ => return Err(format!("unknown media-inspect option {flag:?}")),
         }
@@ -239,6 +235,81 @@ pub(crate) fn parse_media_inspect(
         limits,
         format,
     })
+}
+
+pub(crate) fn parse_media_samples(
+    arguments: &[String],
+) -> Result<MediaSamplesOptions, String> {
+    let mut arguments = arguments.iter();
+    let path = arguments.next().ok_or_else(|| {
+        "usage: fdgr media-samples <path> --track-id n [bounded options]".to_owned()
+    })?;
+    let mut track_id = None;
+    let mut start_sample = 0_u64;
+    let mut sample_limit = DEFAULT_SAMPLE_VIEW_LIMIT;
+    let mut parse_limits = ParseLimits::default();
+    let mut window_limits = SampleWindowLimits::default();
+    let mut format = OutputFormat::Text;
+    while let Some(flag) = arguments.next() {
+        let value = arguments
+            .next()
+            .ok_or_else(|| format!("missing value for {flag}"))?;
+        if set_media_parse_limit(&mut parse_limits, flag, value)? {
+            continue;
+        }
+        match flag.as_str() {
+            "--track-id" => track_id = Some(parse_u32(value, "track id")?),
+            "--start-sample" => start_sample = parse_u64(value, "start sample")?,
+            "--sample-limit" => sample_limit = parse_usize(value, "sample limit")?,
+            "--max-window-records" => {
+                window_limits.max_records = parse_usize(value, "maximum window records")?;
+            }
+            "--max-index-entries-scanned" => {
+                window_limits.max_index_entries_scanned =
+                    parse_u64(value, "maximum index entries scanned")?;
+            }
+            "--format" => format = parse_format_value(value)?,
+            _ => return Err(format!("unknown media-samples option {flag:?}")),
+        }
+    }
+    Ok(MediaSamplesOptions {
+        path: PathBuf::from(path),
+        request: SampleWindowRequest {
+            track_id: track_id.ok_or_else(|| "missing --track-id".to_owned())?,
+            start_sample,
+            max_samples: sample_limit,
+        },
+        parse_limits,
+        window_limits,
+        format,
+    })
+}
+
+fn set_media_parse_limit(
+    limits: &mut ParseLimits,
+    flag: &str,
+    value: &str,
+) -> Result<bool, String> {
+    match flag {
+        "--max-boxes" => limits.max_boxes = parse_u64(value, "maximum box count")?,
+        "--max-depth" => limits.max_depth = parse_usize(value, "maximum box depth")?,
+        "--max-tracks" => limits.max_tracks = parse_usize(value, "maximum track count")?,
+        "--max-table-entries" => {
+            limits.max_table_entries = parse_u64(value, "maximum table entry count")?;
+        }
+        "--max-table-bytes" => {
+            limits.max_table_bytes = parse_u64(value, "maximum table byte count")?;
+        }
+        "--max-compatible-brands" => {
+            limits.max_compatible_brands = parse_usize(value, "maximum compatible brand count")?;
+        }
+        "--max-sample-descriptions" => {
+            limits.max_sample_descriptions =
+                parse_u64(value, "maximum sample description count")?;
+        }
+        _ => return Ok(false),
+    }
+    Ok(true)
 }
 
 fn parse_format_value(value: &str) -> Result<OutputFormat, String> {
@@ -270,8 +341,8 @@ fn parse_usize(value: &str, label: &str) -> Result<usize, String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        OutputFormat, parse_import, parse_manifest_view, parse_media_inspect, parse_store_verify,
-        parse_verify,
+        OutputFormat, parse_import, parse_manifest_view, parse_media_inspect, parse_media_samples,
+        parse_store_verify, parse_verify,
     };
 
     #[test]
@@ -350,5 +421,39 @@ mod tests {
                     && value.limits.max_compatible_brands == 8
                     && value.limits.max_sample_descriptions == 4
         ));
+    }
+
+    #[test]
+    fn media_samples_requires_track_and_preserves_budgets() {
+        let arguments = vec![
+            "flight.mp4".to_owned(),
+            "--track-id".to_owned(),
+            "7".to_owned(),
+            "--start-sample".to_owned(),
+            "100".to_owned(),
+            "--sample-limit".to_owned(),
+            "12".to_owned(),
+            "--max-window-records".to_owned(),
+            "20".to_owned(),
+            "--max-index-entries-scanned".to_owned(),
+            "500".to_owned(),
+            "--max-boxes".to_owned(),
+            "900".to_owned(),
+            "--format".to_owned(),
+            "json".to_owned(),
+        ];
+        assert!(matches!(
+            parse_media_samples(&arguments),
+            Ok(ref value)
+                if value.path.to_string_lossy() == "flight.mp4"
+                    && value.request.track_id == 7
+                    && value.request.start_sample == 100
+                    && value.request.max_samples == 12
+                    && value.window_limits.max_records == 20
+                    && value.window_limits.max_index_entries_scanned == 500
+                    && value.parse_limits.max_boxes == 900
+                    && value.format == OutputFormat::Json
+        ));
+        assert!(parse_media_samples(&["flight.mp4".to_owned()]).is_err());
     }
 }

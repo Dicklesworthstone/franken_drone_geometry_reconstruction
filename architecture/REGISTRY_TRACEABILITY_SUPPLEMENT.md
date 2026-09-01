@@ -13,5 +13,6 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-LOCAL-IMPORT-RECEIPT` | `registries/schemas.toml` | schemas/local_import_receipt.schema.json |
 | `SCHEMA-MEDIA-INSPECTION` | `registries/schemas.toml` | schemas/media_inspection.schema.json |
 | `SCHEMA-OBJECT-MANIFEST-VIEW` | `registries/schemas.toml` | schemas/object_manifest_view.schema.json |
+| `SCHEMA-SAMPLE-WINDOW` | `registries/schemas.toml` | schemas/sample_window.schema.json |
 | `SCHEMA-STORE-VERIFICATION` | `registries/schemas.toml` | schemas/store_verification.schema.json |
 <!-- END GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->

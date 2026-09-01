@@ -117,6 +117,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::Planned,
         },
         Capability {
+            id: "media.index.classic_samples",
+            description: "expand bounded exact classic sample windows with timing and byte-range evidence",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "media.inspect.iso_bmff",
             description: "inspect bounded ISO BMFF metadata and classic sample-table consistency without decoding",
             status: CapabilityStatus::ReferenceSource,
@@ -294,6 +299,7 @@ mod tests {
             "evidence.manifest.build",
             "evidence.manifest.verify",
             "evidence.store.local",
+            "media.index.classic_samples",
             "media.inspect.iso_bmff",
         ] {
             let status = capabilities()

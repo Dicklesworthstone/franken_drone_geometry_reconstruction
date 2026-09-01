@@ -4,6 +4,7 @@
 mod args;
 mod commands;
 mod render;
+mod sample_render;
 
 use std::env;
 use std::process::ExitCode;
