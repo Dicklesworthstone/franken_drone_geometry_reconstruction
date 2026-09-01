@@ -128,6 +128,12 @@ json_schema_id = "https://fdgr.dev/schemas/local_import_receipt.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-MEDIA-DECODE-PLAN"
+path = "schemas/media_decode_plan.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/media_decode_plan.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-MEDIA-INSPECTION"
 path = "schemas/media_inspection.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/media_inspection.v1.json"
