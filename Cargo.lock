@@ -34,5 +34,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-ledger"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-types"
 version = "0.0.1"
