@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/local_import_receipt.v1.json",
+  "title": "FDGR Local Import Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "stage",
+    "object_length",
+    "chunk_size",
+    "chunk_count",
+    "object_digest",
+    "manifest_digest",
+    "object_created",
+    "manifest_created",
+    "staging_cleanup_complete",
+    "staging_entry"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.local_import_receipt/1"
+    },
+    "stage": {
+      "const": "published"
+    },
+    "object_length": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "chunk_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 67108864
+    },
+    "chunk_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "object_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "manifest_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "object_created": {
+      "type": "boolean"
+    },
+    "manifest_created": {
+      "type": "boolean"
+    },
+    "staging_cleanup_complete": {
+      "type": "boolean"
+    },
+    "staging_entry": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 256
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
