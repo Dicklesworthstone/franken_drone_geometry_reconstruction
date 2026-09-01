@@ -3,6 +3,8 @@
 
 mod args;
 mod commands;
+mod decode_args;
+mod decode_render;
 mod recorded_args;
 mod recorded_render;
 mod render;

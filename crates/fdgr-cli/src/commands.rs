@@ -5,6 +5,8 @@ use crate::args::{
     parse_format, parse_import, parse_manifest_view, parse_media_inspect, parse_media_samples,
     parse_store_verify, parse_verify,
 };
+use crate::decode_args::parse_media_decode_plan;
+use crate::decode_render::print_media_decode_plan;
 use crate::recorded_args::{parse_recorded_media_ingest, parse_recorded_media_verify};
 use crate::recorded_render::{print_recorded_media_ingest, print_verified_recorded_media};
 use crate::render::{
@@ -17,8 +19,9 @@ use crate::stored_args::{parse_stored_media_inspect, parse_stored_media_samples}
 use crate::stored_render::{print_stored_media_inspection, print_stored_sample_window};
 use fdgr_core::{VALIDATE_ID_SCHEMA, VERSION};
 use fdgr_evidence::build_file_manifest;
-use fdgr_media::{inspect_iso_bmff_file, read_classic_sample_window_file};
+use fdgr_media::{FourCc, inspect_iso_bmff_file, read_classic_sample_window_file};
 use fdgr_media_custody::{inspect_published_media, read_published_sample_window};
+use fdgr_media_worker::{MediaDecodePlan, MediaDecodePlanInput};
 use fdgr_object_store::LocalObjectStore;
 use fdgr_recorded_media::ingest_recorded_media;
 use fdgr_recorded_media_verify::verify_recorded_media_root;
@@ -34,6 +37,7 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
         "doctor" => print_doctor(parse_format(rest)?),
         "file-manifest" => file_manifest(rest),
         "import-file" => import_file(rest),
+        "media-decode-plan" => media_decode_plan(rest),
         "media-inspect" => media_inspect(rest),
         "media-samples" => media_samples(rest),
         "recorded-media-ingest" => recorded_media_ingest(rest),
@@ -58,6 +62,9 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
 
 fn print_complete_help() {
     print_help();
+    println!(
+        "  fdgr media-decode-plan <store-root> <recorded-media-root-manifest-digest> --track-id id --max-samples n --pixel-format gray8|rgb24|rgba|yuv420p --width pixels --height pixels --worker-executable-digest digest --worker-version-digest digest --profile-digest digest [bounded options] [--format text|json]"
+    );
     println!(
         "  fdgr media-samples <path> --track-id <id> [--start-sample n] [--sample-limit n] [--max-window-records n] [--max-index-entries-scanned n] [bounded parser options] [--format text|json]"
     );
@@ -118,6 +125,72 @@ fn import_file(arguments: &[String]) -> Result<(), String> {
         .map_err(|error| format!("file import failed: {error}"))?;
     print_import_receipt(receipt, options.format);
     Ok(())
+}
+
+fn media_decode_plan(arguments: &[String]) -> Result<(), String> {
+    let options = parse_media_decode_plan(arguments)?;
+    let store = LocalObjectStore::open(&options.store_root)
+        .map_err(|error| format!("store open failed: {error}"))?;
+    let verified = verify_recorded_media_root(&store, &options.root_manifest_digest)
+        .map_err(|error| format!("recorded-media verification failed: {error}"))?;
+    let track = verified
+        .inspection
+        .summary
+        .tracks
+        .iter()
+        .find(|track| track.track_id == options.track_id)
+        .ok_or_else(|| {
+            format!(
+                "recorded-media root contains no track with id {}",
+                options.track_id
+            )
+        })?;
+    if track.handler_type != FourCc::new(*b"vide") {
+        return Err(format!(
+            "track {} has handler {}; a decode plan requires a video track",
+            options.track_id, track.handler_type
+        ));
+    }
+    let sample_count = track.sample_count.ok_or_else(|| {
+        format!(
+            "track {} has no complete classic sample count; deterministic sample-range planning is unavailable",
+            options.track_id
+        )
+    })?;
+    let end_sample = options
+        .start_sample
+        .checked_add(options.max_samples)
+        .ok_or_else(|| "requested sample range overflows u64".to_owned())?;
+    if end_sample > sample_count {
+        return Err(format!(
+            "requested sample range [{}..{}) exceeds track {} sample count {}",
+            options.start_sample, end_sample, options.track_id, sample_count
+        ));
+    }
+    let plan = MediaDecodePlan::new(MediaDecodePlanInput {
+        source_root_manifest_digest: options.root_manifest_digest.clone(),
+        source_manifest_digest: verified.root.source_manifest_digest.clone(),
+        source_object_digest: verified.root.source_object_digest.clone(),
+        source_object_length: verified.root.source_object_length,
+        track_id: options.track_id,
+        start_sample: options.start_sample,
+        max_samples: options.max_samples,
+        pixel_format: options.pixel_format,
+        output_width: options.output_width,
+        output_height: options.output_height,
+        max_frames: options.max_frames,
+        max_output_bytes: options.max_output_bytes,
+        max_wall_time_ms: options.max_wall_time_ms,
+        max_memory_bytes: options.max_memory_bytes,
+        worker_executable_digest: options.worker_executable_digest,
+        worker_version_digest: options.worker_version_digest,
+        profile_digest: options.profile_digest,
+        worker_threads: options.worker_threads,
+        network_allowed: false,
+        deterministic: true,
+    })
+    .map_err(|error| format!("media decode plan rejected: {error}"))?;
+    print_media_decode_plan(&plan, options.format)
 }
 
 fn media_inspect(arguments: &[String]) -> Result<(), String> {
