@@ -3,6 +3,8 @@
 
 mod args;
 mod commands;
+mod recorded_args;
+mod recorded_render;
 mod render;
 mod sample_render;
 mod stored_args;

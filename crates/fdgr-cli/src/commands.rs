@@ -5,6 +5,8 @@ use crate::args::{
     parse_format, parse_import, parse_manifest_view, parse_media_inspect, parse_media_samples,
     parse_store_verify, parse_verify,
 };
+use crate::recorded_args::{parse_recorded_media_ingest, parse_recorded_media_verify};
+use crate::recorded_render::{print_recorded_media_ingest, print_verified_recorded_media};
 use crate::render::{
     json_escape, print_capabilities, print_doctor, print_file_verification, print_help,
     print_import_receipt, print_manifest, print_media_inspection, print_plan_summary,
@@ -18,6 +20,8 @@ use fdgr_evidence::build_file_manifest;
 use fdgr_media::{inspect_iso_bmff_file, read_classic_sample_window_file};
 use fdgr_media_custody::{inspect_published_media, read_published_sample_window};
 use fdgr_object_store::LocalObjectStore;
+use fdgr_recorded_media::ingest_recorded_media;
+use fdgr_recorded_media_verify::verify_recorded_media_root;
 use fdgr_types::EvidenceDigest;
 
 pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
@@ -32,6 +36,8 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
         "import-file" => import_file(rest),
         "media-inspect" => media_inspect(rest),
         "media-samples" => media_samples(rest),
+        "recorded-media-ingest" => recorded_media_ingest(rest),
+        "recorded-media-verify" => recorded_media_verify(rest),
         "stored-media-inspect" => stored_media_inspect(rest),
         "stored-media-samples" => stored_media_samples(rest),
         "verify-file" => verify_file(rest),
@@ -54,6 +60,12 @@ fn print_complete_help() {
     print_help();
     println!(
         "  fdgr media-samples <path> --track-id <id> [--start-sample n] [--sample-limit n] [--max-window-records n] [--max-index-entries-scanned n] [bounded parser options] [--format text|json]"
+    );
+    println!(
+        "  fdgr recorded-media-ingest <store-root> <source-path> [--source-chunk-size bytes] [--derived-chunk-size bytes] [bounded parser options] [--format text|json]"
+    );
+    println!(
+        "  fdgr recorded-media-verify <store-root> <root-manifest-digest> [--format text|json]"
     );
     println!(
         "  fdgr stored-media-inspect <store-root> <manifest-digest> [bounded parser options] [--format text|json]"
@@ -125,6 +137,30 @@ fn media_samples(arguments: &[String]) -> Result<(), String> {
     )
     .map_err(|error| format!("sample-window inspection failed: {error}"))?;
     print_sample_window(&summary, &window, options.format)
+}
+
+fn recorded_media_ingest(arguments: &[String]) -> Result<(), String> {
+    let options = parse_recorded_media_ingest(arguments)?;
+    let mut store = LocalObjectStore::open(&options.store_root)
+        .map_err(|error| format!("store open failed: {error}"))?;
+    let receipt = ingest_recorded_media(&mut store, &options.source_path, options.ingest)
+        .map_err(|error| format!("recorded-media ingest failed: {error}"))?;
+    let root_manifest_digest = receipt.root_manifest_digest().clone();
+    let verified = verify_recorded_media_root(&store, &root_manifest_digest).map_err(|error| {
+        format!(
+            "recorded-media root {root_manifest_digest} was published, but independent closure verification failed: {error}"
+        )
+    })?;
+    print_recorded_media_ingest(&receipt, &verified, options.format)
+}
+
+fn recorded_media_verify(arguments: &[String]) -> Result<(), String> {
+    let options = parse_recorded_media_verify(arguments)?;
+    let store = LocalObjectStore::open(&options.store_root)
+        .map_err(|error| format!("store open failed: {error}"))?;
+    let verified = verify_recorded_media_root(&store, &options.root_manifest_digest)
+        .map_err(|error| format!("recorded-media verification failed: {error}"))?;
+    print_verified_recorded_media(&verified, options.format)
 }
 
 fn stored_media_inspect(arguments: &[String]) -> Result<(), String> {

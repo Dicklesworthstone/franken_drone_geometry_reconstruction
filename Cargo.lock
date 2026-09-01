@@ -11,6 +11,8 @@ dependencies = [
  "fdgr-media",
  "fdgr-media-custody",
  "fdgr-object-store",
+ "fdgr-recorded-media",
+ "fdgr-recorded-media-verify",
  "fdgr-types",
 ]
 

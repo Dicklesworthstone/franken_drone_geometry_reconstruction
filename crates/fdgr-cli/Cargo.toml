@@ -18,6 +18,8 @@ fdgr-evidence = { path = "../fdgr-evidence" }
 fdgr-media = { path = "../fdgr-media" }
 fdgr-media-custody = { path = "../fdgr-media-custody" }
 fdgr-object-store = { path = "../fdgr-object-store" }
+fdgr-recorded-media = { path = "../fdgr-recorded-media" }
+fdgr-recorded-media-verify = { path = "../fdgr-recorded-media-verify" }
 fdgr-types = { path = "../fdgr-types" }
 
 [lints]
