@@ -134,6 +134,12 @@ json_schema_id = "https://fdgr.dev/schemas/media_decode_plan.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-MEDIA-DECODE-RECEIPT"
+path = "schemas/media_decode_receipt.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/media_decode_receipt.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-MEDIA-INSPECTION"
 path = "schemas/media_inspection.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/media_inspection.v1.json"
