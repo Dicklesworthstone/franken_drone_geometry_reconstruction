@@ -15,6 +15,8 @@ pub const VALIDATE_ID_SCHEMA: &str = "fdgr.validate_id/1";
 pub const OBJECT_MANIFEST_VIEW_SCHEMA: &str = "fdgr.object_manifest_view/1";
 /// Stable schema identifier for exact file-verification receipts.
 pub const FILE_VERIFICATION_SCHEMA: &str = "fdgr.file_verification/1";
+/// Stable schema identifier for published-store verification receipts.
+pub const STORE_VERIFICATION_SCHEMA: &str = "fdgr.store_verification/1";
 /// Current package version.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -85,6 +87,16 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::Planned,
         },
         Capability {
+            id: "evidence.ledger.append",
+            description: "append authenticated immutable events against an exact optimistic anchor",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "evidence.ledger.replay",
+            description: "replay and validate lineage, epoch, sequence, predecessor, and event identities",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "evidence.manifest.build",
             description: "build bounded streaming chunk manifests with separate logical and representation identities",
             status: CapabilityStatus::ReferenceSource,
@@ -92,6 +104,11 @@ pub fn capabilities() -> &'static [Capability] {
         Capability {
             id: "evidence.manifest.verify",
             description: "verify exact files, chunk ordering, lengths, and identities without whole-file buffering",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "evidence.store.local",
+            description: "publish verified immutable objects locally with object-first manifest-root-last visibility",
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
@@ -223,8 +240,8 @@ pub fn implementation_sequence() -> &'static [&'static str] {
 mod tests {
     use super::{
         CAPABILITIES_SCHEMA, CapabilityStatus, DOCTOR_SCHEMA, FILE_VERIFICATION_SCHEMA,
-        OBJECT_MANIFEST_VIEW_SCHEMA, PLAN_SUMMARY_SCHEMA, VALIDATE_ID_SCHEMA, capabilities,
-        implementation_sequence,
+        OBJECT_MANIFEST_VIEW_SCHEMA, PLAN_SUMMARY_SCHEMA, STORE_VERIFICATION_SCHEMA,
+        VALIDATE_ID_SCHEMA, capabilities, implementation_sequence,
     };
     use std::collections::BTreeSet;
 
@@ -237,6 +254,7 @@ mod tests {
             VALIDATE_ID_SCHEMA,
             OBJECT_MANIFEST_VIEW_SCHEMA,
             FILE_VERIFICATION_SCHEMA,
+            STORE_VERIFICATION_SCHEMA,
         ] {
             assert!(schema.starts_with("fdgr."));
             assert!(schema.ends_with("/1"));
@@ -265,7 +283,13 @@ mod tests {
 
     #[test]
     fn evidence_capabilities_are_reference_source_only() {
-        for id in ["evidence.manifest.build", "evidence.manifest.verify"] {
+        for id in [
+            "evidence.ledger.append",
+            "evidence.ledger.replay",
+            "evidence.manifest.build",
+            "evidence.manifest.verify",
+            "evidence.store.local",
+        ] {
             let status = capabilities()
                 .iter()
                 .find_map(|capability| (capability.id == id).then_some(capability.status));
