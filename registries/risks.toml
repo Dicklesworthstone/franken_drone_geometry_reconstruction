@@ -104,17 +104,14 @@ statement = "**Impact:** duplicate effects or stale publication. **Mitigation:**
 [[risk]]
 id = "RISK-021"
 name = "Attention thrash"
-summary = "Small score changes or repeated model outputs could repeatedly interrupt the agent and displace higher-value work."
-mitigation = "Class-priority ordering, deterministic ranking, hysteresis, suppression keys, acknowledgement expiry, and material-change re-entry tests."
+statement = "**Impact:** small score changes or repeated model outputs repeatedly interrupt the agent and displace higher-value work. **Mitigation:** class-priority ordering, deterministic ranking, hysteresis, suppression keys, acknowledgement expiry, and material-change re-entry tests. **Kill criterion:** disable adaptive attention and fall back to the deterministic class-priority baseline."
 
 [[risk]]
 id = "RISK-022"
 name = "Pilot cognitive overload"
-summary = "Dense or unstable guidance could reduce flight safety and evidence quality."
-mitigation = "One-card protocol, stable landmarks, bounded cues, explicit done/abort conditions, operator refusal, safety preemption, and cognitive-load qualification."
+statement = "**Impact:** dense or unstable guidance reduces flight safety and evidence quality. **Mitigation:** one-card protocol, stable landmarks, bounded cues, explicit done/abort conditions, operator refusal, safety preemption, and cognitive-load qualification. **Kill criterion:** reduce guidance to read-only capture-quality warnings or disable it for the affected profile."
 
 [[risk]]
 id = "RISK-023"
 name = "Spatial handle drift"
-summary = "Refined geometry could silently change the meaning of old spatial references."
-mitigation = "Anchor-bound frame-complete handles, explicit correspondence/supersession graphs, historical resolution, ambiguity refusal, and round-trip fixtures."
+statement = "**Impact:** refined geometry silently changes the meaning of old spatial references. **Mitigation:** anchor-bound frame-complete handles, explicit correspondence/supersession graphs, historical resolution, ambiguity refusal, and round-trip fixtures. **Kill criterion:** refuse automatic resolution and require an explicit historical or current anchor selection."
