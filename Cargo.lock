@@ -68,6 +68,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-recorded-media"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-media",
+ "fdgr-media-custody",
+ "fdgr-object-store",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-source-file"
 version = "0.0.1"
 dependencies = [
