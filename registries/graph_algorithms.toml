@@ -1,133 +1,165 @@
 schema = "fdgr.graph_algorithms.v1"
 revision = 1
 contract = "pinned-view + explicit-semantics + canonical-choice + certificate"
+source_family_count = 22
+optimized_family_source = "franken_networkx"
+optimized_admission_gate = "GATE-015"
+optimized_admission_evidence = "package-local differential, adversarial, complexity-witness, snapshot, cancellation, and local-qualification receipts"
+published_id_policy = "GALG-020 and GALG-021 retain their published identities; source-family order is explicit and never inferred from registry ID"
 
 [[family]]
 id = "GALG-001"
+source_family_ordinal = 1
 name = "components-and-dynamic-connectivity"
 uses = ["view/pose components", "room/free-space connectivity", "archive closure"]
 reference = "ordered traversal / union-find; full recompute after deletion"
-optimized_candidate = "franken_networkx exact family after GATE-709"
 
 [[family]]
 id = "GALG-002"
+source_family_ordinal = 2
 name = "articulation-bridges-biconnectivity"
 uses = ["fragile pose edges", "portal/stair chokepoints", "utility/evidence bottlenecks"]
 reference = "deterministic DFS"
 
 [[family]]
 id = "GALG-003"
+source_family_ordinal = 3
 name = "scc-condensation-cycle-diagnosis"
 uses = ["obligation dependencies", "protocol state machines", "directed utilities"]
 reference = "deterministic Tarjan/Kosaraju profile"
 
 [[family]]
 id = "GALG-004"
+source_family_ordinal = 4
 name = "topological-critical-path-antichain"
 uses = ["pipeline obligations", "release lanes", "parallel work planning"]
 reference = "stable Kahn order and DAG dynamic programming"
 
 [[family]]
 id = "GALG-005"
+source_family_ordinal = 5
 name = "shortest-widest-minimax-k-shortest"
 uses = ["manual/assisted viewpoints", "walkable routes", "utility and evidence paths"]
 reference = "stable Dijkstra/Bellman-Ford/profile-specific simple paths"
 
 [[family]]
 id = "GALG-006"
+source_family_ordinal = 6
 name = "dominators-postdominators"
 uses = ["mandatory portals", "mandatory utility components", "provenance dominance"]
 reference = "iterative dataflow then qualified optimized algorithm"
 
 [[family]]
 id = "GALG-007"
+source_family_ordinal = 7
 name = "spanning-forests"
 uses = ["pose initialization", "sparse explanatory backbones", "transfer topology"]
 reference = "stable Kruskal/Prim"
 
 [[family]]
 id = "GALG-008"
+source_family_ordinal = 8
 name = "cycle-bases-consistency"
 uses = ["pose closure residuals", "room/wall loops", "utility loops"]
 reference = "fundamental cycle basis with canonical tree"
 
 [[family]]
 id = "GALG-009"
+source_family_ordinal = 9
 name = "max-flow-min-cut-gomory-hu"
 uses = ["segmentation", "weak cuts", "capacity and evidence separation"]
 reference = "integer-capacity Edmonds-Karp/Dinic profile"
 
 [[family]]
 id = "GALG-010"
+source_family_ordinal = 10
 name = "min-cost-flow-circulation"
 uses = ["track stitching", "object association", "view demand assignment", "transfer scheduling"]
 reference = "bounded integer successive shortest path"
 
 [[family]]
 id = "GALG-011"
+source_family_ordinal = 11
 name = "bipartite-weighted-bottleneck-matching"
 uses = ["features", "cross-session objects", "semantic proposals", "viewpoint targets"]
 reference = "deterministic augmenting-path/Hungarian profiles"
 
 [[family]]
 id = "GALG-012"
+source_family_ordinal = 12
 name = "compatibility-clique-independent-set-coloring"
 uses = ["loop closures", "conflict-free claims/views", "resource scheduling"]
 reference = "exact bounded search and honest maximal heuristics"
 
 [[family]]
 id = "GALG-013"
+source_family_ordinal = 13
 name = "k-core-k-truss-degeneracy"
 uses = ["redundant evidence cores", "stable view/track subgraphs"]
 reference = "deterministic peeling"
 
 [[family]]
 id = "GALG-014"
+source_family_ordinal = 14
 name = "centrality-pagerank-hits-ppr"
 uses = ["attention", "evidence context", "representative observations"]
 reference = "fixed-order iterations and convergence certificate"
 
 [[family]]
 id = "GALG-015"
+source_family_ordinal = 15
 name = "community-partition-hypotheses"
 uses = ["room clusters", "scene partition", "work sharding"]
 reference = "deterministic seeded profile; hypothesis-only"
 
 [[family]]
 id = "GALG-016"
+source_family_ordinal = 16
 name = "spectral-diagnostics"
 uses = ["connectivity/conditioning warnings", "spectral partition candidates"]
 reference = "residual-certified power/Lanczos profile"
 
 [[family]]
 id = "GALG-017"
+source_family_ordinal = 17
 name = "isomorphism-subgraph-motifs"
 uses = ["repeated windows/doors/rooms", "local loop closure", "protocol schemas"]
 reference = "bounded labeled backtracking / WL filters"
 
 [[family]]
 id = "GALG-018"
+source_family_ordinal = 18
 name = "graph-edit-change"
 uses = ["cross-session change", "branch comparison", "profile evolution"]
 reference = "bounded search with explicit lower/upper bounds"
 
 [[family]]
 id = "GALG-019"
+source_family_ordinal = 19
 name = "treewidth-elimination-order"
 uses = ["bundle/factor elimination", "factorized query plans"]
 reference = "stable min-degree/min-fill heuristics with observed fill"
 
 [[family]]
 id = "GALG-020"
+source_family_ordinal = 22
 name = "temporal-graphs"
 uses = ["AS OF topology", "persistence", "temporal reachability"]
 reference = "interval-filtered snapshot traversal"
 
 [[family]]
 id = "GALG-021"
+source_family_ordinal = 21
 name = "submodular-selection"
 uses = ["keyframes", "next-best views", "context packs", "scrub samples"]
 reference = "stable lazy greedy with assumptions/bounds"
+
+[[family]]
+id = "GALG-022"
+source_family_ordinal = 20
+name = "geometric-and-visibility-graphs"
+uses = ["line-of-sight and occlusion", "viewpoint visibility", "free-space and surface adjacency", "spatial-handle expansion"]
+reference = "exact predicates over an anchor-bound coordinate frame with deterministic degeneracy handling"
 
 [certificate]
 required = [
