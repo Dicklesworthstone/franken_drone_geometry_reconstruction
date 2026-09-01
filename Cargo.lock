@@ -79,6 +79,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-recorded-media-verify"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-media-custody",
+ "fdgr-object-store",
+ "fdgr-recorded-media",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-source-file"
 version = "0.0.1"
 dependencies = [
