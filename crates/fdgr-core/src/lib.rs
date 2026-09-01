@@ -122,8 +122,18 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "media.index.published_samples",
+            description: "expand exact sample windows only after authenticating published immutable media custody",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "media.inspect.iso_bmff",
             description: "inspect bounded ISO BMFF metadata and classic sample-table consistency without decoding",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "media.inspect.published",
+            description: "inspect media through the same authenticated published-object handle and retain custody identities",
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
@@ -300,7 +310,9 @@ mod tests {
             "evidence.manifest.verify",
             "evidence.store.local",
             "media.index.classic_samples",
+            "media.index.published_samples",
             "media.inspect.iso_bmff",
+            "media.inspect.published",
         ] {
             let status = capabilities()
                 .iter()

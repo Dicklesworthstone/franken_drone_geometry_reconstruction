@@ -5,6 +5,8 @@ mod args;
 mod commands;
 mod render;
 mod sample_render;
+mod stored_args;
+mod stored_render;
 
 use std::env;
 use std::process::ExitCode;

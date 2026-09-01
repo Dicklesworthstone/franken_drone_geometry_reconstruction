@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/stored_media_inspection.v1.json",
+  "title": "FDGR custody-bound media inspection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "custody_verified",
+    "manifest_digest",
+    "object_digest",
+    "object_length",
+    "inspection"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.stored_media_inspection/1"
+    },
+    "custody_verified": {
+      "const": true
+    },
+    "manifest_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "object_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "object_length": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "inspection": {
+      "$ref": "media_inspection.schema.json"
+    }
+  }
+}

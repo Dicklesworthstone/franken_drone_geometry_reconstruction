@@ -150,3 +150,15 @@ id = "SCHEMA-STORE-VERIFICATION"
 path = "schemas/store_verification.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/store_verification.v1.json"
 status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-STORED-MEDIA-INSPECTION"
+path = "schemas/stored_media_inspection.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/stored_media_inspection.v1.json"
+status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-STORED-SAMPLE-WINDOW"
+path = "schemas/stored_sample_window.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/stored_sample_window.v1.json"
+status = "reference_source"

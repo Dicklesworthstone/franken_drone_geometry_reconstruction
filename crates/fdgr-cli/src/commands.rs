@@ -11,9 +11,12 @@ use crate::render::{
     print_store_verification,
 };
 use crate::sample_render::print_sample_window;
+use crate::stored_args::{parse_stored_media_inspect, parse_stored_media_samples};
+use crate::stored_render::{print_stored_media_inspection, print_stored_sample_window};
 use fdgr_core::{VALIDATE_ID_SCHEMA, VERSION};
 use fdgr_evidence::build_file_manifest;
 use fdgr_media::{inspect_iso_bmff_file, read_classic_sample_window_file};
+use fdgr_media_custody::{inspect_published_media, read_published_sample_window};
 use fdgr_object_store::LocalObjectStore;
 use fdgr_types::EvidenceDigest;
 
@@ -29,6 +32,8 @@ pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
         "import-file" => import_file(rest),
         "media-inspect" => media_inspect(rest),
         "media-samples" => media_samples(rest),
+        "stored-media-inspect" => stored_media_inspect(rest),
+        "stored-media-samples" => stored_media_samples(rest),
         "verify-file" => verify_file(rest),
         "verify-store" => verify_store(rest),
         "plan-summary" => print_plan_summary(parse_format(rest)?),
@@ -49,6 +54,12 @@ fn print_complete_help() {
     print_help();
     println!(
         "  fdgr media-samples <path> --track-id <id> [--start-sample n] [--sample-limit n] [--max-window-records n] [--max-index-entries-scanned n] [bounded parser options] [--format text|json]"
+    );
+    println!(
+        "  fdgr stored-media-inspect <store-root> <manifest-digest> [bounded parser options] [--format text|json]"
+    );
+    println!(
+        "  fdgr stored-media-samples <store-root> <manifest-digest> --track-id <id> [bounded options] [--format text|json]"
     );
 }
 
@@ -114,6 +125,30 @@ fn media_samples(arguments: &[String]) -> Result<(), String> {
     )
     .map_err(|error| format!("sample-window inspection failed: {error}"))?;
     print_sample_window(&summary, &window, options.format)
+}
+
+fn stored_media_inspect(arguments: &[String]) -> Result<(), String> {
+    let options = parse_stored_media_inspect(arguments)?;
+    let store = LocalObjectStore::open(&options.store_root)
+        .map_err(|error| format!("store open failed: {error}"))?;
+    let result = inspect_published_media(&store, &options.manifest_digest, options.limits)
+        .map_err(|error| format!("stored media inspection failed: {error}"))?;
+    print_stored_media_inspection(&result, options.format)
+}
+
+fn stored_media_samples(arguments: &[String]) -> Result<(), String> {
+    let options = parse_stored_media_samples(arguments)?;
+    let store = LocalObjectStore::open(&options.store_root)
+        .map_err(|error| format!("store open failed: {error}"))?;
+    let result = read_published_sample_window(
+        &store,
+        &options.manifest_digest,
+        options.request,
+        options.parse_limits,
+        options.window_limits,
+    )
+    .map_err(|error| format!("stored media sample-window failed: {error}"))?;
+    print_stored_sample_window(&result, options.format)
 }
 
 fn verify_store(arguments: &[String]) -> Result<(), String> {

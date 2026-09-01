@@ -9,6 +9,7 @@ dependencies = [
  "fdgr-core",
  "fdgr-evidence",
  "fdgr-media",
+ "fdgr-media-custody",
  "fdgr-object-store",
  "fdgr-types",
 ]
