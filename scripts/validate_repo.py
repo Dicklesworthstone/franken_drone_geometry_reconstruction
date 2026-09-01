@@ -5,7 +5,7 @@ import json
 import re
 import sys
 import tomllib
-from collections import defaultdict, deque
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -13,35 +13,73 @@ from registry_contracts import REQUIRED_FORBIDDEN_CRATES, validate_registry_cont
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = {
-    "README.md", "ARCHITECTURE.md", "FRANKENSTACK_DEEP_DIVE.md",
+    "README.md",
+    "ARCHITECTURE.md",
+    "FRANKENSTACK_DEEP_DIVE.md",
     "COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md",
-    "IMPLEMENTATION_STATUS.md", "QUALIFICATION.md", "DEPENDENCY_POLICY.md",
-    "MODEL_REGISTRY.md", "DJI_ADAPTER_RESEARCH.md", "SECURITY.md", "PRIVACY.md",
-    "AGENTS.md", "LICENSE", "Cargo.toml", "Cargo.lock", "rust-toolchain.toml",
-    "DESIGN_INDEX.md", "LOCAL_QUALIFICATION_AND_RELEASE.md",
-    "docs/AGENT_OPERATING_MODEL.md", "docs/AGENT_QUICKSTART.md",
-    "docs/AGENT_ACCEPTANCE_SCENARIOS.md", "architecture/SEMANTICS_MANIFEST.md",
-    "architecture/AGENT_ABSTRACTION_TOWER.md", "architecture/AGENT_NARROW_WAIST.md",
-    "architecture/DECISION_FRAME.md", "architecture/ATTENTION_AND_EPISTEMIC_DEBT.md",
-    "architecture/SPATIAL_SEMANTIC_HANDLES.md", "architecture/HUMAN_AGENT_FLIGHT_PROTOCOL.md",
-    "architecture/AGENT_METRICS.md", "architecture/agent_turn_contract.json",
-    "architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md", "architecture/dependency_allowlist.toml",
-    "architecture/qualification_lanes.toml", "release/source_closure.lock.json",
-    "release/doodlestein_job_graph.json", "scripts/registry_contracts.py",
-    "scripts/test_registry_contracts.py", "scripts/check_dependency_policy.py",
-    "scripts/generate_traceability.py", "scripts/validate_agent_contracts.py",
+    "IMPLEMENTATION_STATUS.md",
+    "QUALIFICATION.md",
+    "DEPENDENCY_POLICY.md",
+    "MODEL_REGISTRY.md",
+    "DJI_ADAPTER_RESEARCH.md",
+    "SECURITY.md",
+    "PRIVACY.md",
+    "AGENTS.md",
+    "LICENSE",
+    "Cargo.toml",
+    "Cargo.lock",
+    "rust-toolchain.toml",
+    "DESIGN_INDEX.md",
+    "LOCAL_QUALIFICATION_AND_RELEASE.md",
+    "docs/AGENT_OPERATING_MODEL.md",
+    "docs/AGENT_QUICKSTART.md",
+    "docs/AGENT_ACCEPTANCE_SCENARIOS.md",
+    "architecture/SEMANTICS_MANIFEST.md",
+    "architecture/AGENT_ABSTRACTION_TOWER.md",
+    "architecture/AGENT_NARROW_WAIST.md",
+    "architecture/DECISION_FRAME.md",
+    "architecture/ATTENTION_AND_EPISTEMIC_DEBT.md",
+    "architecture/SPATIAL_SEMANTIC_HANDLES.md",
+    "architecture/HUMAN_AGENT_FLIGHT_PROTOCOL.md",
+    "architecture/AGENT_METRICS.md",
+    "architecture/agent_turn_contract.json",
+    "architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md",
+    "architecture/dependency_allowlist.toml",
+    "architecture/qualification_lanes.toml",
+    "release/source_closure.lock.json",
+    "release/doodlestein_job_graph.json",
+    "scripts/registry_contracts.py",
+    "scripts/test_registry_contracts.py",
+    "scripts/check_dependency_policy.py",
+    "scripts/generate_traceability.py",
+    "scripts/validate_agent_contracts.py",
+    "scripts/e2e/recorded_media_ingest_and_verify.sh",
 }
-ID_RE = re.compile(r"^(?:INV|BET|GOAL|NONGOAL|CAP|EFFECT|CLAIM|ERR|SCHEMA|ADR|WP|GATE|TEST|SLO|RISK|OPEN|MODEL|OP|GEOM|GALG)-[A-Z0-9-]+$")
+ID_RE = re.compile(
+    r"^(?:INV|BET|GOAL|NONGOAL|CAP|EFFECT|CLAIM|ERR|SCHEMA|ADR|WP|GATE|TEST|SLO|RISK|OPEN|MODEL|OP|GEOM|GALG)-[A-Z0-9-]+$"
+)
 LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
 RUST_DENIALS = {
-    "unsafe block": re.compile(r"\bunsafe\s*\{"), "unsafe function": re.compile(r"\bunsafe\s+fn\b"),
-    "unsafe impl": re.compile(r"\bunsafe\s+impl\b"), "unwrap": re.compile(r"\.unwrap\s*\("),
-    "expect": re.compile(r"\.expect\s*\("), "panic macro": re.compile(r"\bpanic!\s*\("),
-    "todo macro": re.compile(r"\btodo!\s*\("), "unimplemented macro": re.compile(r"\bunimplemented!\s*\("),
+    "unsafe block": re.compile(r"\bunsafe\s*\{"),
+    "unsafe function": re.compile(r"\bunsafe\s+fn\b"),
+    "unsafe impl": re.compile(r"\bunsafe\s+impl\b"),
+    "unwrap": re.compile(r"\.unwrap\s*\("),
+    "expect": re.compile(r"\.expect\s*\("),
+    "panic macro": re.compile(r"\bpanic!\s*\("),
+    "todo macro": re.compile(r"\btodo!\s*\("),
+    "unimplemented macro": re.compile(r"\bunimplemented!\s*\("),
     "dbg macro": re.compile(r"\bdbg!\s*\("),
 }
 SKIP = {".git", ".ee", ".fdgr", "target", ".br_history", "__pycache__"}
-BEADS = {"bootstrap.jsonl", "README.md", "metadata.json", "config.yaml", "issues.jsonl", "beads.base.jsonl"}
+BEADS = {
+    "bootstrap.jsonl",
+    "README.md",
+    "metadata.json",
+    "config.yaml",
+    "issues.jsonl",
+    "beads.base.jsonl",
+}
+EXPECTED_LICENSE = "LicenseRef-MIT-OpenAI-Anthropic-Rider"
 errors: list[str] = []
 
 
@@ -96,7 +134,10 @@ def dag(rows: list[dict], dependency_field: str, label: str) -> list[str]:
 
 
 def dependency_tables(document: dict) -> list[dict]:
-    tables = [document.get(name) for name in ("dependencies", "dev-dependencies", "build-dependencies")]
+    tables = [
+        document.get(name)
+        for name in ("dependencies", "dev-dependencies", "build-dependencies")
+    ]
     workspace = document.get("workspace")
     if isinstance(workspace, dict):
         tables.append(workspace.get("dependencies"))
@@ -104,7 +145,10 @@ def dependency_tables(document: dict) -> list[dict]:
     if isinstance(target, dict):
         for scoped in target.values():
             if isinstance(scoped, dict):
-                tables.extend(scoped.get(name) for name in ("dependencies", "dev-dependencies", "build-dependencies"))
+                tables.extend(
+                    scoped.get(name)
+                    for name in ("dependencies", "dev-dependencies", "build-dependencies")
+                )
     return [table for table in tables if isinstance(table, dict)]
 
 
@@ -112,7 +156,12 @@ for relative in sorted(REQUIRED):
     if not (ROOT / relative).is_file():
         fail(f"missing required file: {relative}")
 for path in ROOT.rglob("*"):
-    if not path.is_file() or any(part in SKIP for part in path.parts) or path.name == ".DS_Store" or (".beads" in path.parts and path.name not in BEADS):
+    if (
+        not path.is_file()
+        or any(part in SKIP for part in path.parts)
+        or path.name == ".DS_Store"
+        or (".beads" in path.parts and path.name not in BEADS)
+    ):
         continue
     data = path.read_bytes()
     if b"\r\n" in data:
@@ -121,7 +170,9 @@ for path in ROOT.rglob("*"):
         fail(f"{path.relative_to(ROOT)}: text file must end with newline")
 
 errors.extend(validate_registry_contracts(ROOT))
-registries = {path.name: toml(path) for path in sorted((ROOT / "registries").glob("*.toml"))}
+registries = {
+    path.name: toml(path) for path in sorted((ROOT / "registries").glob("*.toml"))
+}
 all_ids: dict[str, str] = {}
 for filename, document in registries.items():
     for value in document.values():
@@ -133,12 +184,22 @@ for filename, document in registries.items():
                 if not isinstance(identifier, str) or not ID_RE.fullmatch(identifier):
                     fail(f"registries/{filename}: invalid stable ID {identifier!r}")
                 elif identifier in all_ids:
-                    fail(f"duplicate stable ID {identifier}: {all_ids[identifier]} and registries/{filename}")
+                    fail(
+                        f"duplicate stable ID {identifier}: {all_ids[identifier]} and registries/{filename}"
+                    )
                 else:
                     all_ids[identifier] = f"registries/{filename}"
-work = [row for row in registries.get("work_packages.toml", {}).get("work_package", []) if isinstance(row, dict)]
+work = [
+    row
+    for row in registries.get("work_packages.toml", {}).get("work_package", [])
+    if isinstance(row, dict)
+]
 work_ids = dag(work, "dependencies", "work packages")
-gates = {row.get("id") for row in registries.get("gates.toml", {}).get("gate", []) if isinstance(row, dict)}
+gates = {
+    row.get("id")
+    for row in registries.get("gates.toml", {}).get("gate", [])
+    if isinstance(row, dict)
+}
 for row in work:
     if row.get("acceptance_gate") not in gates:
         fail(f"{row.get('id')}: unknown acceptance gate {row.get('acceptance_gate')!r}")
@@ -158,13 +219,20 @@ for path in sorted((ROOT / "schemas").glob("*.json")):
     if document.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         fail(f"{path.relative_to(ROOT)}: must use JSON Schema 2020-12")
     properties = document.get("properties")
-    identity = properties.get("schema", {}).get("const") if isinstance(properties, dict) else None
-    if not isinstance(identity, str) or not re.fullmatch(r"fdgr\.[a-z][a-z0-9_]*/1", identity):
+    identity = (
+        properties.get("schema", {}).get("const") if isinstance(properties, dict) else None
+    )
+    if not isinstance(identity, str) or not re.fullmatch(
+        r"fdgr\.[a-z][a-z0-9_]*/1", identity
+    ):
         fail(f"{path.relative_to(ROOT)}: payload schema identity must use fdgr.<name>/1")
+
     def refs(node: object) -> None:
         if isinstance(node, dict):
             reference = node.get("$ref")
-            if isinstance(reference, str) and not reference.startswith(("#", "http://", "https://")):
+            if isinstance(reference, str) and not reference.startswith(
+                ("#", "http://", "https://")
+            ):
                 target = reference.split("#", 1)[0]
                 if target and not (path.parent / target).is_file():
                     fail(f"{path.relative_to(ROOT)}: unresolved schema reference {reference!r}")
@@ -173,6 +241,7 @@ for path in sorted((ROOT / "schemas").glob("*.json")):
         elif isinstance(node, list):
             for child in node:
                 refs(child)
+
     refs(document)
     schema_documents[str(path.relative_to(ROOT))] = document
 for row in registries.get("schemas.toml", {}).get("public_schema", []):
@@ -181,7 +250,9 @@ for row in registries.get("schemas.toml", {}).get("public_schema", []):
         if document is None or row.get("json_schema_id") != document.get("$id"):
             fail(f"{row.get('id')}: schema registry/path identity mismatch")
 for row in registries.get("adrs.toml", {}).get("adr", []):
-    if isinstance(row, dict) and (not isinstance(row.get("path"), str) or not (ROOT / row["path"]).is_file()):
+    if isinstance(row, dict) and (
+        not isinstance(row.get("path"), str) or not (ROOT / row["path"]).is_file()
+    ):
         fail(f"{row.get('id')}: ADR path missing: {row.get('path')!r}")
 for row in registries.get("models.toml", {}).get("model", []):
     if isinstance(row, dict) and row.get("network_default") is not False:
@@ -200,16 +271,27 @@ for path in [ROOT / "Cargo.toml", *sorted(ROOT.glob("crates/*/Cargo.toml"))]:
             package = spec.get("package") if isinstance(spec, dict) else None
             name = package if isinstance(package, str) else alias
             if alias in REQUIRED_FORBIDDEN_CRATES or name in REQUIRED_FORBIDDEN_CRATES:
-                fail(f"{path.relative_to(ROOT)}: forbidden dependency {name}" + (f" through alias {alias}" if alias != name else ""))
+                suffix = f" through alias {alias}" if alias != name else ""
+                fail(f"{path.relative_to(ROOT)}: forbidden dependency {name}{suffix}")
 
-plan = (ROOT / "COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md").read_text(encoding="utf-8")
-supplement = (ROOT / "architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md").read_text(encoding="utf-8")
+plan = (
+    ROOT / "COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md"
+).read_text(encoding="utf-8")
+supplement = (ROOT / "architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md").read_text(
+    encoding="utf-8"
+)
 for identifier in sorted(all_ids):
     if identifier not in plan and identifier not in supplement:
         fail(f"normative ID has no plan or supplement landing point: {identifier}")
-if "<!-- BEGIN GENERATED REGISTRY TRACEABILITY -->" not in plan or "<!-- END GENERATED REGISTRY TRACEABILITY -->" not in plan:
+if (
+    "<!-- BEGIN GENERATED REGISTRY TRACEABILITY -->" not in plan
+    or "<!-- END GENERATED REGISTRY TRACEABILITY -->" not in plan
+):
     fail("comprehensive plan is missing traceability markers")
-if "<!-- BEGIN GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->" not in supplement or "<!-- END GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->" not in supplement:
+if (
+    "<!-- BEGIN GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->" not in supplement
+    or "<!-- END GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->" not in supplement
+):
     fail("registry traceability supplement is missing markers")
 
 agent = json_doc(ROOT / "architecture/agent_turn_contract.json")
@@ -218,7 +300,11 @@ if isinstance(agent, dict) and isinstance(agent_schema, dict):
     for field in agent.get("field_order", []):
         if field not in agent_schema.get("properties", {}):
             fail(f"agent turn field absent from schema: {field}")
-    profiles = {row.get("name") for row in registries.get("agent_profiles.toml", {}).get("profile", []) if isinstance(row, dict)}
+    profiles = {
+        row.get("name")
+        for row in registries.get("agent_profiles.toml", {}).get("profile", [])
+        if isinstance(row, dict)
+    }
     if profiles != set(agent.get("profiles", {})):
         fail("agent profile registry and turn contract differ")
 source = json_doc(ROOT / "research/source-inventory/source_manifest.json")
@@ -227,26 +313,51 @@ if isinstance(source, dict):
     rows = source.get("repositories", [])
     if len(rows) != 11:
         fail("source inventory must retain eleven repositories")
-    identities = {(row.get("name"), row.get("commit"), row.get("tree")) for row in rows if isinstance(row, dict)}
+    identities = {
+        (row.get("name"), row.get("commit"), row.get("tree"))
+        for row in rows
+        if isinstance(row, dict)
+    }
     closure_rows = closure.get("planned_owned_sources", []) if isinstance(closure, dict) else []
-    if identities != {(row.get("name"), row.get("commit"), row.get("tree")) for row in closure_rows if isinstance(row, dict)}:
+    closure_identities = {
+        (row.get("name"), row.get("commit"), row.get("tree"))
+        for row in closure_rows
+        if isinstance(row, dict)
+    }
+    if identities != closure_identities:
         fail("source inventory and closure lock disagree")
 
 lanes = toml(ROOT / "architecture/qualification_lanes.toml")
 if lanes.get("hosted_github_actions_authority") is not False:
     fail("qualification lanes must deny hosted authority")
-dag([row for row in lanes.get("lane", []) if isinstance(row, dict)], "requires", "qualification lanes")
+dag(
+    [row for row in lanes.get("lane", []) if isinstance(row, dict)],
+    "requires",
+    "qualification lanes",
+)
 jobs = json_doc(ROOT / "release/doodlestein_job_graph.json")
 if isinstance(jobs, dict):
-    if jobs.get("schema") != "fdgr.doodlestein_job_graph/1" or jobs.get("authority") != "local_receipts_only" or jobs.get("hosted_github_actions_authority") is not False:
+    if (
+        jobs.get("schema") != "fdgr.doodlestein_job_graph/1"
+        or jobs.get("authority") != "local_receipts_only"
+        or jobs.get("hosted_github_actions_authority") is not False
+    ):
         fail("Doodlestein job graph authority/schema mismatch")
-    dag([row for row in jobs.get("jobs", []) if isinstance(row, dict)], "needs", "Doodlestein jobs")
+    dag(
+        [row for row in jobs.get("jobs", []) if isinstance(row, dict)],
+        "needs",
+        "Doodlestein jobs",
+    )
 for workflow in sorted((ROOT / ".github/workflows").glob("*.y*ml")):
     text = workflow.read_text(encoding="utf-8")
-    if re.search(r"^\s*uses\s*:", text, flags=re.MULTILINE) or re.search(r"runs-on\s*:\s*(?:ubuntu|windows|macos)-", text, flags=re.IGNORECASE):
+    if re.search(r"^\s*uses\s*:", text, flags=re.MULTILINE) or re.search(
+        r"runs-on\s*:\s*(?:ubuntu|windows|macos)-", text, flags=re.IGNORECASE
+    ):
         fail(f"{workflow.relative_to(ROOT)}: hosted/external action authority forbidden")
 channel = toml(ROOT / "rust-toolchain.toml").get("toolchain", {}).get("channel")
-if not isinstance(channel, str) or not re.fullmatch(r"nightly-\d{4}-\d{2}-\d{2}", channel):
+if not isinstance(channel, str) or not re.fullmatch(
+    r"nightly-\d{4}-\d{2}-\d{2}", channel
+):
     fail("rust-toolchain.toml must pin exact dated nightly")
 
 for path in sorted(ROOT.rglob("*.md")):
@@ -262,7 +373,11 @@ for path in sorted(ROOT.rglob("*.md")):
 bootstrap = ROOT / ".beads/bootstrap.jsonl"
 if bootstrap.is_file():
     try:
-        rows = [json.loads(line) for line in bootstrap.read_text(encoding="utf-8").splitlines() if line]
+        rows = [
+            json.loads(line)
+            for line in bootstrap.read_text(encoding="utf-8").splitlines()
+            if line
+        ]
     except Exception as exc:
         fail(f".beads/bootstrap.jsonl: invalid JSONL: {exc}")
         rows = []
@@ -273,15 +388,77 @@ else:
 
 cargo = toml(ROOT / "Cargo.toml")
 workspace = cargo.get("workspace")
-package = workspace.get("package", {}) if isinstance(workspace, dict) else {}
-if package.get("license-file") != "LICENSE":
-    fail("Cargo.toml must inherit LICENSE")
-locked = {row.get("name") for row in toml(ROOT / "Cargo.lock").get("package", []) if isinstance(row, dict)}
-expected = {path.parent.name for path in ROOT.glob("crates/*/Cargo.toml")}
-if locked != expected:
-    fail(f"Cargo.lock package set stale: expected {sorted(expected)}, found {sorted(locked)}")
-for script in sorted((ROOT / "scripts").glob("*")):
-    if script.suffix in {".py", ".sh"} and not (script.stat().st_mode & 0o111):
+if not isinstance(workspace, dict):
+    fail("Cargo.toml must define a workspace table")
+    workspace = {}
+package = workspace.get("package")
+if not isinstance(package, dict):
+    fail("Cargo.toml must define workspace.package metadata")
+    package = {}
+if package.get("license") != EXPECTED_LICENSE:
+    fail(
+        f"Cargo.toml workspace license must equal {EXPECTED_LICENSE!r}; "
+        f"found {package.get('license')!r}"
+    )
+if not (ROOT / "LICENSE").is_file():
+    fail("Cargo.toml workspace license policy requires the repository LICENSE file")
+
+crate_manifests = sorted(ROOT.glob("crates/*/Cargo.toml"))
+expected_member_paths = {
+    manifest.parent.relative_to(ROOT).as_posix() for manifest in crate_manifests
+}
+members = workspace.get("members")
+if not isinstance(members, list) or not all(isinstance(value, str) for value in members):
+    fail("Cargo.toml workspace.members must be an explicit array of strings")
+    declared_member_paths: set[str] = set()
+else:
+    declared_member_paths = {Path(value).as_posix().rstrip("/") for value in members}
+    if len(declared_member_paths) != len(members):
+        fail("Cargo.toml workspace.members contains duplicate paths")
+if declared_member_paths != expected_member_paths:
+    fail(
+        "Cargo.toml workspace membership mismatch: "
+        f"expected {sorted(expected_member_paths)}, found {sorted(declared_member_paths)}"
+    )
+
+workspace_names: set[str] = set()
+for manifest in crate_manifests:
+    document = toml(manifest)
+    crate_package = document.get("package")
+    name = crate_package.get("name") if isinstance(crate_package, dict) else None
+    if not isinstance(name, str) or not name:
+        fail(f"{manifest.relative_to(ROOT)}: missing package.name")
+        continue
+    if name in workspace_names:
+        fail(f"{manifest.relative_to(ROOT)}: duplicate workspace package name {name}")
+    workspace_names.add(name)
+    if name != manifest.parent.name:
+        fail(
+            f"{manifest.relative_to(ROOT)}: package name {name!r} must match crate directory "
+            f"{manifest.parent.name!r}"
+        )
+
+lock_packages = [
+    row.get("name")
+    for row in toml(ROOT / "Cargo.lock").get("package", [])
+    if isinstance(row, dict) and isinstance(row.get("name"), str)
+]
+lock_counts = Counter(lock_packages)
+for name in sorted(workspace_names):
+    if lock_counts[name] != 1:
+        fail(f"Cargo.lock must contain workspace package {name!r} exactly once")
+extra_fdgr = {
+    name for name in lock_counts if name.startswith("fdgr-") and name not in workspace_names
+}
+if extra_fdgr:
+    fail(f"Cargo.lock contains undeclared FDGR packages: {sorted(extra_fdgr)}")
+
+for script in sorted((ROOT / "scripts").rglob("*")):
+    if (
+        script.is_file()
+        and script.suffix in {".py", ".sh"}
+        and not (script.stat().st_mode & 0o111)
+    ):
         fail(f"{script.relative_to(ROOT)}: script lacks executable bit")
 
 if errors:
@@ -293,5 +470,5 @@ print(f"PASS: {len(registries)} TOML registries parsed")
 print(f"PASS: {len(schema_ids)} JSON Schemas parsed")
 print(f"PASS: {len(all_ids)} stable registry IDs unique and plan-traceable")
 print(f"PASS: {len(work)} work packages form an acyclic graph")
-print(f"PASS: {len(list(ROOT.glob('crates/*/Cargo.toml')))} executable scaffold crates checked")
+print(f"PASS: {len(workspace_names)} workspace crates are manifest/lock closed")
 print("PASS: FDGR repository policy validation complete")
