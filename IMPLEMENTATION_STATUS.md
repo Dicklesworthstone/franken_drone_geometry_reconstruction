@@ -1,50 +1,85 @@
 # Implementation Status
 
-**Snapshot:** 2026-08-31
+**Snapshot:** 2026-09-01
 
-This repository is an unusually complete normative architecture plus a deliberately small executable
-Rust scaffold. Source presence, schemas, design prose, model names, and planned crate boundaries are
-not implementation evidence.
+FDGR now contains a growing set of deterministic, dependency-free, safe-Rust reference
+implementations. These references establish semantics and public evidence boundaries; they are not
+by themselves production qualification for live DJI acquisition, external process supervision,
+metric reconstruction, semantic recognition, or cloud recovery.
 
-## What exists
+## Implemented reference surfaces
 
-| Surface | Status | Evidence boundary |
+| Surface | Current status | Evidence boundary |
 |---|---|---|
-| Rust workspace | Scaffolded source | Three dependency-free crates: `fdgr-types`, `fdgr-core`, and `fdgr-cli` |
-| Canonical digest/anchor/scale/claim types | Scaffolded source | Static source-policy checks; pinned-toolchain compile receipt remains pending |
-| Capability and read-only doctor CLI | Scaffolded source | Deterministic source exists; native execution not qualified here |
-| Agent operating model and abstraction tower | Normative target | Documents, registries, ADRs, and machine contracts parse |
-| Agent Turn Packet and Decision Frame | Contract only | JSON Schemas and protocol semantics; no runtime packet builder |
-| Objective/question graph, context packs, attention, handoff, episodes | Contract only | Schemas and work packages; no execution engine |
-| Spatial handles and human-agent pilot cards | Contract only | Schemas and qualification scenarios; no live guidance runtime |
-| Eleven-operation semantic narrow waist | Contract only | Operation registry and protocol design; no MCP implementation |
-| Exact sibling forensics | Research snapshot | Public commit/tree identities retained; not production dependency admission |
-| Local Doodlestein release graph | Contract plus tooling | Executable DAG, source-closure verifier, and identity sealer; no executed promotion receipt |
+| Rust workspace | **14 workspace package targets after this wave** | Strict edition-2024 workspace, pinned nightly, `unsafe_code = forbid`, no external Rust dependencies |
+| Canonical identity and codec | Reference implemented | Streaming SHA-256, domain-separated identities, bounded deterministic codecs, typed decode failures |
+| Evidence ledger | Reference implemented | Append/replay invariants and exact event identities; FrankenSQLite production adapter not admitted |
+| Local immutable object store | Reference implemented | Object-first, manifest-root-last publication, readback, collision refusal, staging diagnostics; hostile-path and full crash qualification remain open |
+| Native ISO BMFF inspection | Reference implemented | Bounded metadata and classic `stbl` parsing; no compressed-media decode and no fragmented-sample reconstruction |
+| Classic sample indexing | Reference implemented | Exact DTS/PTS/duration/byte-range windows with explicit scan budgets and `mdat` containment |
+| Recorded-media ingest | Integrated reference | Exact original publication, source-bound native inspection, root-last graph, and independent closure verification |
+| Canonical media timeline | Integrated reference | Root-bound sample timeline with exact partial coverage, composition offsets, reordering, gaps, byte-span checks, deterministic digest, and JSON |
+| Media worker protocol | Contract/reference implemented | Path-free decode plans, framehash-v2 parsing, typed terminations, indeterminacy, receipt validation; **no process spawn** |
+| CLI | Integrated reference | Deterministic commands for manifests, custody, native media inspection, recorded-media ingest/verify, decode planning, and timeline projection |
+| Capability/doctor surfaces | Reference implemented | Truthful maturity labels and read-only prerequisite probes |
+| Agent operating model | Normative target | Schemas, registries, ADRs, and acceptance scenarios; no complete Agent Turn Packet runtime yet |
+| Local qualification | Executable local lanes | Static checks, pinned Rust format/check/Clippy/test, recorded-media E2E, and timeline E2E; hosted Actions are non-authoritative |
 
-## What does not yet exist
+## Current public reference commands
+
+```bash
+cargo run -p fdgr-cli -- capabilities --format json
+cargo run -p fdgr-cli -- doctor --format json
+cargo run -p fdgr-cli -- file-manifest <path> --format json
+cargo run -p fdgr-cli -- import-file <store-root> <path> --format json
+cargo run -p fdgr-cli -- media-inspect <path> --format json
+cargo run -p fdgr-cli -- media-samples <path> --track-id <id> --format json
+cargo run -p fdgr-cli -- stored-media-inspect <store-root> <manifest-digest> --format json
+cargo run -p fdgr-cli -- stored-media-samples <store-root> <manifest-digest> --track-id <id> --format json
+cargo run -p fdgr-cli -- recorded-media-ingest <store-root> <path> --format json
+cargo run -p fdgr-cli -- recorded-media-verify <store-root> <root-manifest-digest> --format json
+cargo run -p fdgr-cli -- recorded-media-timeline <store-root> <root-manifest-digest> --track-id <id> --format json
+cargo run -p fdgr-cli -- media-decode-plan <store-root> <root-manifest-digest> [required plan options] --format json
+cargo run -p fdgr-cli -- verify-file <path> [required identities] --format json
+cargo run -p fdgr-cli -- verify-store <store-root> <manifest-digest> --format json
+```
+
+`recorded-media-timeline` first independently verifies the complete recorded-media publication
+root, then reopens the authenticated source object through the store, derives one bounded classic
+sample window, and binds the resulting timeline to the exact root/source identities. A partial
+window states its prefix and suffix omissions; it cannot masquerade as whole-track coverage.
+
+## Important non-claims
 
 | Surface | Status |
 |---|---|
-| DJI Flip original-media integration | Not implemented |
-| DJI Fly or controller live-view acquisition | Research only |
-| Owner-authorized device telemetry/control | Not implemented |
-| Native media parser/decoder/encoder | Not implemented |
-| Calibration, clock synchronization, pose, bundle adjustment, depth, fusion, mesh | Not implemented |
+| DJI Fly/controller live-view acquisition | Research only; no admitted live adapter |
+| Owner-authorized aircraft control | Not implemented and outside the initial authority model |
+| Asupersync-owned FFmpeg execution | Not implemented; current decode objects are plans/receipts only |
+| Native compressed-video decoder/encoder | Not implemented |
+| Packet arrival/display/telemetry clock fusion | Not implemented; media timeline is the immutable encoded-sample basis only |
+| Calibration and rolling-shutter registry | Not implemented |
 | Metric scale-witness fusion | Not implemented |
-| Coverage certificate or active-perception engine | Not implemented |
-| Qwen/SAM or other model integration | Not implemented |
-| Semantic resolver and scene graph | Not implemented |
-| FrankenSQLite/FS/Search/Graph/NetworkX production adapters | Not admitted |
-| ATP archive and B2/R2 recovery | Not implemented |
-| FastMCP presentation and Agent Turn Packet runtime | Not implemented |
-| Eidetic export/accretion workflow | Documentation only |
-| Ground-truth accuracy, performance, economy, or ergonomics claims | No measured results |
+| Keyframes, features, tracks, pose graph, bundle adjustment | Not implemented in the current `main` workspace |
+| Depth, fusion, occupancy, mesh, topology | Not implemented |
+| Qwen/SAM or other model execution | Protocol/design only; no model lane admitted |
+| Semantic resolver and evidence-linked scene graph | Not implemented |
+| B2/R2 archive, multipart resume, readback, restore | Not implemented |
+| FastMCP and complete eleven-operation Agent Turn Packet | Not implemented |
+| Ground-truth accuracy, latency, cost, or ergonomic claims | No claim without retained measured receipts |
 | Production/security/recovery qualification | No claim |
 
-## Readiness dimensions
+## Qualification interpretation
 
-Future reports keep contract, reference, live adapter, metric geometry, semantic presence/absence,
-custody, privacy, recovery, performance, agent orientation, Decision Frame sufficiency, attention
-stability, pilot cognitive load, handoff, and accretion as separate evidence dimensions. A rejection
-test earns negative evidence only. A successful model or upload demo does not earn accuracy,
-coverage, retrievability, or recovery.
+A passing local workspace or E2E run proves only the named reference semantics at the exact source,
+toolchain, fixture, and policy identities. It does not promote a work package or gate unless all
+registered positive, negative, fault, recovery, compatibility, and benchmark evidence for that gate
+also exists. In particular:
+
+- a process exit is not decoded-frame publication;
+- a decode plan is not dispatch authority;
+- an authenticated sample timeline is not a telemetry clock model;
+- reaching the end of a requested window is not whole-track coverage unless the window starts at
+  sample zero;
+- source presence is not production admission;
+- a hosted status badge is not release authority.
