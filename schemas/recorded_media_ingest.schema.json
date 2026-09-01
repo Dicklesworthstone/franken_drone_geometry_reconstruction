@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/recorded_media_ingest.v1.json",
+  "title": "FDGR verified recorded-media ingest receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "publication_complete",
+    "closure_verified",
+    "root",
+    "source",
+    "inspection",
+    "media"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.recorded_media_ingest/1"
+    },
+    "publication_complete": {
+      "const": true
+    },
+    "closure_verified": {
+      "const": true
+    },
+    "root": {
+      "$ref": "#/$defs/publication"
+    },
+    "source": {
+      "$ref": "#/$defs/publication"
+    },
+    "inspection": {
+      "$ref": "#/$defs/publication"
+    },
+    "media": {
+      "$ref": "media_inspection.schema.json"
+    }
+  },
+  "$defs": {
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_digest",
+        "object_digest",
+        "object_length",
+        "chunk_size",
+        "chunk_count"
+      ],
+      "properties": {
+        "manifest_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "object_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "object_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "chunk_size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "chunk_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

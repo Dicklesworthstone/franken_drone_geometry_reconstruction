@@ -140,6 +140,12 @@ json_schema_id = "https://fdgr.dev/schemas/object_manifest_view.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-RECORDED-MEDIA-INGEST"
+path = "schemas/recorded_media_ingest.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/recorded_media_ingest.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-SAMPLE-WINDOW"
 path = "schemas/sample_window.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/sample_window.v1.json"
@@ -161,4 +167,10 @@ status = "reference_source"
 id = "SCHEMA-STORED-SAMPLE-WINDOW"
 path = "schemas/stored_sample_window.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/stored_sample_window.v1.json"
+status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-VERIFIED-RECORDED-MEDIA"
+path = "schemas/verified_recorded_media.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/verified_recorded_media.v1.json"
 status = "reference_source"
