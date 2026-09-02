@@ -17,6 +17,7 @@ dependencies = [
  "fdgr-clock",
  "fdgr-codec",
  "fdgr-core",
+ "fdgr-correspondence",
  "fdgr-evidence",
  "fdgr-keyframe",
  "fdgr-media",
@@ -26,6 +27,7 @@ dependencies = [
  "fdgr-object-store",
  "fdgr-recorded-media",
  "fdgr-recorded-media-verify",
+ "fdgr-relative-pose",
  "fdgr-types",
 ]
 
