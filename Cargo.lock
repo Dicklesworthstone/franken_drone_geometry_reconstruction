@@ -143,6 +143,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-pose-graph"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-graph",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-recorded-media"
 version = "0.0.1"
 dependencies = [
