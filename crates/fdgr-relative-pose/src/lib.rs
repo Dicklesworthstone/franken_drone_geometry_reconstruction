@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 #![allow(
+    clippy::cast_lossless,
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
     clippy::cast_sign_loss,
@@ -21,7 +22,7 @@
 use fdgr_codec::{CodecError, Encoder, hash_domain};
 use fdgr_types::{DigestDomain, DomainError, EvidenceDigest};
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter, Write as _};
 
