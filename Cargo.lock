@@ -18,6 +18,7 @@ dependencies = [
  "fdgr-codec",
  "fdgr-core",
  "fdgr-evidence",
+ "fdgr-keyframe",
  "fdgr-media",
  "fdgr-media-custody",
  "fdgr-media-timeline",

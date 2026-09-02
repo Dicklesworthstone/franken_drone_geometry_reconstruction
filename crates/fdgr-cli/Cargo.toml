@@ -17,6 +17,7 @@ fdgr-clock = { path = "../fdgr-clock" }
 fdgr-codec = { path = "../fdgr-codec" }
 fdgr-core = { path = "../fdgr-core" }
 fdgr-evidence = { path = "../fdgr-evidence" }
+fdgr-keyframe = { path = "../fdgr-keyframe" }
 fdgr-media = { path = "../fdgr-media" }
 fdgr-media-custody = { path = "../fdgr-media-custody" }
 fdgr-media-timeline = { path = "../fdgr-media-timeline" }
