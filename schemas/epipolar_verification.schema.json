@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/epipolar_verification.v1.json",
+  "title": "FDGR deterministic epipolar verification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "verification_digest",
+    "correspondence_generation_digest",
+    "calibration_digest",
+    "observation_basis_digest",
+    "candidate_basis_digest",
+    "policy_digest",
+    "pair_id",
+    "left_sample_index",
+    "right_sample_index",
+    "generation",
+    "observation_count",
+    "candidate_count",
+    "evaluation_count",
+    "decision",
+    "best_candidate_id",
+    "runner_up_candidate_id",
+    "admitted_candidate_id",
+    "inlier_margin",
+    "policy",
+    "candidates",
+    "evaluations"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.epipolar_verification/1"},
+    "verification_digest": {"$ref": "#/$defs/digest"},
+    "correspondence_generation_digest": {"$ref": "#/$defs/digest"},
+    "calibration_digest": {"$ref": "#/$defs/digest"},
+    "observation_basis_digest": {"$ref": "#/$defs/digest"},
+    "candidate_basis_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "pair_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+    "left_sample_index": {"$ref": "#/$defs/safe_integer"},
+    "right_sample_index": {"$ref": "#/$defs/safe_integer"},
+    "generation": {"$ref": "#/$defs/nonzero_safe_integer"},
+    "observation_count": {"type": "integer", "minimum": 1, "maximum": 100000},
+    "candidate_count": {"type": "integer", "minimum": 1, "maximum": 128},
+    "evaluation_count": {"type": "integer", "minimum": 1, "maximum": 2000000},
+    "decision": {
+      "enum": ["rejected", "ambiguous", "epipolar_supported_hypothesis"]
+    },
+    "best_candidate_id": {"$ref": "#/$defs/optional_safe_integer"},
+    "runner_up_candidate_id": {"$ref": "#/$defs/optional_safe_integer"},
+    "admitted_candidate_id": {"$ref": "#/$defs/optional_safe_integer"},
+    "inlier_margin": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+    "policy": {"$ref": "#/$defs/policy"},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/candidate"}
+    },
+    "evaluations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/evaluation"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {"const": "epipolar_supported_hypothesis"}
+        }
+      },
+      "then": {
+        "properties": {
+          "admitted_candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {"enum": ["rejected", "ambiguous"]}
+        }
+      },
+      "then": {
+        "properties": {
+          "admitted_candidate_id": {"type": "null"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "safe_integer": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "nonzero_safe_integer": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "optional_safe_integer": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/nonzero_safe_integer"}
+      ]
+    },
+    "optional_residual": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "integer", "minimum": 0, "maximum": 18446744073709551615}
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_residual_ppm",
+        "min_inliers",
+        "min_inlier_ratio_ppm",
+        "min_spatial_bins_per_image",
+        "max_determinant_residual_ppm",
+        "min_inlier_margin",
+        "max_evaluations"
+      ],
+      "properties": {
+        "max_residual_ppm": {"type": "integer", "minimum": 1, "maximum": 10000000},
+        "min_inliers": {"type": "integer", "minimum": 1, "maximum": 100000},
+        "min_inlier_ratio_ppm": {"type": "integer", "minimum": 1, "maximum": 1000000},
+        "min_spatial_bins_per_image": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "max_determinant_residual_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "min_inlier_margin": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "max_evaluations": {"type": "integer", "minimum": 1, "maximum": 2000000}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "source", "matrix"],
+      "properties": {
+        "candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "source": {
+          "enum": [
+            "native_minimal_solver",
+            "native_linear_solver",
+            "telemetry_prior",
+            "model_worker",
+            "external_oracle"
+          ]
+        },
+        "matrix": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {"type": "integer", "minimum": -1000000, "maximum": 1000000}
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "determinant_residual_ppm",
+        "determinant_gate_passed",
+        "inlier_count",
+        "outlier_count",
+        "inlier_ratio_ppm",
+        "left_spatial_bin_count",
+        "right_spatial_bin_count",
+        "median_inlier_residual_ppm",
+        "maximum_inlier_residual_ppm",
+        "passes_admission_gates",
+        "inlier_match_ids",
+        "outlier_match_ids",
+        "residuals"
+      ],
+      "properties": {
+        "candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "determinant_residual_ppm": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+        "determinant_gate_passed": {"type": "boolean"},
+        "inlier_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+        "outlier_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+        "inlier_ratio_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "left_spatial_bin_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "right_spatial_bin_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "median_inlier_residual_ppm": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+        "maximum_inlier_residual_ppm": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+        "passes_admission_gates": {"type": "boolean"},
+        "inlier_match_ids": {"$ref": "#/$defs/id_array"},
+        "outlier_match_ids": {"$ref": "#/$defs/id_array"},
+        "residuals": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": {"$ref": "#/$defs/residual"}
+        }
+      }
+    },
+    "id_array": {
+      "type": "array",
+      "maxItems": 100000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+    },
+    "residual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["match_id", "residual_ppm", "gate_ppm", "disposition"],
+      "properties": {
+        "match_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "residual_ppm": {"$ref": "#/$defs/optional_residual"},
+        "gate_ppm": {"type": "integer", "minimum": 1, "maximum": 18446744073709551615},
+        "disposition": {"enum": ["inlier", "residual_exceeded", "undefined_line"]}
+      }
+    }
+  }
+}
