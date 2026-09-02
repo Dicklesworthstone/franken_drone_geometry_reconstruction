@@ -23,7 +23,7 @@ name = "Canonical identity and codec"
 summary = "Implement domain-separated identities, canonical binary encoding, finite numeric policy, and differential codec tests."
 dependencies = ["WP-000", "WP-001"]
 acceptance_gate = "GATE-001"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-003"
@@ -31,7 +31,7 @@ name = "Reference evidence ledger"
 summary = "Build append-only capsules, immutable roots, anchor reads, and a single-threaded reference oracle."
 dependencies = ["WP-002"]
 acceptance_gate = "GATE-001"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-004"
@@ -39,7 +39,7 @@ name = "Content-addressed publication"
 summary = "Implement reserve-materialize-verify-publish, staging cleanup, crash matrices, and root traversal."
 dependencies = ["WP-002", "WP-003"]
 acceptance_gate = "GATE-002"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-005"
@@ -47,7 +47,7 @@ name = "Original media import"
 summary = "Import files and byte streams exactly, preserve container metadata, and account for every source range."
 dependencies = ["WP-003", "WP-004"]
 acceptance_gate = "GATE-002"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-006"
@@ -55,7 +55,7 @@ name = "Media sidecar protocol"
 summary = "Supervise ffprobe and ffmpeg with sealed manifests, bounded pipes/files, deterministic profiles, and descendant cleanup."
 dependencies = ["WP-004", "WP-005"]
 acceptance_gate = "GATE-003"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-007"
@@ -63,7 +63,7 @@ name = "Packet frame and clock ledger"
 summary = "Model PTS, DTS, arrival, decode, display, telemetry, drift, gaps, and epoch transitions."
 dependencies = ["WP-005", "WP-006"]
 acceptance_gate = "GATE-003"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-008"
@@ -71,7 +71,7 @@ name = "Calibration registry"
 summary = "Represent intrinsics, distortion, rolling shutter, gimbal transforms, crop/zoom state, and calibration evidence."
 dependencies = ["WP-007"]
 acceptance_gate = "GATE-004"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-009"
@@ -79,7 +79,7 @@ name = "Scale witness system"
 summary = "Implement relative, estimated, witnessed, and surveyed scale states with fusion and conflict rules."
 dependencies = ["WP-008"]
 acceptance_gate = "GATE-004"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-010"
@@ -111,7 +111,7 @@ name = "Keyframe and image-quality engine"
 summary = "Select deterministic coverage-aware frames using blur, exposure, baseline, overlap, texture, and dynamic-mask evidence."
 dependencies = ["WP-007", "WP-008"]
 acceptance_gate = "GATE-007"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-014"
@@ -119,7 +119,7 @@ name = "Reference feature and track pipeline"
 summary = "Implement a simple deterministic geometric oracle before optimized or learned correspondence paths."
 dependencies = ["WP-008", "WP-013"]
 acceptance_gate = "GATE-007"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-015"
@@ -151,7 +151,7 @@ name = "Pose graph and bundle refinement"
 summary = "Build robust deterministic pose optimization, loop closure, outlier handling, and complexity witnesses."
 dependencies = ["WP-014", "WP-016"]
 acceptance_gate = "GATE-009"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-019"
@@ -215,7 +215,7 @@ name = "CLI and robot protocol"
 summary = "Ship complete JSON, JSONL, TOON, progress, cancellation, continuation, capabilities, doctor, and explain surfaces."
 dependencies = ["WP-003", "WP-025"]
 acceptance_gate = "GATE-013"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-027"
