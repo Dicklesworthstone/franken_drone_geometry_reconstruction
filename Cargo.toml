@@ -6,6 +6,7 @@ members = [
     "crates/fdgr-calibration",
     "crates/fdgr-scale",
     "crates/fdgr-keyframe",
+    "crates/fdgr-correspondence",
     "crates/fdgr-evidence",
     "crates/fdgr-ledger",
     "crates/fdgr-object-store",

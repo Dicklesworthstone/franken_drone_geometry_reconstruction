@@ -1,0 +1,16 @@
+[package]
+name = "fdgr-correspondence"
+description = "Deterministic descriptor matching and collision-safe feature-track reference for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true
