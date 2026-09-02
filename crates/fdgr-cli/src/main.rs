@@ -24,15 +24,14 @@ use std::process::ExitCode;
 
 fn main() -> ExitCode {
     let arguments: Vec<String> = env::args().skip(1).collect();
-    let rest = arguments.split_first().map_or(&[], |(_, rest)| rest);
     let result = if correspondence_cli::is_command(&arguments) {
-        correspondence_cli::run(rest)
+        correspondence_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
     } else if epipolar_cli::is_command(&arguments) {
-        epipolar_cli::run(rest)
+        epipolar_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
     } else if keyframe_cli::is_command(&arguments) {
-        keyframe_cli::run(rest)
+        keyframe_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
     } else if relative_pose_cli::is_command(&arguments) {
-        relative_pose_cli::run(rest)
+        relative_pose_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
     } else {
         let result = commands::run(&arguments);
         if result.is_ok()
@@ -49,7 +48,7 @@ fn main() -> ExitCode {
         result
     };
     match result {
-        Ok(()) => ExitCode::SUCCESS,
+        Ok(() => ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("fdgr: {error}");
             ExitCode::from(2)
