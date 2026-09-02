@@ -91,6 +91,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-global-pose"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-edge-scale",
+ "fdgr-pose-graph",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-graph"
 version = "0.0.1"
 dependencies = [
