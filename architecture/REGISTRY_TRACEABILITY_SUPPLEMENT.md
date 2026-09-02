@@ -12,7 +12,10 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-CALIBRATION-MODEL` | `registries/schemas.toml` | schemas/calibration_model.schema.json |
 | `SCHEMA-CLOCK-MODEL` | `registries/schemas.toml` | schemas/clock_model.schema.json |
 | `SCHEMA-CORRESPONDENCE-GENERATION` | `registries/schemas.toml` | schemas/correspondence_generation.schema.json |
+| `SCHEMA-EDGE-SCALE-GENERATION` | `registries/schemas.toml` | schemas/edge_scale_generation.schema.json |
+| `SCHEMA-EPIPOLAR-VERIFICATION` | `registries/schemas.toml` | schemas/epipolar_verification.schema.json |
 | `SCHEMA-FILE-VERIFICATION` | `registries/schemas.toml` | schemas/file_verification.schema.json |
+| `SCHEMA-GRAPH-ANALYSIS` | `registries/schemas.toml` | schemas/graph_analysis.schema.json |
 | `SCHEMA-KEYFRAME-SELECTION` | `registries/schemas.toml` | schemas/keyframe_selection.schema.json |
 | `SCHEMA-LOCAL-IMPORT-RECEIPT` | `registries/schemas.toml` | schemas/local_import_receipt.schema.json |
 | `SCHEMA-MEDIA-DECODE-PLAN` | `registries/schemas.toml` | schemas/media_decode_plan.schema.json |
@@ -20,6 +23,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-MEDIA-INSPECTION` | `registries/schemas.toml` | schemas/media_inspection.schema.json |
 | `SCHEMA-MEDIA-TIMELINE` | `registries/schemas.toml` | schemas/media_timeline.schema.json |
 | `SCHEMA-OBJECT-MANIFEST-VIEW` | `registries/schemas.toml` | schemas/object_manifest_view.schema.json |
+| `SCHEMA-POSE-GRAPH-GENERATION` | `registries/schemas.toml` | schemas/pose_graph_generation.schema.json |
 | `SCHEMA-RECORDED-MEDIA-INGEST` | `registries/schemas.toml` | schemas/recorded_media_ingest.schema.json |
 | `SCHEMA-RELATIVE-POSE-VERIFICATION` | `registries/schemas.toml` | schemas/relative_pose_verification.schema.json |
 | `SCHEMA-SAMPLE-WINDOW` | `registries/schemas.toml` | schemas/sample_window.schema.json |

@@ -134,9 +134,27 @@ json_schema_id = "https://fdgr.dev/schemas/correspondence_generation.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-EDGE-SCALE-GENERATION"
+path = "schemas/edge_scale_generation.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/edge_scale_generation.v1.json"
+status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-EPIPOLAR-VERIFICATION"
+path = "schemas/epipolar_verification.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/epipolar_verification.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-FILE-VERIFICATION"
 path = "schemas/file_verification.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/file_verification.v1.json"
+status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-GRAPH-ANALYSIS"
+path = "schemas/graph_analysis.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/graph_analysis.v1.json"
 status = "reference_source"
 
 [[public_schema]]
@@ -179,6 +197,12 @@ status = "reference_source"
 id = "SCHEMA-OBJECT-MANIFEST-VIEW"
 path = "schemas/object_manifest_view.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/object_manifest_view.v1.json"
+status = "reference_source"
+
+[[public_schema]]
+id = "SCHEMA-POSE-GRAPH-GENERATION"
+path = "schemas/pose_graph_generation.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/pose_graph_generation.v1.json"
 status = "reference_source"
 
 [[public_schema]]

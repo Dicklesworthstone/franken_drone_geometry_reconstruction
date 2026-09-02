@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/graph_analysis.v1.json",
+  "title": "FDGR deterministic graph analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "analysis_digest",
+    "node_basis_digest",
+    "edge_basis_digest",
+    "selection_policy_digest",
+    "generation",
+    "node_count",
+    "edge_count",
+    "component_count",
+    "cycle_rank",
+    "path_expansions",
+    "forest_edge_ids",
+    "non_forest_edge_ids",
+    "bridge_edge_ids",
+    "components",
+    "fundamental_cycles"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.graph_analysis/1"
+    },
+    "analysis_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "node_basis_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "edge_basis_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "selection_policy_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "generation": {
+      "$ref": "#/$defs/nonzero_safe_integer"
+    },
+    "node_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+    },
+    "edge_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 500000
+    },
+    "component_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+    },
+    "cycle_rank": {
+      "$ref": "#/$defs/safe_integer"
+    },
+    "path_expansions": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000000
+    },
+    "forest_edge_ids": {
+      "$ref": "#/$defs/id_array"
+    },
+    "non_forest_edge_ids": {
+      "$ref": "#/$defs/id_array"
+    },
+    "bridge_edge_ids": {
+      "$ref": "#/$defs/id_array"
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100000,
+      "items": {
+        "$ref": "#/$defs/component"
+      }
+    },
+    "fundamental_cycles": {
+      "type": "array",
+      "maxItems": 500000,
+      "items": {
+        "$ref": "#/$defs/cycle"
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "safe_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "nonzero_safe_integer": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "id_array": {
+      "type": "array",
+      "maxItems": 500000,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonzero_safe_integer"
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component_id",
+        "node_ids",
+        "edge_ids",
+        "forest_edge_ids"
+      ],
+      "properties": {
+        "component_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "node_ids": {
+          "$ref": "#/$defs/id_array"
+        },
+        "edge_ids": {
+          "$ref": "#/$defs/id_array"
+        },
+        "forest_edge_ids": {
+          "$ref": "#/$defs/id_array"
+        }
+      }
+    },
+    "cycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closing_edge_id",
+        "left_node_id",
+        "right_node_id",
+        "forest_path_edge_ids"
+      ],
+      "properties": {
+        "closing_edge_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "left_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "right_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "forest_path_edge_ids": {
+          "$ref": "#/$defs/id_array"
+        }
+      }
+    }
+  }
+}
