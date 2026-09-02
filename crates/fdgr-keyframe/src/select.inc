@@ -17,23 +17,12 @@ pub fn select_keyframes(
     validate_policy(policy)?;
     let candidates = canonicalize_candidates(candidates)?;
     let mut eligible_indices = Vec::new();
+    let mut hard_rejected = Vec::new();
     let mut rejected = Vec::new();
 
     for (index, candidate) in candidates.iter().enumerate() {
-        let quality = quality_score(candidate);
         if let Some(reason) = hard_rejection(candidate, policy) {
-            rejected.push(RejectedKeyframe {
-                sample_index: candidate.sample_index,
-                frame_digest: candidate.frame_digest.clone(),
-                reason,
-                quality_score_ppm: quality,
-                marginal_coverage_cells: u32::try_from(candidate.coverage_cells.len()).map_err(
-                    |_| KeyframeError::ArithmeticOverflow {
-                        field: "candidate_coverage_cells",
-                    },
-                )?,
-                conflicts_with_sample_index: None,
-            });
+            hard_rejected.push((index, reason));
         } else {
             eligible_indices.push(index);
         }
@@ -110,6 +99,27 @@ pub fn select_keyframes(
             total_score: best.total_score,
         });
         eligible_indices.retain(|index| *index != best.candidate_index);
+    }
+
+    for (candidate_index, reason) in hard_rejected {
+        let candidate = candidates.get(candidate_index).ok_or(
+            KeyframeError::ArithmeticOverflow {
+                field: "hard_rejected_candidate_index",
+            },
+        )?;
+        let marginal = u32::try_from(marginal_coverage(candidate, &covered)).map_err(|_| {
+            KeyframeError::ArithmeticOverflow {
+                field: "hard_rejected_marginal_coverage_cells",
+            }
+        })?;
+        rejected.push(RejectedKeyframe {
+            sample_index: candidate.sample_index,
+            frame_digest: candidate.frame_digest.clone(),
+            reason,
+            quality_score_ppm: quality_score(candidate),
+            marginal_coverage_cells: marginal,
+            conflicts_with_sample_index: None,
+        });
     }
 
     for candidate_index in eligible_indices {
