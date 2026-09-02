@@ -36,7 +36,7 @@ pub struct Capability {
 pub enum CapabilityStatus {
     /// Implemented in the minimal executable scaffold.
     Scaffolded,
-    /// Deterministic reference source exists but native qualification is still separate evidence.
+    /// Deterministic reference source exists but production qualification is separate evidence.
     ReferenceSource,
     /// Normatively designed but not implemented.
     Planned,
@@ -112,9 +112,24 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "geometry.correspondence.build",
+            description: "build bounded deterministic descriptor correspondences and collision-safe multi-view tracks from exact evidence tables",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "geometry.keyframe.select",
+            description: "select deterministic quality, coverage, and diversity-aware keyframes from exact candidate evidence",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "geometry.reconstruct.metric",
             description: "publish uncertainty-bearing geometry with an explicit metric scale witness",
             status: CapabilityStatus::Planned,
+        },
+        Capability {
+            id: "geometry.relative_pose.verify",
+            description: "adjudicate exact two-view motion candidates using fixed-point epipolar, parallax, and cheirality evidence without granting pose-graph or metric authority",
+            status: CapabilityStatus::ReferenceSource,
         },
         Capability {
             id: "media.decode.plan",
@@ -177,8 +192,18 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::Planned,
         },
         Capability {
+            id: "sensor.calibration.derive",
+            description: "validate exact camera calibration scope and derive crop, resize, distortion, rolling-shutter, and extrinsic evidence without estimating missing parameters",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "sensor.clock.fit",
             description: "fit a robust epoch-aware affine clock model from exact content-addressed synchronization anchors without extrapolation",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "sensor.scale.resolve",
+            description: "resolve correlation-aware relative, estimated, witnessed, or surveyed scale while refusing metric mapping without sufficient independent evidence",
             status: CapabilityStatus::ReferenceSource,
         },
     ]
@@ -278,10 +303,10 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "import original recorded media with exact-byte preservation and timestamp accounting",
         "derive canonical media timelines and explicit clock epochs before joining telemetry",
         "supervise ffmpeg and model workers through bounded process-sidecar protocols",
-        "publish relative online geometry before admitting any metric claim",
-        "add calibration, telemetry, and independent scale-witness fusion",
-        "admit one offline geometry model through differential and license gates",
-        "add pose-graph refinement, fusion, uncertainty, and coverage certificates",
+        "derive explicit calibration and independent scale evidence before metric claims",
+        "select evidence-aware keyframes and build deterministic descriptor tracks",
+        "adjudicate two-view motion candidates before pose-graph admission",
+        "add candidate generation, pose-graph refinement, fusion, uncertainty, and coverage certificates",
         "add semantic observations, archive recovery, and agent surfaces in dependency order",
     ]
 }
@@ -340,6 +365,9 @@ mod tests {
             "evidence.manifest.build",
             "evidence.manifest.verify",
             "evidence.store.local",
+            "geometry.correspondence.build",
+            "geometry.keyframe.select",
+            "geometry.relative_pose.verify",
             "media.decode.plan",
             "media.decode.receipt.validate",
             "media.index.classic_samples",
@@ -349,7 +377,9 @@ mod tests {
             "media.recorded.ingest",
             "media.recorded.verify",
             "media.timeline.classic",
+            "sensor.calibration.derive",
             "sensor.clock.fit",
+            "sensor.scale.resolve",
         ] {
             let status = capabilities()
                 .iter()
