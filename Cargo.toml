@@ -4,6 +4,7 @@ members = [
     "crates/fdgr-codec",
     "crates/fdgr-graph",
     "crates/fdgr-pose-graph",
+    "crates/fdgr-edge-scale",
     "crates/fdgr-clock",
     "crates/fdgr-calibration",
     "crates/fdgr-scale",

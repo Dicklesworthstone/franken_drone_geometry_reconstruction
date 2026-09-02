@@ -1,0 +1,18 @@
+[package]
+name = "fdgr-edge-scale"
+description = "Correlation-aware relative pose-edge scale reconciliation for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-graph = { path = "../fdgr-graph" }
+fdgr-pose-graph = { path = "../fdgr-pose-graph" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true

@@ -63,6 +63,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-edge-scale"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-graph",
+ "fdgr-pose-graph",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-epipolar"
 version = "0.0.1"
 dependencies = [
