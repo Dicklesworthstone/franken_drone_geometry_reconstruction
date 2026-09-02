@@ -17,6 +17,7 @@ fdgr-clock = { path = "../fdgr-clock" }
 fdgr-codec = { path = "../fdgr-codec" }
 fdgr-core = { path = "../fdgr-core" }
 fdgr-correspondence = { path = "../fdgr-correspondence" }
+fdgr-edge-scale = { path = "../fdgr-edge-scale" }
 fdgr-epipolar = { path = "../fdgr-epipolar" }
 fdgr-evidence = { path = "../fdgr-evidence" }
 fdgr-keyframe = { path = "../fdgr-keyframe" }
@@ -25,6 +26,7 @@ fdgr-media-custody = { path = "../fdgr-media-custody" }
 fdgr-media-timeline = { path = "../fdgr-media-timeline" }
 fdgr-media-worker = { path = "../fdgr-media-worker" }
 fdgr-object-store = { path = "../fdgr-object-store" }
+fdgr-pose-graph = { path = "../fdgr-pose-graph" }
 fdgr-recorded-media = { path = "../fdgr-recorded-media" }
 fdgr-recorded-media-verify = { path = "../fdgr-recorded-media-verify" }
 fdgr-relative-pose = { path = "../fdgr-relative-pose" }

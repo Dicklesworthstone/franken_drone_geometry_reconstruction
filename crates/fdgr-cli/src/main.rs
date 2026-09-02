@@ -8,9 +8,12 @@ mod commands;
 mod correspondence_cli;
 mod decode_args;
 mod decode_render;
+mod edge_scale_cli;
 mod epipolar_cli;
 mod geometry_observation_cli;
 mod keyframe_cli;
+mod pose_graph_cli;
+mod pose_graph_input_cli;
 mod recorded_args;
 mod recorded_render;
 mod relative_pose_cli;
@@ -31,10 +34,14 @@ fn main() -> ExitCode {
     let command_arguments = command_arguments(&arguments);
     let result = if correspondence_cli::is_command(&arguments) {
         correspondence_cli::run(command_arguments)
+    } else if edge_scale_cli::is_command(&arguments) {
+        edge_scale_cli::run(command_arguments)
     } else if epipolar_cli::is_command(&arguments) {
         epipolar_cli::run(command_arguments)
     } else if keyframe_cli::is_command(&arguments) {
         keyframe_cli::run(command_arguments)
+    } else if pose_graph_cli::is_command(&arguments) {
+        pose_graph_cli::run(command_arguments)
     } else if relative_pose_cli::is_command(&arguments) {
         relative_pose_cli::run(command_arguments)
     } else {
@@ -46,8 +53,10 @@ fn main() -> ExitCode {
                     .is_some_and(|value| matches!(value.as_str(), "help" | "--help" | "-h")))
         {
             correspondence_cli::print_help_line();
+            edge_scale_cli::print_help_line();
             epipolar_cli::print_help_line();
             keyframe_cli::print_help_line();
+            pose_graph_cli::print_help_line();
             relative_pose_cli::print_help_line();
         }
         result
