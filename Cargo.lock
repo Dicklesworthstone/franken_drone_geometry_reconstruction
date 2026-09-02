@@ -146,6 +146,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-relative-pose"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-scale"
 version = "0.0.1"
 dependencies = [
