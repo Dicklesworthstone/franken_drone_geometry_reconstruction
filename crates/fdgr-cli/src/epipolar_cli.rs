@@ -3,21 +3,16 @@
 //! Exact-byte CLI adapter for deterministic calibrated epipolar verification.
 
 use crate::args::OutputFormat;
-use fdgr_codec::hash_bytes;
+use crate::geometry_observation_cli::{read_bound_text, read_normalized_observations};
 use fdgr_epipolar::{
     CandidateSource, EpipolarBasis, EpipolarPolicy, EssentialCandidate,
-    MAX_EPIPOLAR_CANDIDATES, MAX_EPIPOLAR_OBSERVATIONS, NormalizedCorrespondence,
-    verify_epipolar_candidates,
+    MAX_EPIPOLAR_CANDIDATES, verify_epipolar_candidates,
 };
 use fdgr_types::EvidenceDigest;
-use std::fs::{self, File};
-use std::io::Read;
 use std::path::{Path, PathBuf};
 
-const OBSERVATION_HEADER: &str = "match_id\tpair_id\tleft_observation_id\tright_observation_id\tleft_x_ppm\tleft_y_ppm\tright_x_ppm\tright_y_ppm\tuncertainty_ppm\tleft_spatial_bin\tright_spatial_bin";
 const CANDIDATE_HEADER: &str =
     "candidate_id\tsource\tm00\tm01\tm02\tm10\tm11\tm12\tm20\tm21\tm22";
-const MAX_OBSERVATION_TABLE_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_CANDIDATE_TABLE_BYTES: u64 = 4 * 1024 * 1024;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -51,9 +46,10 @@ pub(crate) fn print_help_line() {
 
 pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
     let options = parse_options(arguments)?;
-    let observations = read_observations(
+    let observations = read_normalized_observations(
         &options.observation_path,
         &options.observation_basis_digest,
+        "epipolar observation",
     )?;
     let candidates = read_candidates(&options.candidate_path, &options.candidate_basis_digest)?;
     let verification = verify_epipolar_candidates(
@@ -222,73 +218,6 @@ fn parse_options(arguments: &[String]) -> Result<CliOptions, String> {
     })
 }
 
-fn read_observations(
-    path: &Path,
-    expected_digest: &EvidenceDigest,
-) -> Result<Vec<NormalizedCorrespondence>, String> {
-    let text = read_bound_text(
-        path,
-        expected_digest,
-        MAX_OBSERVATION_TABLE_BYTES,
-        "epipolar observation",
-    )?;
-    let mut lines = text.split_terminator('\n');
-    let header = lines
-        .next()
-        .ok_or_else(|| "epipolar observation table is empty".to_owned())?;
-    if header != OBSERVATION_HEADER {
-        return Err(format!(
-            "epipolar observation header mismatch: expected {OBSERVATION_HEADER:?}"
-        ));
-    }
-    let mut observations = Vec::new();
-    for (offset, line) in lines.enumerate() {
-        let line_number = offset.saturating_add(2);
-        if line.is_empty() {
-            return Err(format!("epipolar observation line {line_number} is empty"));
-        }
-        let fields = line.split('\t').collect::<Vec<_>>();
-        let [match_id, pair_id, left_observation_id, right_observation_id, left_x_ppm, left_y_ppm, right_x_ppm, right_y_ppm, uncertainty_ppm, left_spatial_bin, right_spatial_bin] = fields.as_slice() else {
-            return Err(format!(
-                "epipolar observation line {line_number} must contain exactly eleven tab-separated fields"
-            ));
-        };
-        observations.push(NormalizedCorrespondence {
-            match_id: parse_nonzero_u64(match_id, "match id")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            pair_id: parse_nonzero_u64(pair_id, "pair id")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            left_observation_id: parse_nonzero_u64(left_observation_id, "left observation id")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            right_observation_id: parse_nonzero_u64(right_observation_id, "right observation id")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            left_x_ppm: parse_i64(left_x_ppm, "left x ppm")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            left_y_ppm: parse_i64(left_y_ppm, "left y ppm")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            right_x_ppm: parse_i64(right_x_ppm, "right x ppm")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            right_y_ppm: parse_i64(right_y_ppm, "right y ppm")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            uncertainty_ppm: parse_u32(uncertainty_ppm, "uncertainty ppm")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            left_spatial_bin: parse_nonzero_u16(left_spatial_bin, "left spatial bin")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-            right_spatial_bin: parse_nonzero_u16(right_spatial_bin, "right spatial bin")
-                .map_err(|error| format!("line {line_number}: {error}"))?,
-        });
-        if observations.len() > MAX_EPIPOLAR_OBSERVATIONS {
-            return Err(format!(
-                "epipolar observation table contains more than {MAX_EPIPOLAR_OBSERVATIONS} records"
-            ));
-        }
-    }
-    if observations.is_empty() {
-        return Err("epipolar observation table contains no records".to_owned());
-    }
-    Ok(observations)
-}
-
 fn read_candidates(
     path: &Path,
     expected_digest: &EvidenceDigest,
@@ -357,50 +286,6 @@ fn read_candidates(
         return Err("essential candidate table contains no records".to_owned());
     }
     Ok(candidates)
-}
-
-fn read_bound_text(
-    path: &Path,
-    expected_digest: &EvidenceDigest,
-    maximum_bytes: u64,
-    label: &str,
-) -> Result<String, String> {
-    let metadata = fs::symlink_metadata(path)
-        .map_err(|error| format!("{label} metadata failed: {error}"))?;
-    if metadata.file_type().is_symlink() {
-        return Err(format!("{label} table must not be a symlink"));
-    }
-    if !metadata.is_file() {
-        return Err(format!("{label} table must be a regular file"));
-    }
-    if metadata.len() > maximum_bytes {
-        return Err(format!("{label} table exceeds {maximum_bytes} bytes"));
-    }
-    let mut file = File::open(path).map_err(|error| format!("{label} open failed: {error}"))?;
-    let mut bytes = Vec::new();
-    file.by_ref()
-        .take(maximum_bytes.saturating_add(1))
-        .read_to_end(&mut bytes)
-        .map_err(|error| format!("{label} read failed: {error}"))?;
-    let byte_length = u64::try_from(bytes.len()).map_err(|_| format!("{label} length overflow"))?;
-    if byte_length > maximum_bytes {
-        return Err(format!("{label} table exceeds {maximum_bytes} bytes"));
-    }
-    let observed_digest = hash_bytes(&bytes);
-    if &observed_digest != expected_digest {
-        return Err(format!(
-            "{label} basis digest mismatch: expected {expected_digest}, observed {observed_digest}"
-        ));
-    }
-    if !bytes.ends_with(b"\n") {
-        return Err(format!("{label} table must end with a newline"));
-    }
-    let text = std::str::from_utf8(&bytes)
-        .map_err(|error| format!("{label} table is not UTF-8: {error}"))?;
-    if text.contains('\r') {
-        return Err(format!("{label} table must use LF line endings"));
-    }
-    Ok(text.to_owned())
 }
 
 fn parse_source(value: &str) -> Result<CandidateSource, String> {

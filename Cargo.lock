@@ -18,6 +18,7 @@ dependencies = [
  "fdgr-codec",
  "fdgr-core",
  "fdgr-correspondence",
+ "fdgr-epipolar",
  "fdgr-evidence",
  "fdgr-keyframe",
  "fdgr-media",
@@ -55,6 +56,14 @@ dependencies = [
 
 [[package]]
 name = "fdgr-correspondence"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
+name = "fdgr-epipolar"
 version = "0.0.1"
 dependencies = [
  "fdgr-codec",

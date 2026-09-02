@@ -8,6 +8,8 @@ mod commands;
 mod correspondence_cli;
 mod decode_args;
 mod decode_render;
+mod epipolar_cli;
+mod geometry_observation_cli;
 mod keyframe_cli;
 mod recorded_args;
 mod recorded_render;
@@ -22,12 +24,15 @@ use std::process::ExitCode;
 
 fn main() -> ExitCode {
     let arguments: Vec<String> = env::args().skip(1).collect();
+    let rest = arguments.split_first().map_or(&[], |(_, rest)| rest);
     let result = if correspondence_cli::is_command(&arguments) {
-        correspondence_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
+        correspondence_cli::run(rest)
+    } else if epipolar_cli::is_command(&arguments) {
+        epipolar_cli::run(rest)
     } else if keyframe_cli::is_command(&arguments) {
-        keyframe_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
+        keyframe_cli::run(rest)
     } else if relative_pose_cli::is_command(&arguments) {
-        relative_pose_cli::run(arguments.split_first().map_or(&[], |(_, rest)| rest))
+        relative_pose_cli::run(rest)
     } else {
         let result = commands::run(&arguments);
         if result.is_ok()
@@ -37,6 +42,7 @@ fn main() -> ExitCode {
                     .is_some_and(|value| matches!(value.as_str(), "help" | "--help" | "-h")))
         {
             correspondence_cli::print_help_line();
+            epipolar_cli::print_help_line();
             keyframe_cli::print_help_line();
             relative_pose_cli::print_help_line();
         }
