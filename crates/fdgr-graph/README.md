@@ -1,9 +1,11 @@
-# `fdgr-graph` — Deterministic graph reference
+# `fdgr-graph`
 
-**Status:** target crate contract; not yet a Cargo workspace member.
+`fdgr-graph` is FDGR's deterministic safe-Rust graph-topology oracle. It turns exact node and edge
+evidence into a canonical maximum-priority spanning forest, connected components, fundamental-cycle
+witnesses, bridge edges, and an explicit operation receipt.
 
-Defines canonical ordered graph views, projection identities, tie-break policies, decision/complexity witnesses, and reference algorithms used to qualify optimized Franken graph paths.
+The reference implementation is deliberately simple and dependency-free. It provides the semantic
+oracle against which optimized `franken_networkx` and `frankengraphdb` paths must prove equality.
 
-The first implementation must be simple and deterministic. Promotion into the workspace requires
-the dependency-DAG, differential, cancellation, fault, schema, and agent-acceptance gates in the
-comprehensive plan.
+It does not infer geometry, optimize poses, assign physical coordinates, or turn edge priority into
+a confidence probability. A graph edge is admitted evidence supplied by a higher-level domain.

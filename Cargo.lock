@@ -79,6 +79,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-graph"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-keyframe"
 version = "0.0.1"
 dependencies = [

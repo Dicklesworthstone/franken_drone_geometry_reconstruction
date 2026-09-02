@@ -2,6 +2,7 @@
 members = [
     "crates/fdgr-types",
     "crates/fdgr-codec",
+    "crates/fdgr-graph",
     "crates/fdgr-clock",
     "crates/fdgr-calibration",
     "crates/fdgr-scale",
