@@ -75,6 +75,15 @@ pub enum EpipolarError {
         /// Maximum magnitude.
         maximum: u128,
     },
+    /// A rank-deficient matrix failed the essential cubic constraint.
+    EssentialConstraintExceeded {
+        /// Candidate identity.
+        candidate_id: u64,
+        /// Scale-invariant cubic-constraint residual.
+        residual_ppm: u64,
+        /// Maximum constitutional residual.
+        maximum_ppm: u64,
+    },
     /// Candidate/observation work exceeded the explicit operation budget.
     EvaluationBudgetExceeded {
         /// Required evaluations.
@@ -166,6 +175,14 @@ impl Display for EpipolarError {
             } => write!(
                 formatter,
                 "essential candidate {candidate_id} {stage} coefficient magnitude is {actual}; maximum is {maximum}"
+            ),
+            Self::EssentialConstraintExceeded {
+                candidate_id,
+                residual_ppm,
+                maximum_ppm,
+            } => write!(
+                formatter,
+                "essential candidate {candidate_id} has cubic-constraint residual {residual_ppm} ppm; maximum is {maximum_ppm} ppm"
             ),
             Self::EvaluationBudgetExceeded { required, maximum } => write!(
                 formatter,

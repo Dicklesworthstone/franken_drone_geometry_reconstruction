@@ -13,6 +13,7 @@ pub fn verify_epipolar_candidates(
     validate_policy(policy)?;
     let observations = canonicalize_observations(observations, &basis)?;
     let candidates = canonicalize_candidates(candidates)?;
+    validate_essential_candidates(&candidates)?;
     let required_evaluations = usize_to_u64(observations.len())?
         .checked_mul(usize_to_u64(candidates.len())?)
         .ok_or(EpipolarError::ArithmeticOverflow {
