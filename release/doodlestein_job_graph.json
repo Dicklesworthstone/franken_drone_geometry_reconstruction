@@ -1,6 +1,6 @@
 {
   "schema": "fdgr.doodlestein_job_graph/1",
-  "revision": 6,
+  "revision": 7,
   "authority": "local_receipts_only",
   "hosted_github_actions_authority": false,
   "resumption_key": [
@@ -65,8 +65,15 @@
       "receipt_semantics": "content-addressed robust clock-fit, outlier, determinism, and basis-mutation refusal evidence; never standalone timeline-continuity authority"
     },
     {
+      "id": "keyframe-select-e2e",
+      "needs": ["rust-core"],
+      "command": "bash scripts/e2e/keyframe_select.sh",
+      "host": "target-native",
+      "receipt_semantics": "content-addressed deterministic selection, explicit rejection, final-marginal, and stale-basis refusal evidence; never standalone pose or coverage authority"
+    },
+    {
       "id": "agent-contract",
-      "needs": ["clock-fit-e2e", "recorded-media-timeline-e2e", "rust-core"],
+      "needs": ["clock-fit-e2e", "keyframe-select-e2e", "recorded-media-timeline-e2e", "rust-core"],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_agent_contracts.py",
       "host": "target-native"
     },

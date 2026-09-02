@@ -94,6 +94,9 @@ CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
 step 'Running content-addressed robust clock fitting'
 CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
   bash scripts/e2e/clock_fit.sh
+step 'Running content-addressed deterministic keyframe selection'
+CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
+  bash scripts/e2e/keyframe_select.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then

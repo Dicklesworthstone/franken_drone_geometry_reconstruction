@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+#![allow(clippy::indexing_slicing, clippy::too_many_lines)]
 //! Exact-byte CLI adapter for deterministic keyframe selection.
 
 use crate::args::OutputFormat;
@@ -12,7 +13,8 @@ use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
-const CANDIDATE_HEADER: &str = "sample_index\tframe_digest\tpresentation_tick\tsharpness_ppm\ttexture_ppm\tdark_clipped_ppm\tbright_clipped_ppm\tdynamic_content_ppm\toverlap_ppm\tview_sector\tbaseline_bin\tcoverage_cells";
+const CANDIDATE_HEADER: &str =
+    "sample_index\tframe_digest\tpresentation_tick\tsharpness_ppm\ttexture_ppm\tdark_clipped_ppm\tbright_clipped_ppm\tdynamic_content_ppm\toverlap_ppm\tview_sector\tbaseline_bin\tcoverage_cells";
 const MAX_CANDIDATE_TABLE_BYTES: u64 = 64 * 1024 * 1024;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
