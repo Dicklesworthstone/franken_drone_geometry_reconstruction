@@ -188,6 +188,12 @@ json_schema_id = "https://fdgr.dev/schemas/recorded_media_ingest.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-RELATIVE-POSE-VERIFICATION"
+path = "schemas/relative_pose_verification.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/relative_pose_verification.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-SCALE-MODEL"
 path = "schemas/scale_model.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/scale_model.v1.json"

@@ -21,6 +21,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-MEDIA-TIMELINE` | `registries/schemas.toml` | schemas/media_timeline.schema.json |
 | `SCHEMA-OBJECT-MANIFEST-VIEW` | `registries/schemas.toml` | schemas/object_manifest_view.schema.json |
 | `SCHEMA-RECORDED-MEDIA-INGEST` | `registries/schemas.toml` | schemas/recorded_media_ingest.schema.json |
+| `SCHEMA-RELATIVE-POSE-VERIFICATION` | `registries/schemas.toml` | schemas/relative_pose_verification.schema.json |
 | `SCHEMA-SAMPLE-WINDOW` | `registries/schemas.toml` | schemas/sample_window.schema.json |
 | `SCHEMA-SCALE-MODEL` | `registries/schemas.toml` | schemas/scale_model.schema.json |
 | `SCHEMA-STORE-VERIFICATION` | `registries/schemas.toml` | schemas/store_verification.schema.json |

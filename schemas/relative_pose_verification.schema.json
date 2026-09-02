@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/relative_pose_verification.v1.json",
+  "title": "FDGR deterministic two-view relative-pose verification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "verification_digest",
+    "correspondence_generation_digest",
+    "calibration_digest",
+    "bearing_basis_digest",
+    "candidate_basis_digest",
+    "policy_digest",
+    "left_sample_index",
+    "right_sample_index",
+    "generation",
+    "status",
+    "selected_candidate_id",
+    "ambiguous_candidate_ids",
+    "match_count",
+    "candidate_count",
+    "evaluation_count",
+    "policy",
+    "evaluations"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.relative_pose_verification/1"},
+    "verification_digest": {"$ref": "#/$defs/digest"},
+    "correspondence_generation_digest": {"$ref": "#/$defs/digest"},
+    "calibration_digest": {"$ref": "#/$defs/digest"},
+    "bearing_basis_digest": {"$ref": "#/$defs/digest"},
+    "candidate_basis_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "left_sample_index": {"$ref": "#/$defs/safe_integer"},
+    "right_sample_index": {"$ref": "#/$defs/safe_integer"},
+    "generation": {"$ref": "#/$defs/nonzero_safe_integer"},
+    "status": {
+      "enum": [
+        "no_accepted_candidate",
+        "ambiguous",
+        "geometrically_verified"
+      ]
+    },
+    "selected_candidate_id": {"$ref": "#/$defs/optional_safe_integer"},
+    "ambiguous_candidate_ids": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+    },
+    "match_count": {"type": "integer", "minimum": 1, "maximum": 50000},
+    "candidate_count": {"type": "integer", "minimum": 1, "maximum": 64},
+    "evaluation_count": {"type": "integer", "minimum": 1, "maximum": 2000000},
+    "policy": {"$ref": "#/$defs/policy"},
+    "evaluations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/evaluation"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "geometrically_verified"}}},
+      "then": {
+        "properties": {
+          "selected_candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+          "ambiguous_candidate_ids": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "ambiguous"}}},
+      "then": {
+        "properties": {
+          "selected_candidate_id": {"type": "null"},
+          "ambiguous_candidate_ids": {"minItems": 2}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "no_accepted_candidate"}}},
+      "then": {
+        "properties": {
+          "selected_candidate_id": {"type": "null"},
+          "ambiguous_candidate_ids": {"maxItems": 0}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "safe_integer": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "nonzero_safe_integer": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "optional_safe_integer": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/nonzero_safe_integer"}
+      ]
+    },
+    "optional_reason": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "enum": [
+            "epipolar_plane_degenerate",
+            "epipolar_residual_exceeded",
+            "parallax_insufficient",
+            "cheirality_failed"
+          ]
+        }
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_epipolar_residual_nano",
+        "min_epipolar_normal_nano",
+        "min_parallax_nano",
+        "min_inlier_matches",
+        "min_inlier_ratio_ppm",
+        "min_positive_depth_ratio_ppm",
+        "max_median_residual_nano",
+        "require_cheirality",
+        "max_evaluations"
+      ],
+      "properties": {
+        "max_epipolar_residual_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "min_epipolar_normal_nano": {"type": "integer", "minimum": 1, "maximum": 1000000000},
+        "min_parallax_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "min_inlier_matches": {"type": "integer", "minimum": 1, "maximum": 50000},
+        "min_inlier_ratio_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "min_positive_depth_ratio_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "max_median_residual_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "require_cheirality": {"type": "boolean"},
+        "max_evaluations": {"type": "integer", "minimum": 1, "maximum": 2000000}
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "match_id",
+        "epipolar_residual_nano",
+        "parallax_nano",
+        "left_depth_positive",
+        "right_depth_positive",
+        "inlier",
+        "rejection_reason"
+      ],
+      "properties": {
+        "match_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "epipolar_residual_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "parallax_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "left_depth_positive": {"type": "boolean"},
+        "right_depth_positive": {"type": "boolean"},
+        "inlier": {"type": "boolean"},
+        "rejection_reason": {"$ref": "#/$defs/optional_reason"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"inlier": {"const": true}}},
+          "then": {"properties": {"rejection_reason": {"type": "null"}}}
+        },
+        {
+          "if": {"properties": {"inlier": {"const": false}}},
+          "then": {"properties": {"rejection_reason": {"not": {"type": "null"}}}}
+        }
+      ]
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "evidence_digest",
+        "source",
+        "match_count",
+        "inlier_count",
+        "inlier_ratio_ppm",
+        "positive_depth_count",
+        "positive_depth_ratio_ppm",
+        "median_inlier_residual_nano",
+        "maximum_inlier_residual_nano",
+        "median_inlier_parallax_nano",
+        "accepted",
+        "assessments"
+      ],
+      "properties": {
+        "candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "evidence_digest": {"$ref": "#/$defs/digest"},
+        "source": {
+          "enum": [
+            "five_point",
+            "eight_point",
+            "telemetry_prior",
+            "model_prior",
+            "diagnostic_hypothesis"
+          ]
+        },
+        "match_count": {"type": "integer", "minimum": 1, "maximum": 50000},
+        "inlier_count": {"type": "integer", "minimum": 0, "maximum": 50000},
+        "inlier_ratio_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "positive_depth_count": {"type": "integer", "minimum": 0, "maximum": 50000},
+        "positive_depth_ratio_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "median_inlier_residual_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "maximum_inlier_residual_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "median_inlier_parallax_nano": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+        "accepted": {"type": "boolean"},
+        "assessments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50000,
+          "items": {"$ref": "#/$defs/assessment"}
+        }
+      }
+    }
+  }
+}
