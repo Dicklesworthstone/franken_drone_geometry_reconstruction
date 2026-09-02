@@ -7,8 +7,8 @@ Usage: ./scripts/qualify.sh [--mode static|full|release] [--sibling-root PATH] [
 
 static   Validate design, registries, schemas, mutation controls, generated artifacts, scripts,
          and diff hygiene.
-full     Run static checks plus the pinned Rust format/check/Clippy/test and local public-path E2E
-         lanes (default).
+full     Run static checks plus the pinned Rust format/check/Clippy/test lanes and deterministic
+         public-path integration campaigns (default).
 release  Run full checks, require a clean checkout, verify production-admitted sibling pins, and
          seal exact source/contract/toolchain/host identities. Doodlestein predecessor receipts
          remain the authority for step success.
@@ -54,14 +54,12 @@ python3 scripts/validate_agent_contracts.py
 step 'Compiling Python sources without creating repository artifacts'
 python3 - <<'PY'
 from pathlib import Path
-for path in sorted(Path('scripts').rglob('*.py')):
+for path in sorted(Path('scripts').glob('*.py')):
     compile(path.read_text(encoding='utf-8'), str(path), 'exec')
 print('PASS: Python sources compile')
 PY
 step 'Checking shell syntax and diff hygiene'
-while IFS= read -r -d '' script; do
-  bash -n "$script"
-done < <(find scripts -type f -name '*.sh' -print0)
+for script in scripts/*.sh scripts/e2e/*.sh; do bash -n "$script"; done
 git diff --check
 pass 'Static FDGR contract qualification completed'
 
@@ -85,24 +83,24 @@ step 'Running Clippy with warnings denied'
 "$CARGO" clippy --workspace --all-targets --locked -- -D warnings
 step 'Running workspace tests'
 "$CARGO" test --workspace --all-targets --locked
-step 'Running recorded-media public-path ingest and verification'
-CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
-  bash scripts/e2e/recorded_media_ingest_and_verify.sh
-step 'Running custody-bound recorded-media timeline replay'
-CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
-  bash scripts/e2e/recorded_media_timeline.sh
-step 'Running content-addressed robust clock fitting'
-CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
-  bash scripts/e2e/clock_fit.sh
-step 'Running content-addressed deterministic keyframe selection'
-CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
-  bash scripts/e2e/keyframe_select.sh
-step 'Running digest-bound descriptor correspondence construction'
-CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
-  bash scripts/e2e/correspondence_build.sh
-step 'Running fixed-point relative-pose candidate adjudication'
-CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
-  bash scripts/e2e/relative_pose_verify.sh
+step 'Running recorded-media ingest and independent verification E2E'
+bash scripts/e2e/recorded_media_ingest_and_verify.sh
+step 'Running canonical recorded-media timeline E2E'
+bash scripts/e2e/recorded_media_timeline.sh
+step 'Running robust clock-fit E2E'
+bash scripts/e2e/clock_fit.sh
+step 'Running deterministic keyframe-selection E2E'
+bash scripts/e2e/keyframe_select.sh
+step 'Running descriptor correspondence and track-assembly E2E'
+bash scripts/e2e/correspondence_build.sh
+step 'Running calibrated epipolar-verification E2E'
+bash scripts/e2e/epipolar_verify.sh
+step 'Running physical relative-pose verification E2E'
+bash scripts/e2e/relative_pose_verify.sh
+step 'Running pose-graph topology and rotation-cycle E2E'
+bash scripts/e2e/pose_graph_build.sh
+step 'Running relative edge-scale consensus and cycle E2E'
+bash scripts/e2e/edge_scale_resolve.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then

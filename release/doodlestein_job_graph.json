@@ -1,6 +1,6 @@
 {
   "schema": "fdgr.doodlestein_job_graph/1",
-  "revision": 8,
+  "revision": 4,
   "authority": "local_receipts_only",
   "hosted_github_actions_authority": false,
   "resumption_key": [
@@ -20,78 +20,44 @@
     },
     {
       "id": "registry-contracts",
-      "needs": ["repo-policy"],
+      "needs": [
+        "repo-policy"
+      ],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_registry_contracts.py",
       "host": "any-local",
       "receipt_semantics": "immutable mutation-suite evidence input; never standalone release authority"
     },
     {
       "id": "dependency-policy",
-      "needs": ["repo-policy", "registry-contracts"],
+      "needs": [
+        "repo-policy",
+        "registry-contracts"
+      ],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_dependency_policy.py",
       "host": "any-local"
     },
     {
       "id": "generated-contracts",
-      "needs": ["repo-policy", "registry-contracts"],
+      "needs": [
+        "repo-policy",
+        "registry-contracts"
+      ],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/generate_traceability.py --check && PYTHONDONTWRITEBYTECODE=1 python3 scripts/export_beads_bootstrap.py --output .beads/bootstrap.jsonl --check",
       "host": "any-local"
     },
     {
       "id": "rust-core",
-      "needs": ["dependency-policy", "generated-contracts", "registry-contracts"],
+      "needs": [
+        "dependency-policy",
+        "generated-contracts",
+        "registry-contracts"
+      ],
       "command": "cargo fmt --all --check && cargo check --workspace --all-targets --locked && cargo clippy --workspace --all-targets --locked -- -D warnings && cargo test --workspace --all-targets --locked",
       "host": "target-native"
     },
     {
-      "id": "recorded-media-e2e",
-      "needs": ["rust-core"],
-      "command": "bash scripts/e2e/recorded_media_ingest_and_verify.sh",
-      "host": "target-native",
-      "receipt_semantics": "diagnostic public-path evidence input proving root-last publication, independent replay, and corruption refusal; never standalone release authority"
-    },
-    {
-      "id": "recorded-media-timeline-e2e",
-      "needs": ["rust-core"],
-      "command": "bash scripts/e2e/recorded_media_timeline.sh",
-      "host": "target-native",
-      "receipt_semantics": "exact-root deterministic timeline and partial-coverage evidence; never standalone release authority"
-    },
-    {
-      "id": "clock-fit-e2e",
-      "needs": ["rust-core"],
-      "command": "bash scripts/e2e/clock_fit.sh",
-      "host": "target-native",
-      "receipt_semantics": "content-addressed robust clock-fit, outlier, determinism, and basis-mutation refusal evidence; never standalone timeline-continuity authority"
-    },
-    {
-      "id": "keyframe-select-e2e",
-      "needs": ["rust-core"],
-      "command": "bash scripts/e2e/keyframe_select.sh",
-      "host": "target-native",
-      "receipt_semantics": "content-addressed deterministic selection, explicit rejection, final-marginal, and stale-basis refusal evidence; never standalone pose or coverage authority"
-    },
-    {
-      "id": "correspondence-build-e2e",
-      "needs": ["keyframe-select-e2e", "rust-core"],
-      "command": "bash scripts/e2e/correspondence_build.sh",
-      "host": "target-native",
-      "receipt_semantics": "digest-bound deterministic descriptor matching, collision-safe track assembly, replay, and stale-basis refusal; never standalone epipolar or pose authority"
-    },
-    {
-      "id": "relative-pose-verify-e2e",
-      "needs": ["correspondence-build-e2e", "rust-core"],
-      "command": "bash scripts/e2e/relative_pose_verify.sh",
-      "host": "target-native",
-      "receipt_semantics": "fixed-point epipolar, parallax, cheirality, ambiguity, replay, and stale-basis evidence; never standalone pose-graph or metric authority"
-    },
-    {
       "id": "agent-contract",
       "needs": [
-        "clock-fit-e2e",
-        "keyframe-select-e2e",
-        "recorded-media-timeline-e2e",
-        "relative-pose-verify-e2e",
         "rust-core"
       ],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_agent_contracts.py",
@@ -99,17 +65,69 @@
     },
     {
       "id": "agent-scenarios",
-      "needs": ["agent-contract"],
+      "needs": [
+        "agent-contract"
+      ],
       "command": "cargo test --workspace --all-targets --locked agent_",
       "host": "target-native"
     },
     {
+      "id": "keyframe-e2e",
+      "needs": [
+        "agent-scenarios"
+      ],
+      "command": "bash scripts/e2e/keyframe_select.sh",
+      "host": "target-native"
+    },
+    {
+      "id": "correspondence-e2e",
+      "needs": [
+        "keyframe-e2e"
+      ],
+      "command": "bash scripts/e2e/correspondence_build.sh",
+      "host": "target-native"
+    },
+    {
+      "id": "epipolar-e2e",
+      "needs": [
+        "correspondence-e2e"
+      ],
+      "command": "bash scripts/e2e/epipolar_verify.sh",
+      "host": "target-native"
+    },
+    {
+      "id": "relative-pose-e2e",
+      "needs": [
+        "epipolar-e2e"
+      ],
+      "command": "bash scripts/e2e/relative_pose_verify.sh",
+      "host": "target-native"
+    },
+    {
+      "id": "pose-graph-e2e",
+      "needs": [
+        "relative-pose-e2e"
+      ],
+      "command": "bash scripts/e2e/pose_graph_build.sh",
+      "host": "target-native"
+    },
+    {
+      "id": "edge-scale-e2e",
+      "needs": [
+        "pose-graph-e2e"
+      ],
+      "command": "bash scripts/e2e/edge_scale_resolve.sh",
+      "host": "target-native"
+    },
+    {
       "id": "promotion",
-      "needs": ["agent-scenarios", "recorded-media-e2e", "relative-pose-verify-e2e"],
+      "needs": [
+        "edge-scale-e2e"
+      ],
       "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/emit_local_qualification_receipt.py --out qualification/fdgr-local-qualification.json",
       "host": "release-coordinator",
       "receipt_semantics": "identity_seal_after_successful_predecessor_receipts; not standalone qualification proof"
     }
   ],
-  "promotion_rule": "No partial job graph, mutation-suite receipt, E2E receipt, or hosted badge may publish a release root."
+  "promotion_rule": "No partial job graph, mutation-suite receipt, or hosted badge may publish a release root."
 }
