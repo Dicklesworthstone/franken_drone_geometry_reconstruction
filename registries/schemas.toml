@@ -134,6 +134,12 @@ json_schema_id = "https://fdgr.dev/schemas/file_verification.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-KEYFRAME-SELECTION"
+path = "schemas/keyframe_selection.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/keyframe_selection.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-LOCAL-IMPORT-RECEIPT"
 path = "schemas/local_import_receipt.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/local_import_receipt.v1.json"

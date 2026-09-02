@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/keyframe_selection.v1.json",
+  "title": "FDGR deterministic keyframe selection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "selection_digest",
+    "timeline_digest",
+    "decoded_frame_generation_digest",
+    "calibration_digest",
+    "candidate_basis_digest",
+    "policy_digest",
+    "selection_generation",
+    "candidate_count",
+    "eligible_candidate_count",
+    "selected_count",
+    "rejected_count",
+    "covered_cell_count",
+    "selected_view_sector_count",
+    "selected_baseline_bin_count",
+    "policy",
+    "covered_cells",
+    "selected_view_sectors",
+    "selected_baseline_bins",
+    "selected",
+    "rejected"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.keyframe_selection/1"},
+    "selection_digest": {"$ref": "#/$defs/digest"},
+    "timeline_digest": {"$ref": "#/$defs/digest"},
+    "decoded_frame_generation_digest": {"$ref": "#/$defs/digest"},
+    "calibration_digest": {"$ref": "#/$defs/digest"},
+    "candidate_basis_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "selection_generation": {"type": "integer", "minimum": 1},
+    "candidate_count": {"type": "integer", "minimum": 1, "maximum": 100000},
+    "eligible_candidate_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "selected_count": {"type": "integer", "minimum": 0, "maximum": 16384},
+    "rejected_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "covered_cell_count": {"type": "integer", "minimum": 0, "maximum": 2000000},
+    "selected_view_sector_count": {"type": "integer", "minimum": 0, "maximum": 16384},
+    "selected_baseline_bin_count": {"type": "integer", "minimum": 0, "maximum": 16384},
+    "policy": {"$ref": "#/$defs/policy"},
+    "covered_cells": {"$ref": "#/$defs/nonzero_u64_array"},
+    "selected_view_sectors": {"$ref": "#/$defs/nonzero_u32_array"},
+    "selected_baseline_bins": {"$ref": "#/$defs/nonzero_u32_array"},
+    "selected": {
+      "type": "array",
+      "maxItems": 16384,
+      "items": {"$ref": "#/$defs/selected"}
+    },
+    "rejected": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {"$ref": "#/$defs/rejected"}
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "signed_tick": {"type": "string", "pattern": "^(0|-?[1-9][0-9]*)$"},
+    "score": {"type": "string", "pattern": "^(0|[1-9][0-9]*)$"},
+    "ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "nonzero_u64_array": {
+      "type": "array",
+      "maxItems": 2000000,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "nonzero_u32_array": {
+      "type": "array",
+      "maxItems": 16384,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1, "maximum": 4294967295}
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_selected",
+        "min_sharpness_ppm",
+        "min_texture_ppm",
+        "max_dark_clipped_ppm",
+        "max_bright_clipped_ppm",
+        "max_dynamic_content_ppm",
+        "min_overlap_ppm",
+        "min_presentation_spacing_ticks",
+        "quality_weight",
+        "coverage_weight",
+        "view_diversity_weight",
+        "baseline_diversity_weight"
+      ],
+      "properties": {
+        "max_selected": {"type": "integer", "minimum": 1, "maximum": 16384},
+        "min_sharpness_ppm": {"$ref": "#/$defs/ppm"},
+        "min_texture_ppm": {"$ref": "#/$defs/ppm"},
+        "max_dark_clipped_ppm": {"$ref": "#/$defs/ppm"},
+        "max_bright_clipped_ppm": {"$ref": "#/$defs/ppm"},
+        "max_dynamic_content_ppm": {"$ref": "#/$defs/ppm"},
+        "min_overlap_ppm": {"$ref": "#/$defs/ppm"},
+        "min_presentation_spacing_ticks": {"type": "integer", "minimum": 0},
+        "quality_weight": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "coverage_weight": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "view_diversity_weight": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "baseline_diversity_weight": {"type": "integer", "minimum": 0, "maximum": 1000000}
+      }
+    },
+    "selected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rank",
+        "sample_index",
+        "frame_digest",
+        "presentation_tick",
+        "quality_score_ppm",
+        "marginal_coverage_cells",
+        "new_view_sector",
+        "new_baseline_bin",
+        "total_score"
+      ],
+      "properties": {
+        "rank": {"type": "integer", "minimum": 1, "maximum": 16384},
+        "sample_index": {"type": "integer", "minimum": 0},
+        "frame_digest": {"$ref": "#/$defs/digest"},
+        "presentation_tick": {"$ref": "#/$defs/signed_tick"},
+        "quality_score_ppm": {"$ref": "#/$defs/ppm"},
+        "marginal_coverage_cells": {"type": "integer", "minimum": 0, "maximum": 4096},
+        "new_view_sector": {"type": "boolean"},
+        "new_baseline_bin": {"type": "boolean"},
+        "total_score": {"$ref": "#/$defs/score"}
+      }
+    },
+    "rejected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_index",
+        "frame_digest",
+        "reason",
+        "quality_score_ppm",
+        "marginal_coverage_cells",
+        "conflicts_with_sample_index"
+      ],
+      "properties": {
+        "sample_index": {"type": "integer", "minimum": 0},
+        "frame_digest": {"$ref": "#/$defs/digest"},
+        "reason": {
+          "enum": [
+            "sharpness_below_minimum",
+            "texture_below_minimum",
+            "dark_clipping_exceeded",
+            "bright_clipping_exceeded",
+            "dynamic_content_exceeded",
+            "overlap_below_minimum",
+            "empty_coverage",
+            "temporal_spacing",
+            "redundant_evidence",
+            "capacity"
+          ]
+        },
+        "quality_score_ppm": {"$ref": "#/$defs/ppm"},
+        "marginal_coverage_cells": {"type": "integer", "minimum": 0, "maximum": 4096},
+        "conflicts_with_sample_index": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "integer", "minimum": 0}
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"reason": {"const": "temporal_spacing"}}},
+          "then": {"properties": {"conflicts_with_sample_index": {"type": "integer", "minimum": 0}}}
+        },
+        {
+          "if": {"properties": {"reason": {"not": {"const": "temporal_spacing"}}}},
+          "then": {"properties": {"conflicts_with_sample_index": {"type": "null"}}}
+        }
+      ]
+    }
+  }
+}
