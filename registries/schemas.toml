@@ -128,6 +128,12 @@ json_schema_id = "https://fdgr.dev/schemas/clock_model.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-CORRESPONDENCE-GENERATION"
+path = "schemas/correspondence_generation.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/correspondence_generation.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-FILE-VERIFICATION"
 path = "schemas/file_verification.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/file_verification.v1.json"

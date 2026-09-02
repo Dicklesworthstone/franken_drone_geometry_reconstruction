@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/correspondence_generation.v1.json",
+  "title": "FDGR deterministic correspondence generation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "generation_digest",
+    "keyframe_selection_digest",
+    "calibration_digest",
+    "feature_basis_digest",
+    "pair_basis_digest",
+    "policy_digest",
+    "generation",
+    "observation_count",
+    "eligible_observation_count",
+    "pair_count",
+    "accepted_match_count",
+    "rejected_match_count",
+    "track_count",
+    "unmatched_observation_count",
+    "distance_evaluations",
+    "policy",
+    "ineligible_observation_ids",
+    "unmatched_observation_ids",
+    "accepted_matches",
+    "rejected_matches",
+    "tracks"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.correspondence_generation/1"},
+    "generation_digest": {"$ref": "#/$defs/digest"},
+    "keyframe_selection_digest": {"$ref": "#/$defs/digest"},
+    "calibration_digest": {"$ref": "#/$defs/digest"},
+    "feature_basis_digest": {"$ref": "#/$defs/digest"},
+    "pair_basis_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "generation": {"$ref": "#/$defs/nonzero_safe_integer"},
+    "observation_count": {"type": "integer", "minimum": 1, "maximum": 200000},
+    "eligible_observation_count": {"type": "integer", "minimum": 0, "maximum": 200000},
+    "pair_count": {"type": "integer", "minimum": 1, "maximum": 4096},
+    "accepted_match_count": {"type": "integer", "minimum": 0, "maximum": 2000000},
+    "rejected_match_count": {"type": "integer", "minimum": 0, "maximum": 2000000},
+    "track_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "unmatched_observation_count": {"type": "integer", "minimum": 0, "maximum": 200000},
+    "distance_evaluations": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+    "policy": {"$ref": "#/$defs/policy"},
+    "ineligible_observation_ids": {"$ref": "#/$defs/id_array"},
+    "unmatched_observation_ids": {"$ref": "#/$defs/id_array"},
+    "accepted_matches": {
+      "type": "array",
+      "maxItems": 2000000,
+      "items": {"$ref": "#/$defs/accepted_match"}
+    },
+    "rejected_matches": {
+      "type": "array",
+      "maxItems": 2000000,
+      "items": {"$ref": "#/$defs/rejected_match"}
+    },
+    "tracks": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {"$ref": "#/$defs/track"}
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "safe_integer": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "nonzero_safe_integer": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "optional_safe_integer": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/safe_integer"}
+      ]
+    },
+    "optional_hamming": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "integer", "minimum": 0, "maximum": 256}
+      ]
+    },
+    "optional_ppm": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "integer", "minimum": 0, "maximum": 1000000}
+      ]
+    },
+    "id_array": {
+      "type": "array",
+      "maxItems": 200000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_hamming_distance",
+        "ratio_threshold_ppm",
+        "require_second_best",
+        "require_mutual",
+        "min_response_ppm",
+        "max_uncertainty_nano_pixels",
+        "reject_dynamic_masked",
+        "max_distance_evaluations"
+      ],
+      "properties": {
+        "max_hamming_distance": {"type": "integer", "minimum": 0, "maximum": 256},
+        "ratio_threshold_ppm": {"type": "integer", "minimum": 1, "maximum": 1000000},
+        "require_second_best": {"type": "boolean"},
+        "require_mutual": {"type": "boolean"},
+        "min_response_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "max_uncertainty_nano_pixels": {"type": "integer", "minimum": 1, "maximum": 1000000000000},
+        "reject_dynamic_masked": {"type": "boolean"},
+        "max_distance_evaluations": {"type": "integer", "minimum": 1, "maximum": 1000000000}
+      }
+    },
+    "accepted_match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pair_id",
+        "left_observation_id",
+        "right_observation_id",
+        "hamming_distance",
+        "second_best_distance",
+        "ratio_ppm",
+        "mutual",
+        "creates_cycle"
+      ],
+      "properties": {
+        "pair_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "left_observation_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "right_observation_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "hamming_distance": {"type": "integer", "minimum": 0, "maximum": 256},
+        "second_best_distance": {"$ref": "#/$defs/optional_hamming"},
+        "ratio_ppm": {"$ref": "#/$defs/optional_ppm"},
+        "mutual": {"type": "boolean"},
+        "creates_cycle": {"type": "boolean"}
+      }
+    },
+    "rejected_match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pair_id",
+        "left_observation_id",
+        "candidate_right_observation_id",
+        "reason",
+        "best_distance",
+        "second_best_distance"
+      ],
+      "properties": {
+        "pair_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "left_observation_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "candidate_right_observation_id": {"$ref": "#/$defs/optional_safe_integer"},
+        "reason": {
+          "enum": [
+            "response_below_minimum",
+            "uncertainty_exceeded",
+            "dynamic_masked",
+            "no_eligible_right",
+            "nearest_tie",
+            "second_best_unavailable",
+            "distance_exceeded",
+            "ratio_failed",
+            "mutual_failed",
+            "frame_collision"
+          ]
+        },
+        "best_distance": {"$ref": "#/$defs/optional_hamming"},
+        "second_best_distance": {"$ref": "#/$defs/optional_hamming"}
+      }
+    },
+    "track": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "track_id",
+        "edge_count",
+        "observation_ids",
+        "sample_indices",
+        "supporting_pair_ids"
+      ],
+      "properties": {
+        "track_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "edge_count": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "observation_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 200000,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+        },
+        "sample_indices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 200000,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safe_integer"}
+        },
+        "supporting_pair_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+        }
+      }
+    }
+  }
+}

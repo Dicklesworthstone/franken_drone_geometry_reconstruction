@@ -11,6 +11,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
 | `SCHEMA-CALIBRATION-MODEL` | `registries/schemas.toml` | schemas/calibration_model.schema.json |
 | `SCHEMA-CLOCK-MODEL` | `registries/schemas.toml` | schemas/clock_model.schema.json |
+| `SCHEMA-CORRESPONDENCE-GENERATION` | `registries/schemas.toml` | schemas/correspondence_generation.schema.json |
 | `SCHEMA-FILE-VERIFICATION` | `registries/schemas.toml` | schemas/file_verification.schema.json |
 | `SCHEMA-KEYFRAME-SELECTION` | `registries/schemas.toml` | schemas/keyframe_selection.schema.json |
 | `SCHEMA-LOCAL-IMPORT-RECEIPT` | `registries/schemas.toml` | schemas/local_import_receipt.schema.json |
