@@ -97,6 +97,12 @@ CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
 step 'Running content-addressed deterministic keyframe selection'
 CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
   bash scripts/e2e/keyframe_select.sh
+step 'Running digest-bound descriptor correspondence construction'
+CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
+  bash scripts/e2e/correspondence_build.sh
+step 'Running fixed-point relative-pose candidate adjudication'
+CARGO="$CARGO" PYTHON="${PYTHON:-python3}" RUSTC="$RUSTC" \
+  bash scripts/e2e/relative_pose_verify.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then
