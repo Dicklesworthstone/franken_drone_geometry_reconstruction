@@ -117,8 +117,28 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "geometry.edge_scale.resolve",
+            description: "reconcile correlation-aware relative baseline ratios within exact pose components without metric or optimized-pose authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "geometry.epipolar.verify",
+            description: "adjudicate exact essential-matrix proposals against calibrated correspondences without granting rotation, translation, or pose authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "geometry.graph.analyze",
+            description: "derive deterministic components, forests, bridges, and cycle witnesses from exact graph evidence without geometric authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "geometry.keyframe.select",
             description: "select deterministic quality, coverage, and diversity-aware keyframes from exact candidate evidence",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "geometry.pose_graph.build",
+            description: "compose component-local orientations and assess rotation cycles while leaving translation baselines underdetermined",
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
@@ -306,8 +326,8 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "derive explicit calibration and independent scale evidence before metric claims",
         "select evidence-aware keyframes and build deterministic descriptor tracks",
         "adjudicate two-view motion candidates before pose-graph admission",
-        "add candidate generation, pose-graph refinement, fusion, uncertainty, and coverage certificates",
-        "add semantic observations, archive recovery, and agent surfaces in dependency order",
+        "compose orientation topology and reconcile relative edge baselines before global pose optimization",
+        "add robust pose refinement, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
     ]
 }
 
@@ -366,7 +386,11 @@ mod tests {
             "evidence.manifest.verify",
             "evidence.store.local",
             "geometry.correspondence.build",
+            "geometry.edge_scale.resolve",
+            "geometry.epipolar.verify",
+            "geometry.graph.analyze",
             "geometry.keyframe.select",
+            "geometry.pose_graph.build",
             "geometry.relative_pose.verify",
             "media.decode.plan",
             "media.decode.receipt.validate",

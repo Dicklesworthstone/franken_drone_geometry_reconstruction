@@ -33,6 +33,41 @@ authority = "spawn exact admitted model profiles"
 status = "planned"
 
 [[capability]]
+id = "CAP-KEYFRAME-SELECT"
+authority = "select deterministic quality, coverage, and diversity-aware keyframes from exact candidate evidence; grants no pose authority"
+status = "reference_source"
+
+[[capability]]
+id = "CAP-CORRESPONDENCE-BUILD"
+authority = "build bounded descriptor-correspondence hypotheses and collision-safe tracks from exact evidence tables; grants no geometric authority"
+status = "reference_source"
+
+[[capability]]
+id = "CAP-EPIPOLAR-VERIFY"
+authority = "adjudicate exact essential-matrix proposals against calibrated correspondence evidence; grants no rotation, translation, or pose authority"
+status = "reference_source"
+
+[[capability]]
+id = "CAP-RELATIVE-POSE-VERIFY"
+authority = "adjudicate exact two-view motion candidates with cheirality and parallax evidence; translation remains a direction without metric baseline"
+status = "reference_source"
+
+[[capability]]
+id = "CAP-GRAPH-ANALYZE"
+authority = "derive deterministic connected components, forests, bridges, and cycle witnesses from exact graph evidence; grants no geometric authority"
+status = "reference_source"
+
+[[capability]]
+id = "CAP-POSE-GRAPH-BUILD"
+authority = "compose component-local orientations and assess rotation cycles from admitted pairwise pose evidence; emits no camera centers or metric pose"
+status = "reference_source"
+
+[[capability]]
+id = "CAP-EDGE-SCALE-RESOLVE"
+authority = "reconcile correlation-aware relative baseline ratios inside exact pose components; disconnected gauges remain incomparable and output is nonmetric"
+status = "reference_source"
+
+[[capability]]
 id = "CAP-EVIDENCE-APPEND"
 authority = "append validated capsule types to a lineage"
 status = "planned"

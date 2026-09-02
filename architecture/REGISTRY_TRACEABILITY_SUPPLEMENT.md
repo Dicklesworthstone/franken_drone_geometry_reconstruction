@@ -8,6 +8,13 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 <!-- BEGIN GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->
 | Stable ID | Normative registry | Compact label |
 |---|---|---|
+| `CAP-CORRESPONDENCE-BUILD` | `registries/capabilities.toml` | bounded descriptor hypotheses and tracks |
+| `CAP-EDGE-SCALE-RESOLVE` | `registries/capabilities.toml` | nonmetric relative pose-edge gauges |
+| `CAP-EPIPOLAR-VERIFY` | `registries/capabilities.toml` | calibrated essential-matrix adjudication |
+| `CAP-GRAPH-ANALYZE` | `registries/capabilities.toml` | deterministic topology and cycle evidence |
+| `CAP-KEYFRAME-SELECT` | `registries/capabilities.toml` | evidence-aware keyframe selection |
+| `CAP-POSE-GRAPH-BUILD` | `registries/capabilities.toml` | component-local orientation and rotation cycles |
+| `CAP-RELATIVE-POSE-VERIFY` | `registries/capabilities.toml` | scale-free physical two-view adjudication |
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
 | `SCHEMA-CALIBRATION-MODEL` | `registries/schemas.toml` | schemas/calibration_model.schema.json |
 | `SCHEMA-CLOCK-MODEL` | `registries/schemas.toml` | schemas/clock_model.schema.json |
