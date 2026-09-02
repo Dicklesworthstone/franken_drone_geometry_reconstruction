@@ -93,6 +93,17 @@ assert document["bearing_basis_digest"] == sys.argv[4]
 assert document["candidate_basis_digest"] == sys.argv[5]
 assert document["status"] == "geometrically_verified"
 assert document["selected_candidate_id"] == 1
+assert document["selected_candidate"] == {
+    "candidate_id": 1,
+    "evidence_digest": "01" * 32,
+    "source": "diagnostic_hypothesis",
+    "rotation_left_to_right_nano": [
+        1000000000, 0, 0,
+        0, 1000000000, 0,
+        0, 0, 1000000000,
+    ],
+    "translation_left_origin_in_right_nano": [-1000000000, 0, 0],
+}
 assert document["ambiguous_candidate_ids"] == []
 assert document["match_count"] == 4
 assert document["candidate_count"] == 3
@@ -139,6 +150,7 @@ receipt = {
     "verification_digest": verification["verification_digest"],
     "status": verification["status"],
     "selected_candidate_id": verification["selected_candidate_id"],
+    "selected_translation_direction": verification["selected_candidate"]["translation_left_origin_in_right_nano"],
     "mutated_basis_exit_code": int(sys.argv[5]),
     "mutated_basis_refused": True,
     "verdict": "pass",

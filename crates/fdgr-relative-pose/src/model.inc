@@ -83,16 +83,18 @@ impl RelativePoseVerification {
 
     /// Renders deterministic field-ordered JSON.
     ///
-    /// Candidate transforms and calibrated bearing tables remain named by exact basis digests;
-    /// evaluations retain the decision-relevant residual, parallax, depth, and rejection evidence.
+    /// The exact full candidate and bearing tables remain named by basis digest. A uniquely
+    /// selected transform is repeated as a compact self-contained projection so an agent need not
+    /// reopen an operational input path merely to consume the result.
     ///
     /// # Errors
     ///
     /// Returns a validation, identity, or formatting error.
     pub fn to_json(&self) -> Result<String, RelativePoseError> {
         let digest = self.digest()?;
+        let selected_candidate = selected_candidate_json(self.selected_candidate())?;
         let mut output = format!(
-            "{{\"schema\":\"{RELATIVE_POSE_VERIFICATION_SCHEMA}\",\"verification_digest\":\"{digest}\",\"correspondence_generation_digest\":\"{}\",\"calibration_digest\":\"{}\",\"bearing_basis_digest\":\"{}\",\"candidate_basis_digest\":\"{}\",\"policy_digest\":\"{}\",\"left_sample_index\":{},\"right_sample_index\":{},\"generation\":{},\"status\":\"{}\",\"selected_candidate_id\":{},\"ambiguous_candidate_ids\":[",
+            "{{\"schema\":\"{RELATIVE_POSE_VERIFICATION_SCHEMA}\",\"verification_digest\":\"{digest}\",\"correspondence_generation_digest\":\"{}\",\"calibration_digest\":\"{}\",\"bearing_basis_digest\":\"{}\",\"candidate_basis_digest\":\"{}\",\"policy_digest\":\"{}\",\"left_sample_index\":{},\"right_sample_index\":{},\"generation\":{},\"status\":\"{}\",\"selected_candidate_id\":{},\"selected_candidate\":{},\"ambiguous_candidate_ids\":[",
             self.basis.correspondence_generation_digest,
             self.basis.calibration_digest,
             self.basis.bearing_basis_digest,
@@ -103,6 +105,7 @@ impl RelativePoseVerification {
             self.basis.generation,
             self.status.as_str(),
             optional_u64_json(self.selected_candidate_id),
+            selected_candidate,
         );
         push_u64_json_array(&mut output, &self.ambiguous_candidate_ids)?;
         write!(
@@ -276,6 +279,28 @@ fn usize_to_u64(value: usize) -> Result<u64, RelativePoseError> {
     })
 }
 
+fn selected_candidate_json(
+    candidate: Option<&RelativePoseCandidate>,
+) -> Result<String, RelativePoseError> {
+    let Some(candidate) = candidate else {
+        return Ok("null".to_owned());
+    };
+    let mut output = format!(
+        "{{\"candidate_id\":{},\"evidence_digest\":\"{}\",\"source\":\"{}\",\"rotation_left_to_right_nano\":[",
+        candidate.candidate_id,
+        candidate.evidence_digest,
+        candidate.source.as_str(),
+    );
+    push_i64_json_array(&mut output, &candidate.rotation_left_to_right_nano)?;
+    output.push_str("],\"translation_left_origin_in_right_nano\":[");
+    push_i64_json_array(
+        &mut output,
+        &candidate.translation_left_origin_in_right_nano,
+    )?;
+    output.push_str("]}");
+    Ok(output)
+}
+
 fn optional_u64_json(value: Option<u64>) -> String {
     value.map_or_else(|| "null".to_owned(), |number| number.to_string())
 }
@@ -290,6 +315,19 @@ fn optional_rejection_json(value: Option<PoseMatchRejectionReason>) -> String {
 fn push_u64_json_array(
     output: &mut String,
     values: &[u64],
+) -> Result<(), RelativePoseError> {
+    for (position, value) in values.iter().enumerate() {
+        if position > 0 {
+            output.push(',');
+        }
+        write!(output, "{value}").map_err(json_rendering)?;
+    }
+    Ok(())
+}
+
+fn push_i64_json_array<const N: usize>(
+    output: &mut String,
+    values: &[i64; N],
 ) -> Result<(), RelativePoseError> {
     for (position, value) in values.iter().enumerate() {
         if position > 0 {

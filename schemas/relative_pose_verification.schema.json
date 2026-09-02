@@ -17,6 +17,7 @@
     "generation",
     "status",
     "selected_candidate_id",
+    "selected_candidate",
     "ambiguous_candidate_ids",
     "match_count",
     "candidate_count",
@@ -43,6 +44,12 @@
       ]
     },
     "selected_candidate_id": {"$ref": "#/$defs/optional_safe_integer"},
+    "selected_candidate": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/selected_candidate"}
+      ]
+    },
     "ambiguous_candidate_ids": {
       "type": "array",
       "maxItems": 64,
@@ -66,6 +73,7 @@
       "then": {
         "properties": {
           "selected_candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+          "selected_candidate": {"$ref": "#/$defs/selected_candidate"},
           "ambiguous_candidate_ids": {"maxItems": 0}
         }
       }
@@ -75,6 +83,7 @@
       "then": {
         "properties": {
           "selected_candidate_id": {"type": "null"},
+          "selected_candidate": {"type": "null"},
           "ambiguous_candidate_ids": {"minItems": 2}
         }
       }
@@ -84,6 +93,7 @@
       "then": {
         "properties": {
           "selected_candidate_id": {"type": "null"},
+          "selected_candidate": {"type": "null"},
           "ambiguous_candidate_ids": {"maxItems": 0}
         }
       }
@@ -98,6 +108,43 @@
         {"type": "null"},
         {"$ref": "#/$defs/nonzero_safe_integer"}
       ]
+    },
+    "candidate_source": {
+      "enum": [
+        "five_point",
+        "eight_point",
+        "telemetry_prior",
+        "model_prior",
+        "diagnostic_hypothesis"
+      ]
+    },
+    "selected_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "evidence_digest",
+        "source",
+        "rotation_left_to_right_nano",
+        "translation_left_origin_in_right_nano"
+      ],
+      "properties": {
+        "candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "evidence_digest": {"$ref": "#/$defs/digest"},
+        "source": {"$ref": "#/$defs/candidate_source"},
+        "rotation_left_to_right_nano": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {"type": "integer", "minimum": -2000000000, "maximum": 2000000000}
+        },
+        "translation_left_origin_in_right_nano": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "integer", "minimum": -2000000000, "maximum": 2000000000}
+        }
+      }
     },
     "optional_reason": {
       "oneOf": [
@@ -191,15 +238,7 @@
       "properties": {
         "candidate_id": {"$ref": "#/$defs/nonzero_safe_integer"},
         "evidence_digest": {"$ref": "#/$defs/digest"},
-        "source": {
-          "enum": [
-            "five_point",
-            "eight_point",
-            "telemetry_prior",
-            "model_prior",
-            "diagnostic_hypothesis"
-          ]
-        },
+        "source": {"$ref": "#/$defs/candidate_source"},
         "match_count": {"type": "integer", "minimum": 1, "maximum": 50000},
         "inlier_count": {"type": "integer", "minimum": 0, "maximum": 50000},
         "inlier_ratio_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
