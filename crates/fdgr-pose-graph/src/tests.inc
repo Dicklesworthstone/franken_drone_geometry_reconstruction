@@ -148,6 +148,28 @@ mod tests {
         ));
     }
 
+
+    #[test]
+    fn graph_node_identity_order_does_not_redefine_physical_transform_direction() {
+        let quarter_turn_z = [0, -UNIT_NANO, 0, UNIT_NANO, 0, 0, 0, 0, UNIT_NANO];
+        let value = build_pose_graph(
+            basis(),
+            PoseGraphPolicy::default(),
+            vec![node(9, 10), node(2, 20)],
+            vec![edge(1, 9, 2, 10, 20, quarter_turn_z, 20)],
+        );
+        assert!(matches!(
+            value,
+            Ok(ref generation)
+                if generation.topology.forest_edge_ids == vec![1]
+                    && generation.orientations.iter().find(|value| value.node_id == 2)
+                        .is_some_and(|value| value.component_root_node_id == 2
+                            && value.rotation_node_from_root_nano == identity())
+                    && generation.orientations.iter().find(|value| value.node_id == 9)
+                        .is_some_and(|value| value.rotation_node_from_root_nano == transpose_rotation(quarter_turn_z))
+        ));
+    }
+
     #[test]
     fn input_order_and_larger_successful_budget_preserve_identity() {
         let nodes = vec![node(1, 10), node(2, 20), node(3, 30)];

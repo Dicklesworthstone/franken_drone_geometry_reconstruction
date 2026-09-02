@@ -24,8 +24,8 @@ pub fn build_pose_graph(
         .iter()
         .map(|edge| GraphEdge {
             edge_id: edge.edge_id,
-            left_node_id: edge.left_node_id,
-            right_node_id: edge.right_node_id,
+            left_node_id: edge.left_node_id.min(edge.right_node_id),
+            right_node_id: edge.left_node_id.max(edge.right_node_id),
             priority: EdgePriority {
                 primary: u64::from(edge.supported_match_count),
                 secondary: edge.median_residual_nano,
@@ -163,7 +163,9 @@ fn canonicalize_edges(
                 maximum: u128::from(UNIT_NANO.unsigned_abs()),
             });
         }
-        if edge.left_node_id >= edge.right_node_id {
+        if edge.left_node_id == edge.right_node_id
+            || edge.left_sample_index >= edge.right_sample_index
+        {
             return Err(PoseGraphError::NonCanonicalEdge {
                 edge_id: edge.edge_id,
             });
@@ -174,7 +176,11 @@ fn canonicalize_edges(
                 value: edge.edge_id,
             });
         }
-        if !endpoint_pairs.insert((edge.left_node_id, edge.right_node_id)) {
+        let endpoint_pair = (
+            edge.left_node_id.min(edge.right_node_id),
+            edge.left_node_id.max(edge.right_node_id),
+        );
+        if !endpoint_pairs.insert(endpoint_pair) {
             return Err(PoseGraphError::DuplicateEdge {
                 field: "endpoint_pair",
                 value: edge.edge_id,
