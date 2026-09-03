@@ -28,6 +28,7 @@ fdgr-media-timeline = { path = "../fdgr-media-timeline" }
 fdgr-media-worker = { path = "../fdgr-media-worker" }
 fdgr-object-store = { path = "../fdgr-object-store" }
 fdgr-pose-graph = { path = "../fdgr-pose-graph" }
+fdgr-pose-refinement = { path = "../fdgr-pose-refinement" }
 fdgr-recorded-media = { path = "../fdgr-recorded-media" }
 fdgr-recorded-media-verify = { path = "../fdgr-recorded-media-verify" }
 fdgr-relative-pose = { path = "../fdgr-relative-pose" }

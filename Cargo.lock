@@ -29,6 +29,7 @@ dependencies = [
  "fdgr-media-worker",
  "fdgr-object-store",
  "fdgr-pose-graph",
+ "fdgr-pose-refinement",
  "fdgr-recorded-media",
  "fdgr-recorded-media-verify",
  "fdgr-relative-pose",
