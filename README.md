@@ -4,35 +4,33 @@
 
 **An agent-native, evidence-grade operating substrate for turning owner-authorized drone observations into metrically honest semantic digital twins.**
 
-> **Current implementation boundary — 2026-09-02:** FDGR has a 20-package, dependency-free safe-Rust reference workspace covering immutable media custody, native ISO BMFF inspection, canonical sample timelines, clock evidence, camera-calibration representation, scale-witness resolution, deterministic keyframe selection, descriptor correspondence, collision-safe tracks, and fixed-point relative-pose candidate adjudication. It does **not** yet claim live DJI acquisition, owned FFmpeg execution, native feature detection, candidate generation, a global pose graph, bundle adjustment, metric reconstruction, dense fusion, semantic asset resolution, cloud recovery, or production qualification.
+> **Current implementation boundary — 2026-09-03:** FDGR has a 25-member, dependency-free safe-Rust reference workspace. The executable path now covers immutable recorded-media custody, native ISO BMFF/sample evidence, canonical timelines, clock/calibration/scale semantics, deterministic keyframes and correspondences, epipolar and relative-pose adjudication, graph topology, component-local orientation, relative edge-baseline gauges, and component-relative camera-center initialization. It does **not** yet claim live DJI acquisition, owned FFmpeg execution, native feature or motion-candidate generation, nonlinear bundle adjustment, metric camera pose, sparse/dense reconstruction, semantic resolution, cloud recovery, a complete agent runtime, or production qualification.
 
-FDGR is designed for a person who manually flies a compact drone such as the DJI Flip around a home while an agent helps decide what to observe, what to compute, what can be trusted, what remains unknown, and what should happen next. The eventual system preserves original media, reconstructs geometry, resolves visible property assets, measures only what has earned metric authority, identifies evidence gaps, guides additional capture, archives every consequential artifact, and explains each claim.
+FDGR is designed for a person who manually flies a compact drone such as the DJI Flip around a property while an agent helps decide what to observe, what to compute, what can be trusted, what remains unknown, and what should happen next.
 
-The product is not “a mesh from a video.” It is a **multi-version evidence and constraint database for physical reality** operated through one coherent cognitive control loop.
+The product is not “a mesh from a video.” It is a **multi-version evidence and constraint database for physical reality**, operated through one coherent cognitive control loop.
 
 ## The system from the driver’s seat
 
-A competent agent should never have to mentally join capture status, clocks, calibration, feature tracks, pose hypotheses, model outputs, storage state, and background work. After every success, progress event, or error, FDGR is designed to answer:
+After every success, progress event, refusal, or error, a competent agent should be able to answer:
 
-1. What is established by evidence?
+1. What is established at the exact current anchor?
 2. What changed since the anchor I understood?
 3. Which uncertainty matters to the active objective?
 4. What work is active, blocked, draining, or indeterminate?
-5. Which actions are available under current authority and policy?
-6. Which next step has the highest expected value per unit of total control cost?
-7. What would prove that step complete?
-8. What should a fresh agent receive at handoff?
+5. Which actions are expressible under current evidence and authority?
+6. Which next step has the highest expected value per total control cost?
+7. What evidence would prove that step complete?
+8. What compact handoff lets another agent resume safely?
 
-The target operating loop is:
+The target loop is:
 
 ```text
 bootstrap → orient → focus → inspect → formulate → propose → compare
           → commit → watch → verify/reconcile → learn → handoff/resume
 ```
 
-Every eventual agent operation projects through the same Agent Turn Packet, exact anchor, four ledgers, Decision Frame, and typed recovery vocabulary. The subsystem commands described below are current diagnostic/reference adapters, not additions to the target eleven-operation semantic waist.
-
-See [`docs/AGENT_OPERATING_MODEL.md`](docs/AGENT_OPERATING_MODEL.md), [`architecture/AGENT_ABSTRACTION_TOWER.md`](architecture/AGENT_ABSTRACTION_TOWER.md), and [`architecture/AGENT_NARROW_WAIST.md`](architecture/AGENT_NARROW_WAIST.md).
+Every eventual agent operation projects through the same exact anchor, Agent Turn Packet, four synchronized ledgers, Decision Frame, and typed recovery vocabulary. The current subsystem commands are reference/diagnostic adapters, not a competing control plane.
 
 ## One evidence universe
 
@@ -46,140 +44,91 @@ L4  Claims, assets, measurements, topology, coverage certificates
 L3  Constraints: clocks, calibration, scale, tracks, poses, depth
 L2  Observation capsules and immutable generations
 L1  Content-addressed objects, custody, transfer, repair, restore
-L0  Fenced effects: DJI, files, ffmpeg, models, GPU, cloud, operator
+L0  Fenced effects: DJI, files, workers, GPU, cloud, operator
 ```
 
-Higher levels compress and organize lower-level evidence; they never silently strengthen it. An agent can traverse from a mission down to raw bytes, or from a surprising observation up to affected objectives, through exact typed handles.
-
-## Three planes, one cognitive center
-
-```text
-┌──────────────────────────────────────────────────────────────────────┐
-│ AGENT SEMANTIC WAIST                                                │
-│ sessions · turns · objectives · questions · candidates · handoffs   │
-└──────────────────────────────────────────────────────────────────────┘
-                    │ intents                       │ evidence
-                    ▼                               ▲
-┌──────────────────────────────────────────────────────────────────────┐
-│ AUTHORITATIVE EVIDENCE PLANE                                        │
-│ capsules · anchors · witnesses · obligations · roots · receipts     │
-└──────────────────────────────────────────────────────────────────────┘
-        │ pinned generations                    │ fenced tickets
-        ▼                                       ▼
-┌────────────────────────────────┐  ┌─────────────────────────────────┐
-│ RECONSTRUCTION / COGNITION     │  │ DEVICE / EFFECT                 │
-│ tracks · poses · depth · graph │  │ DJI · files · workers · cloud  │
-│ geometry · semantics · search  │  │ upload · lookup · reconciliation│
-└────────────────────────────────┘  └─────────────────────────────────┘
-```
-
-Cognition may propose but cannot dispatch. Effects may produce observations and receipts but cannot define identity, scale, geometry, semantics, or completion.
+Higher levels compress lower-level evidence. They never silently strengthen it. Cognition may propose but cannot dispatch; effects may produce observations but cannot define identity, scale, geometry, semantics, or completion.
 
 ## Current executable reference chain
 
-The implemented workspace currently follows this dependency direction:
-
 ```text
-exact bytes
-  → canonical identity and immutable local custody
+exact bytes and canonical identities
+  → immutable local custody and recorded-media roots
     → bounded native container/sample evidence
-      → recorded-media root and canonical timeline
-        → clock support and calibration scope
-          → scale-witness authority
-            → keyframe evidence
-              → descriptor hypotheses and tracks
-                → relative-motion candidate adjudication
+      → canonical media timelines
+        → clock, calibration, and metric-scale witness semantics
+          → deterministic keyframe evidence
+            → descriptor correspondences and collision-safe tracks
+              → calibrated epipolar proposal adjudication
+                → physical two-view relative-pose adjudication
+                  → deterministic graph topology
+                    → component-local camera orientations
+                      → correlation-aware relative edge-baseline gauges
+                        → component-relative camera centers
 ```
 
-### Media custody and time
+The current chain is valuable because each seam has a narrow authority contract and exact provenance. It is not yet an end-to-end reconstruction pipeline.
 
-FDGR currently provides reference implementations for:
+### Media custody, time, calibration, and scale
 
-- streaming SHA-256 and domain-separated object identities;
-- canonical bounded codecs;
+The reference workspace provides:
+
+- streaming SHA-256 and domain-separated identities;
+- bounded canonical codecs and typed failures;
 - append-only evidence events and deterministic replay;
 - object-first, manifest-root-last local publication;
 - bounded ISO BMFF metadata and classic sample-table inspection;
-- exact DTS, PTS, duration, sync state, sample-description, and byte-range expansion;
+- exact DTS, PTS, duration, sync state, sample-description, and encoded byte ranges;
 - exact original-media publication and independent root reconstruction;
 - canonical partial or whole-track timelines with signed composition offsets, gaps, and reordering;
 - path-free media-worker plans and receipt validation;
-- robust, correlation-aware affine clock fitting with explicit epochs and no extrapolation.
+- robust affine clock fitting with exact epochs and no extrapolation;
+- fixed-point camera intrinsics, distortion, shutter/readout, body extrinsics, and crop/resize derivation;
+- correlation-aware scale-witness resolution with explicit relative, estimated, witnessed, and surveyed authority.
 
-The worker protocol does not spawn FFmpeg. A plan, process exit, or receipt parse is not decoded-frame publication.
+A decode plan is not worker execution. A calibration object is not proof of calibration accuracy. Estimated scale is not permission to emit meters.
 
-### Calibration and scale
-
-The calibration reference represents:
-
-- fixed-point pinhole intrinsics;
-- Brown-Conrady or explicit no-distortion state;
-- global or directional rolling shutter;
-- camera-from-body rigid extrinsics;
-- exact device/lens/temperature applicability scope;
-- reprojection and declared uncertainty evidence;
-- exact crop/resize propagation into a derived image domain.
-
-The scale reference treats metric scale as a proof obligation. Correlated witnesses receive one robust vote, internally conflicting groups remain rejected, and metric mapping is refused until witnessed or surveyed authority exists.
-
-A calibration object is not proof that the camera was accurately calibrated. An estimated scale is not permission to emit meters.
-
-## Current two-view geometry frontier
+### Two-view evidence
 
 ```text
 keyframe candidates
   → selected keyframe generation
     → feature observations
-      → descriptor correspondence hypotheses
+      → descriptor hypotheses
         → collision-safe tracks
           → calibrated bearing matches
-            → exact relative-motion candidate set
+            → exact essential/motion candidate sets
               → epipolar, parallax, and cheirality evidence
 ```
 
-### Deterministic keyframes
+`fdgr-correspondence` performs bounded deterministic 256-bit Hamming matching with tie, second-best, ratio, mutual, response, uncertainty, dynamic-mask, and operation-budget gates. Track union refuses a component containing two observations from one frame.
 
-`fdgr-keyframe` uses exact input identities and fixed-point evidence for sharpness, texture, clipping, dynamic content, overlap, visibility cells, view sectors, and baseline bins. Selection maximizes marginal evidence and diversity under a hard capacity and records every rejection against the final selected basis.
+`fdgr-epipolar` adjudicates exact supplied essential-matrix proposals. It grants no rotation or translation authority.
 
-Candidate visibility cells are proposals, not surface-coverage certificates.
+`fdgr-relative-pose` validates exact supplied rotations and translation directions, then evaluates epipolar residuals, parallax, and cheirality. Its result is `no_accepted_candidate`, `ambiguous`, or `geometrically_verified`. It does not generate five-point/eight-point candidates, and translation remains a direction without metric baseline.
 
-### Descriptor correspondence and tracks
+### Multi-view pose authority
 
-`fdgr-correspondence` performs bounded 256-bit Hamming matching with explicit:
-
-- nearest-neighbor ties;
-- second-best availability;
-- distance and ratio gates;
-- optional mutual-nearest support;
-- response, uncertainty, and dynamic-mask eligibility;
-- operation-budget consumption;
-- unmatched observations;
-- collision-safe multi-view union.
-
-An accepted descriptor edge is not an epipolar inlier. Track union refuses any component containing two observations from the same frame.
-
-### Relative-pose candidate adjudication
-
-`fdgr-relative-pose` validates fixed-point unit bearings, rotations, and translation directions, then evaluates an exact supplied candidate set using:
-
-- epipolar-plane conditioning;
-- normalized epipolar residuals;
-- parallax;
-- two-view cheirality;
-- inlier and positive-depth ratios;
-- explicit candidate ambiguity.
-
-Its result is one of:
+The words *graph*, *pose*, *scale*, and *global* are intentionally not interchangeable:
 
 ```text
-no_accepted_candidate
-ambiguous
-geometrically_verified
+graph topology
+≠ component-local orientation
+≠ relative edge-baseline gauge
+≠ component-relative camera centers
+≠ bundle-adjusted trajectory
+≠ metric pose
+≠ published geometry
 ```
 
-A unique result includes the selected transform directly. Translation remains a direction only. The crate does not generate five-point/eight-point candidates and does not establish global or metric pose.
+- `fdgr-graph` derives deterministic connected components, forests, bridges, non-forest edges, and cycle witnesses. It has no geometric authority.
+- `fdgr-pose-graph` composes `R_node_from_component_root` and assesses rotation cycles. It emits no camera centers.
+- `fdgr-edge-scale` reconciles ratios among pairwise baseline magnitudes. Disconnected or unsupported scale gauges remain incomparable.
+- `fdgr-global-pose` initializes camera centers in one zero-origin arbitrary gauge per pose component, retaining parent-edge provenance and translation-cycle consistency/conflict.
 
-See [`architecture/TWO_VIEW_EVIDENCE_REFERENCE.md`](architecture/TWO_VIEW_EVIDENCE_REFERENCE.md).
+The global-pose unit is `component_edge_scale_unit_nano`; its authority is `relative_component_gauge`. It is neither meters nor a bundle-adjusted trajectory.
+
+See [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md).
 
 ## Public reference commands
 
@@ -190,8 +139,6 @@ cargo run -p fdgr-cli -- file-manifest <path> --format json
 cargo run -p fdgr-cli -- import-file <store-root> <path> --format json
 cargo run -p fdgr-cli -- media-inspect <path> --format json
 cargo run -p fdgr-cli -- media-samples <path> --track-id <id> --format json
-cargo run -p fdgr-cli -- stored-media-inspect <store-root> <manifest> --format json
-cargo run -p fdgr-cli -- stored-media-samples <store-root> <manifest> --track-id <id> --format json
 cargo run -p fdgr-cli -- recorded-media-ingest <store-root> <path> --format json
 cargo run -p fdgr-cli -- recorded-media-verify <store-root> <root> --format json
 cargo run -p fdgr-cli -- recorded-media-timeline <store-root> <root> --track-id <id> --format json
@@ -199,12 +146,16 @@ cargo run -p fdgr-cli -- media-decode-plan <store-root> <root> [exact options] -
 cargo run -p fdgr-cli -- clock-fit <anchors.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- keyframe-select <candidates.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- correspondence-build <features.tsv> <pairs.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- epipolar-verify <observations.tsv> <candidates.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- relative-pose-verify <bearings.tsv> <candidates.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- pose-graph-build <nodes.tsv> <pose-edges.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- edge-scale-resolve <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- global-pose-initialize <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- verify-file <path> [exact identities] --format json
 cargo run -p fdgr-cli -- verify-store <store-root> <manifest> --format json
 ```
 
-Successful machine output omits ambient local paths and names evidence by content identity. Input tables are bounded, versioned, authenticated before parsing, and rejected after mutation under stale digests.
+Successful machine output omits ambient input paths. Bounded tables are authenticated before parsing and rejected after any byte mutation under stale supplied identities.
 
 ## What FDGR does not yet claim
 
@@ -212,51 +163,41 @@ The current repository does not claim:
 
 - live DJI Flip video or telemetry acquisition;
 - aircraft control;
-- Asupersync-owned worker process execution and descendant cleanup;
-- immutable decoded-frame publication;
-- native feature detection or descriptor extraction;
-- minimal relative-pose candidate generation;
-- a view graph, loop closure, pose graph, global trajectory, or bundle adjustment;
-- metric camera poses;
-- sparse or dense reconstruction;
-- TSDF, surfel, occupancy, mesh, topology, or appearance publication;
+- Asupersync-owned worker execution and descendant cleanup;
+- immutable decoded-frame publication or native compressed-video decode;
+- native feature/descriptor extraction;
+- minimal relative-motion candidate generation;
+- complete loop-candidate search and closure lifecycle;
+- nonlinear camera/landmark bundle adjustment;
+- resumable refinement checkpoints, crash recovery, or decision cards;
+- metric camera poses or transforms between disconnected components;
+- sparse triangulation, dense depth, fusion, occupancy, TSDF, surfels, mesh, topology, or appearance publication;
 - multimodal-model execution or semantic asset resolution;
 - Cloudflare R2 or Backblaze B2 replication and restore;
-- a complete Agent Turn Packet or FastMCP runtime;
-- production accuracy, latency, cost, security, privacy, or recovery qualification.
+- a complete Agent Turn Packet, Decision Frame, or FastMCP runtime;
+- production accuracy, latency, cost, security, privacy, recovery, or agent-ergonomics qualification.
 
 Read [`IMPLEMENTATION_STATUS.md`](IMPLEMENTATION_STATUS.md) before interpreting target-state prose as current functionality.
 
 ## DJI integration without architectural contamination
 
-The DJI Flip is a motivating profile, not FDGR’s data model. Sources are admitted through a ladder:
+The DJI Flip is a motivating profile, not FDGR’s data model. Source admission proceeds from exact original-media import and recorded/mirrored paths toward documented or owner-authorized read-only live paths. Profiles bind aircraft, controller, firmware, application, OS, region, radio mode, account/pairing state, observed endpoints, clocks, crop, codec, and limitations.
 
-1. exact original-media import from microSD or an explicit export;
-2. controller/phone recording and bounded display/HDMI/USB capture;
-3. documented SDK, UVC, RTMP, RTSP, or vendor export for exact supported profiles;
-4. owner-authorized, read-only-first protocol research against the operator’s own paired system.
-
-Profiles include aircraft, controller, firmware, app, phone OS, region, radio mode, pairing/account state, observed endpoints, and capability transcripts. The project does not bypass pairing, authentication, encryption, account controls, geofencing, or another operator’s equipment.
-
-See [`DJI_ADAPTER_RESEARCH.md`](DJI_ADAPTER_RESEARCH.md).
+The project does not bypass pairing, authentication, encryption, account controls, geofencing, or another operator’s equipment. Initial pilot guidance is human-mediated and grants no flight-control authority.
 
 ## Safe-Rust and dependency doctrine
 
-The production trust domain is strict Rust on the pinned nightly toolchain, with:
+The production trust domain requires:
 
+- Rust edition 2024 on the pinned nightly;
 - `#![forbid(unsafe_code)]` in every FDGR crate;
-- Asupersync as the sole admitted async runtime at orchestration seams;
-- exact admitted Franken-suite revisions;
-- only narrowly reviewed fundamental exceptions such as Serde;
+- Asupersync as the sole admitted in-process async runtime when orchestration lands;
+- exact admitted sibling revisions and narrowly reviewed fundamental dependencies;
 - no Tokio, Rayon, C/C++ FFI, in-process Python, linked FFmpeg, OpenCV, COLMAP, Ceres, generic database/graph/search engine, or unpinned Git dependency in the core.
 
-Media, model, GPU, vendor, and research stacks remain supervised external processes with sealed manifests, bounded resources, no-network defaults where possible, descendant ownership, output quarantine, and reconciliation.
-
-See [`DEPENDENCY_POLICY.md`](DEPENDENCY_POLICY.md).
+Media, model, GPU, vendor, and research stacks remain bounded external sidecars until an owned safe-Rust implementation earns its registered maturity gate.
 
 ## Local qualification is release authority
-
-GitHub-hosted workflow results have no release authority. The repository-owned qualifier and Doodlestein job graph specify:
 
 ```bash
 ./scripts/qualify.sh --mode static
@@ -264,9 +205,9 @@ GitHub-hosted workflow results have no release authority. The repository-owned q
 ./scripts/qualify.sh --mode release --sibling-root /exact/checkouts
 ```
 
-The newest correspondence and relative-pose wave was authored in an environment without `cargo`, `rustc`, or `rustfmt`, so native success for those commits is not claimed until a retained local receipt names the exact commit.
+The full lane runs formatting, locked workspace check, Clippy with warnings denied, all tests, and deterministic public-path E2Es. A queued self-hosted run, hosted badge, source file, unit test, or isolated E2E is not a retained local qualification receipt.
 
-See [`QUALIFICATION.md`](QUALIFICATION.md) and [`LOCAL_QUALIFICATION_AND_RELEASE.md`](LOCAL_QUALIFICATION_AND_RELEASE.md).
+The current exact head has not yet earned such a receipt. `WP-018` remains open for nonlinear refinement, checkpoints, cancellation/recovery, agent projection, differential equivalence, and measured accuracy/improvement evidence.
 
 ## Documentation map
 
@@ -274,11 +215,11 @@ Start with:
 
 1. [`IMPLEMENTATION_STATUS.md`](IMPLEMENTATION_STATUS.md)
 2. [`DESIGN_INDEX.md`](DESIGN_INDEX.md)
-3. [`docs/AGENT_OPERATING_MODEL.md`](docs/AGENT_OPERATING_MODEL.md)
-4. [`architecture/SEMANTICS_MANIFEST.md`](architecture/SEMANTICS_MANIFEST.md)
-5. [`architecture/SENSOR_EVIDENCE_REFERENCE.md`](architecture/SENSOR_EVIDENCE_REFERENCE.md)
-6. [`architecture/TWO_VIEW_EVIDENCE_REFERENCE.md`](architecture/TWO_VIEW_EVIDENCE_REFERENCE.md)
-7. [`ARCHITECTURE.md`](ARCHITECTURE.md)
-8. [`COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md`](COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md)
-9. [`FRANKENSTACK_DEEP_DIVE.md`](FRANKENSTACK_DEEP_DIVE.md)
+3. [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md)
+4. [`docs/AGENT_OPERATING_MODEL.md`](docs/AGENT_OPERATING_MODEL.md)
+5. [`architecture/SEMANTICS_MANIFEST.md`](architecture/SEMANTICS_MANIFEST.md)
+6. [`architecture/SENSOR_EVIDENCE_REFERENCE.md`](architecture/SENSOR_EVIDENCE_REFERENCE.md)
+7. [`architecture/TWO_VIEW_EVIDENCE_REFERENCE.md`](architecture/TWO_VIEW_EVIDENCE_REFERENCE.md)
+8. [`ARCHITECTURE.md`](ARCHITECTURE.md)
+9. [`COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md`](COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md)
 10. [`CHANGELOG.md`](CHANGELOG.md)
