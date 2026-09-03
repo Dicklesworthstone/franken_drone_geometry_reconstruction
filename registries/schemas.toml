@@ -152,6 +152,12 @@ json_schema_id = "https://fdgr.dev/schemas/file_verification.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-GLOBAL-POSE-INITIALIZATION"
+path = "schemas/global_pose_initialization.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/global_pose_initialization.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-GRAPH-ANALYSIS"
 path = "schemas/graph_analysis.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/graph_analysis.v1.json"

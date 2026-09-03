@@ -127,6 +127,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "geometry.global_pose.initialize",
+            description: "initialize deterministic component-relative camera orientations and centers in explicit arbitrary edge-scale gauges without metric, trajectory-publication, or bundle-adjustment authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "geometry.graph.analyze",
             description: "derive deterministic components, forests, bridges, and cycle witnesses from exact graph evidence without geometric authority",
             status: CapabilityStatus::ReferenceSource,
@@ -326,7 +331,7 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "derive explicit calibration and independent scale evidence before metric claims",
         "select evidence-aware keyframes and build deterministic descriptor tracks",
         "adjudicate two-view motion candidates before pose-graph admission",
-        "compose orientation topology and reconcile relative edge baselines before global pose optimization",
+        "compose orientation topology, reconcile relative edge baselines, and initialize component-relative camera poses before global optimization",
         "add robust pose refinement, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
     ]
 }
@@ -388,6 +393,7 @@ mod tests {
             "geometry.correspondence.build",
             "geometry.edge_scale.resolve",
             "geometry.epipolar.verify",
+            "geometry.global_pose.initialize",
             "geometry.graph.analyze",
             "geometry.keyframe.select",
             "geometry.pose_graph.build",

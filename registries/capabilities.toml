@@ -68,6 +68,11 @@ authority = "reconcile correlation-aware relative baseline ratios inside exact p
 status = "reference_source"
 
 [[capability]]
+id = "CAP-GLOBAL-POSE-INITIALIZE"
+authority = "initialize deterministic component-relative camera orientations and centers in explicit arbitrary edge-scale gauges; grants no metric, trajectory-publication, or bundle-adjustment authority"
+status = "reference_source"
+
+[[capability]]
 id = "CAP-EVIDENCE-APPEND"
 authority = "append validated capsule types to a lineage"
 status = "planned"

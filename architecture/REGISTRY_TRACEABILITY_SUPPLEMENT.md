@@ -11,6 +11,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `CAP-CORRESPONDENCE-BUILD` | `registries/capabilities.toml` | bounded descriptor hypotheses and tracks |
 | `CAP-EDGE-SCALE-RESOLVE` | `registries/capabilities.toml` | nonmetric relative pose-edge gauges |
 | `CAP-EPIPOLAR-VERIFY` | `registries/capabilities.toml` | calibrated essential-matrix adjudication |
+| `CAP-GLOBAL-POSE-INITIALIZE` | `registries/capabilities.toml` | initialize deterministic component-relative camera orientations and centers in explicit arbitrary edge-scale gauges; grants no metric, trajectory-publication, or bundle-adjustment authority |
 | `CAP-GRAPH-ANALYZE` | `registries/capabilities.toml` | deterministic topology and cycle evidence |
 | `CAP-KEYFRAME-SELECT` | `registries/capabilities.toml` | evidence-aware keyframe selection |
 | `CAP-POSE-GRAPH-BUILD` | `registries/capabilities.toml` | component-local orientation and rotation cycles |
@@ -22,6 +23,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-EDGE-SCALE-GENERATION` | `registries/schemas.toml` | schemas/edge_scale_generation.schema.json |
 | `SCHEMA-EPIPOLAR-VERIFICATION` | `registries/schemas.toml` | schemas/epipolar_verification.schema.json |
 | `SCHEMA-FILE-VERIFICATION` | `registries/schemas.toml` | schemas/file_verification.schema.json |
+| `SCHEMA-GLOBAL-POSE-INITIALIZATION` | `registries/schemas.toml` | schemas/global_pose_initialization.schema.json |
 | `SCHEMA-GRAPH-ANALYSIS` | `registries/schemas.toml` | schemas/graph_analysis.schema.json |
 | `SCHEMA-KEYFRAME-SELECTION` | `registries/schemas.toml` | schemas/keyframe_selection.schema.json |
 | `SCHEMA-LOCAL-IMPORT-RECEIPT` | `registries/schemas.toml` | schemas/local_import_receipt.schema.json |
