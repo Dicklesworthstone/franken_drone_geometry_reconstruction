@@ -101,6 +101,8 @@ step 'Running pose-graph topology and rotation-cycle E2E'
 bash scripts/e2e/pose_graph_build.sh
 step 'Running relative edge-scale consensus and cycle E2E'
 bash scripts/e2e/edge_scale_resolve.sh
+step 'Running component-relative global-pose initialization E2E'
+bash scripts/e2e/global_pose_initialize.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then
