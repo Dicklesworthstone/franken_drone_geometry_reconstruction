@@ -22,43 +22,56 @@ All notable implementation changes are recorded here. Target-state design remain
 - `fdgr.calibration_model/1`: fixed-point pinhole intrinsics, Brown-Conrady distortion, global/directional rolling shutter, rigid camera/body extrinsics, exact applicability scope, and crop/resize derivation.
 - `fdgr.scale_model/1`: independent correlation-group votes, retained conflicts, exact inlier reclassification, conservative uncertainty, and explicit relative/estimated/witnessed/surveyed authority.
 
-#### Two-view geometry frontier
+#### Two-view geometry
 
 - `fdgr-keyframe`, a deterministic quality, visibility, view-sector, and baseline-diversity selector with exact input bases and explicit rejection ledgers.
 - `fdgr-correspondence`, a bounded 256-bit Hamming matcher with nearest-tie, second-best, ratio, mutual, response, uncertainty, and dynamic-mask gates.
 - Collision-safe deterministic feature-track union that refuses any component containing two observations from one frame.
 - `fdgr.correspondence_generation/1`, retaining accepted descriptor hypotheses, rejection evidence, tracks, unmatched observations, and operation-cost evidence.
+- `fdgr-epipolar`, an exact essential-matrix proposal adjudicator over authenticated calibrated correspondence evidence.
 - `fdgr-relative-pose`, a fixed-point candidate-set verifier using rotation/translation validation, normalized epipolar residuals, parallax, cheirality, inlier ratios, and explicit ambiguity.
 - `fdgr.relative_pose_verification/1`, with a self-contained selected transform only when one candidate is uniquely admitted.
-- Exact-byte public commands:
-  - `clock-fit`
-  - `keyframe-select`
-  - `correspondence-build`
-  - `relative-pose-verify`
-- Public-path local E2E lanes for timeline, clock fitting, keyframe selection, correspondence construction, and relative-pose adjudication.
-- Truthful capability-discovery entries for calibration, scale, keyframes, correspondences, and relative-pose verification.
+
+#### Multi-view pose frontier
+
+- `fdgr-graph`, deriving deterministic connected components, forests, bridges, non-forest edges, and fundamental-cycle witnesses without geometric authority.
+- `fdgr-pose-graph`, composing `R_node_from_component_root` orientations and retaining rotation-cycle consistency or conflict while leaving translation magnitudes underdetermined.
+- `fdgr-edge-scale`, reconciling correlation-aware relative baseline ratios inside explicit arbitrary edge-scale components, with independent-group evidence and cycle conflict preservation.
+- `fdgr-global-pose`, initializing deterministic camera centers in one zero-origin arbitrary gauge per admitted pose component.
+- `fdgr.global_pose_initialization/1`, including exact upstream generation identities, parent-edge provenance, translation-cycle evidence, component status, operation evidence, and explicit `relative_component_gauge` authority.
+- A shared pose/scale CLI construction seam so edge-scale reconciliation and global-pose initialization cannot silently parse different evidence universes.
+- [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md), defining the transform convention, authority ladder, agent interpretation rules, and unearned `WP-018` boundary.
+
+#### Public paths and qualification campaigns
+
+- Exact-byte public commands for clock fit, keyframe selection, correspondence construction, epipolar verification, relative-pose verification, pose-graph construction, relative edge-scale resolution, and component-relative global-pose initialization.
+- Public-path E2E lanes for timeline, clock fitting, keyframes, correspondences, epipolar verification, relative pose, pose graph, edge scale, and global pose.
+- Global-pose scenarios covering deterministic replay, cycle-consistent initialization, preserved translation conflict, disconnected component-local gauges, successful budget-ceiling identity invariance, stale exact-byte refusal, and operation-budget refusal.
+- Truthful capability and schema registry entries for each current reference seam.
 
 ### Changed
 
-- The workspace now contains 20 package members under the strict safe-Rust, edition-2024, closed-dependency policy.
-- The implementation sequence now places exact calibration, scale evidence, keyframe selection, descriptor tracks, and two-view adjudication before pose-graph admission.
-- Relative-pose JSON returns the selected candidate’s source, evidence identity, rotation, and translation direction directly, avoiding an unnecessary candidate-table reopen.
-- Local Doodlestein and repository qualification descriptions include the new public-path campaigns. Hosted GitHub Actions remain non-authoritative.
-- `IMPLEMENTATION_STATUS.md` now distinguishes source presence, reference implementation, public invocation, local qualification, and production admission.
+- The workspace now contains 25 package members under the strict safe-Rust, edition-2024, closed-dependency policy.
+- The executable reference chain now separates descriptor evidence, epipolar adjudication, pairwise physical motion, graph topology, orientation composition, relative edge-scale reconciliation, and component-relative camera-center initialization.
+- The implementation sequence places component-relative pose initialization before nonlinear bundle refinement, depth, fusion, coverage, and semantics.
+- Public global-pose output names the unit `component_edge_scale_unit_nano` and authority `relative_component_gauge`; neither can be interpreted as meters or a published trajectory.
+- Local qualification invokes the new pose-graph, edge-scale, and global-pose campaigns. Hosted GitHub Actions remain non-authoritative.
+- Status documentation distinguishes source presence, reference implementation, public invocation, local qualification, and production admission.
 
 ### Fixed
 
+- Repaired the `fdgr-cli` entry in `Cargo.lock` after adding its `fdgr-global-pose` dependency, restoring consistency for every `cargo ... --locked` lane.
 - Partial sample windows can no longer masquerade as complete-track evidence.
 - Presentation-domain `i128` timestamps are rendered losslessly rather than as IEEE-754-limited JSON numbers.
 - Scale authority can no longer be elevated by a rejected high-grade witness correlated with an admitted lower-grade witness; an internally conflicting group is rejected as a whole.
 - Keyframe rejection marginal coverage is evaluated against the final selected basis rather than mixed intermediate bases.
 - Correspondence union refuses same-frame collisions instead of silently creating impossible tracks.
-- Descriptor ambiguity, epipolar support, candidate selection, global pose, and metric pose are now represented and documented as separate authority states.
-- Capability discovery no longer hides executable calibration, scale, keyframe, correspondence, and relative-pose reference surfaces.
-- Public implementation documentation no longer describes the repository as a three- or fourteen-crate scaffold or claims that calibration, scale, tracks, and two-view verification are absent.
+- Descriptor ambiguity, epipolar support, candidate selection, graph topology, orientation, edge-scale gauge, initialized camera center, bundle refinement, and metric pose are represented as separate authority states.
+- Disconnected components retain independent origins and scale gauges rather than receiving a manufactured transform.
+- Public implementation documentation no longer describes graph topology, pose orientation, edge-scale reconciliation, and component-relative initialization as absent.
 
 ### Qualification
 
 - The repository-owned full lane specifies formatting, workspace check, Clippy with warnings denied, unit tests, static contract checks, and deterministic public-path E2E campaigns.
-- No hosted status badge or partial E2E receipt may promote a release root.
-- The current authoring environment lacks `cargo`, `rustc`, and `rustfmt`; native success for the newest correspondence/relative-pose commits is not claimed until a local Doodlestein or direct qualification receipt names the exact source commit.
+- No hosted status badge, queued self-hosted run, source presence, unit fixture, or partial E2E receipt may promote a work package or release root.
+- The current global-pose source has not yet earned a retained exact-commit local qualification receipt. `WP-018` also remains open for robust nonlinear refinement, checkpoints, cancellation/recovery, decision cards, differential equivalence, and accuracy evidence.
