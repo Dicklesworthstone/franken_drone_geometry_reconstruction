@@ -43,7 +43,7 @@
     },
     "node_count": {
       "type": "integer",
-      "minimum": 1,
+      "minimum": 0,
       "maximum": 100000
     },
     "edge_count": {
@@ -53,7 +53,7 @@
     },
     "component_count": {
       "type": "integer",
-      "minimum": 1,
+      "minimum": 0,
       "maximum": 100000
     },
     "cycle_rank": {
@@ -75,7 +75,6 @@
     },
     "components": {
       "type": "array",
-      "minItems": 1,
       "maxItems": 100000,
       "items": {
         "$ref": "#/$defs/component"
