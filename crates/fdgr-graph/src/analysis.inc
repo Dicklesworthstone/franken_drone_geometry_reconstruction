@@ -142,9 +142,6 @@ fn validate_budget(budget: GraphBudget) -> Result<(), GraphError> {
 }
 
 fn canonicalize_nodes(mut nodes: Vec<GraphNode>) -> Result<Vec<GraphNode>, GraphError> {
-    if nodes.is_empty() {
-        return Err(GraphError::EmptyNodes);
-    }
     if nodes.len() > MAX_GRAPH_NODES {
         return Err(GraphError::BoundExceeded {
             field: "node_count",
