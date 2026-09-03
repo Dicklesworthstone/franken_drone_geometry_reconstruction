@@ -7,8 +7,6 @@ pub enum EdgeScaleError {
     ZeroValue { field: &'static str },
     /// A constitutional bound was exceeded.
     BoundExceeded { field: &'static str, actual: u128, maximum: u128 },
-    /// No edge subjects were supplied.
-    EmptySubjects,
     /// A subject field was duplicated.
     DuplicateSubject { field: &'static str, value: u64 },
     /// A witness identity was duplicated.
@@ -54,7 +52,6 @@ impl Display for EdgeScaleError {
             Self::ZeroIdentity { field } => write!(formatter, "edge-scale identity {field} must not be all zero"),
             Self::ZeroValue { field } => write!(formatter, "edge-scale field {field} must be nonzero"),
             Self::BoundExceeded { field, actual, maximum } => write!(formatter, "edge-scale field {field} is {actual}; maximum is {maximum}"),
-            Self::EmptySubjects => formatter.write_str("edge-scale reconciliation requires pose-edge subjects"),
             Self::DuplicateSubject { field, value } => write!(formatter, "edge-scale subject {field} value {value} is duplicated"),
             Self::DuplicateWitness { witness_id } => write!(formatter, "edge-scale witness {witness_id} is duplicated"),
             Self::NonCanonicalWitness { witness_id } => write!(formatter, "edge-scale witness {witness_id} must satisfy lower_edge_id < higher_edge_id"),
