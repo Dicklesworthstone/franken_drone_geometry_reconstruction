@@ -6,6 +6,7 @@ members = [
     "crates/fdgr-pose-graph",
     "crates/fdgr-edge-scale",
     "crates/fdgr-global-pose",
+    "crates/fdgr-pose-refinement",
     "crates/fdgr-clock",
     "crates/fdgr-calibration",
     "crates/fdgr-scale",

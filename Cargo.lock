@@ -175,6 +175,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-pose-refinement"
+version = "0.0.1"
+dependencies = [
+ "fdgr-codec",
+ "fdgr-edge-scale",
+ "fdgr-global-pose",
+ "fdgr-pose-graph",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-recorded-media"
 version = "0.0.1"
 dependencies = [

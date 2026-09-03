@@ -1,0 +1,19 @@
+[package]
+name = "fdgr-pose-refinement"
+description = "Deterministic fixed-point translation-only pose refinement for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-edge-scale = { path = "../fdgr-edge-scale" }
+fdgr-global-pose = { path = "../fdgr-global-pose" }
+fdgr-pose-graph = { path = "../fdgr-pose-graph" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true
