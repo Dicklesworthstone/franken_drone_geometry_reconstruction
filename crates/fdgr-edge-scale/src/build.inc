@@ -272,9 +272,6 @@ fn validate_policy(policy: EdgeScalePolicy) -> Result<(), EdgeScaleError> {
 fn canonicalize_subjects(
     mut subjects: Vec<EdgeScaleSubject>,
 ) -> Result<Vec<EdgeScaleSubject>, EdgeScaleError> {
-    if subjects.is_empty() {
-        return Err(EdgeScaleError::EmptySubjects);
-    }
     if subjects.len() > MAX_SCALE_EDGES {
         return Err(EdgeScaleError::BoundExceeded {
             field: "subject_count",
