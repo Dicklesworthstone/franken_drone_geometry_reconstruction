@@ -84,7 +84,9 @@ mod tests {
     ) -> EdgeRatioWitness {
         EdgeRatioWitness {
             witness_id,
-            evidence_digest: digest(u8::try_from(witness_id.saturating_add(80)).map_or(248, |value| value)),
+            evidence_digest: digest(
+                u8::try_from(witness_id.saturating_add(80)).map_or(248, |value| value),
+            ),
             correlation_group_id: group,
             lower_edge_id,
             higher_edge_id,
@@ -146,7 +148,10 @@ mod tests {
         )?;
         let scales = edge_scale(
             &graph,
-            vec![witness(1, 101, 10, 20, 1, 1), witness(2, 102, 20, 30, 1, 2)],
+            vec![
+                witness(1, 101, 10, 20, 1, 1),
+                witness(2, 102, 20, 30, 1, 2),
+            ],
         )?;
         let value = initialize_global_pose(
             global_basis(&graph, &scales, 1)?,
@@ -156,15 +161,22 @@ mod tests {
         )?;
         assert_eq!(value.poses.len(), 3);
         assert_eq!(value.components.len(), 1);
-        assert_eq!(value.components[0].status, GlobalPoseComponentStatus::CycleConsistent);
+        assert_eq!(
+            value.components[0].status,
+            GlobalPoseComponentStatus::CycleConsistent
+        );
         assert_eq!(value.translation_cycles.len(), 1);
-        assert_eq!(value.translation_cycles[0].status, TranslationCycleStatus::Consistent);
+        assert_eq!(
+            value.translation_cycles[0].status,
+            TranslationCycleStatus::Consistent
+        );
+        assert!(
+            value.poses.iter().any(|pose| {
+                pose.node_id == 1 && pose.camera_center_from_root_nano == [0, 0, 0]
+            })
+        );
         assert!(value.poses.iter().any(|pose| {
-            pose.node_id == 1 && pose.camera_center_from_root_nano == [0, 0, 0]
-        }));
-        assert!(value.poses.iter().any(|pose| {
-            pose.node_id == 2
-                && pose.camera_center_from_root_nano == [-UNIT_NANO, 0, 0]
+            pose.node_id == 2 && pose.camera_center_from_root_nano == [-UNIT_NANO, 0, 0]
         }));
         assert!(value.poses.iter().any(|pose| {
             pose.node_id == 3
@@ -183,7 +195,8 @@ mod tests {
     }
 
     #[test]
-    fn contradictory_closing_baseline_remains_a_translation_conflict() -> Result<(), GlobalPoseError> {
+    fn contradictory_closing_baseline_remains_a_translation_conflict()
+    -> Result<(), GlobalPoseError> {
         let graph = pose_graph(
             vec![node(1, 10), node(2, 20), node(3, 30)],
             vec![
@@ -194,7 +207,10 @@ mod tests {
         )?;
         let scales = edge_scale(
             &graph,
-            vec![witness(1, 101, 10, 20, 1, 1), witness(2, 102, 20, 30, 1, 1)],
+            vec![
+                witness(1, 101, 10, 20, 1, 1),
+                witness(2, 102, 20, 30, 1, 1),
+            ],
         )?;
         let value = initialize_global_pose(
             global_basis(&graph, &scales, 2)?,
@@ -202,9 +218,19 @@ mod tests {
             graph,
             scales,
         )?;
-        assert_eq!(value.components[0].status, GlobalPoseComponentStatus::TranslationConflicted);
-        assert_eq!(value.translation_cycles[0].status, TranslationCycleStatus::Conflicting);
-        assert!(value.translation_cycles[0].residual_ppm.is_some_and(|value| value > 50_000));
+        assert_eq!(
+            value.components[0].status,
+            GlobalPoseComponentStatus::TranslationConflicted
+        );
+        assert_eq!(
+            value.translation_cycles[0].status,
+            TranslationCycleStatus::Conflicting
+        );
+        assert!(
+            value.translation_cycles[0]
+                .residual_ppm
+                .is_some_and(|value| value > 50_000)
+        );
         Ok(())
     }
 
@@ -230,6 +256,40 @@ mod tests {
     }
 
     #[test]
+    fn incomparable_closing_gauge_remains_explicitly_unresolved() -> Result<(), GlobalPoseError> {
+        let graph = pose_graph(
+            vec![node(1, 10), node(2, 20), node(3, 30)],
+            vec![
+                edge(10, 1, 2, 10, 20, identity(), [UNIT_NANO, 0, 0], 30),
+                edge(20, 2, 3, 20, 30, identity(), [UNIT_NANO, 0, 0], 29),
+                edge(30, 1, 3, 10, 30, identity(), [UNIT_NANO, 0, 0], 10),
+            ],
+        )?;
+        let scales = edge_scale(&graph, vec![witness(1, 101, 10, 20, 1, 1)])?;
+        let value = initialize_global_pose(
+            global_basis(&graph, &scales, 4)?,
+            GlobalPosePolicy::default(),
+            graph,
+            scales,
+        )?;
+        assert_eq!(value.translation_cycles.len(), 1);
+        assert_eq!(
+            value.translation_cycles[0].status,
+            TranslationCycleStatus::IncomparableScaleGauge
+        );
+        assert_eq!(value.translation_cycles[0].measured_displacement_nano, None);
+        assert_eq!(value.translation_cycles[0].residual_ppm, None);
+        assert_eq!(
+            value.components[0].status,
+            GlobalPoseComponentStatus::TreeInitialized
+        );
+        assert_eq!(value.components[0].incomparable_cycle_edge_ids, vec![30]);
+        assert!(value.components[0].conflicting_edge_ids.is_empty());
+        assert!(value.validate().is_ok());
+        Ok(())
+    }
+
+    #[test]
     fn camera_center_uses_negative_transposed_rotation() -> Result<(), GlobalPoseError> {
         let quarter_turn_z = [0, -UNIT_NANO, 0, UNIT_NANO, 0, 0, 0, 0, UNIT_NANO];
         let graph = pose_graph(
@@ -247,7 +307,7 @@ mod tests {
         )?;
         let scales = edge_scale(&graph, Vec::new())?;
         let value = initialize_global_pose(
-            global_basis(&graph, &scales, 4)?,
+            global_basis(&graph, &scales, 5)?,
             GlobalPosePolicy::default(),
             graph,
             scales,
@@ -259,7 +319,8 @@ mod tests {
     }
 
     #[test]
-    fn graph_node_order_does_not_reverse_physical_transform_direction() -> Result<(), GlobalPoseError> {
+    fn graph_node_order_does_not_reverse_physical_transform_direction()
+    -> Result<(), GlobalPoseError> {
         let graph = pose_graph(
             vec![node(9, 10), node(2, 20)],
             vec![edge(
@@ -275,17 +336,220 @@ mod tests {
         )?;
         let scales = edge_scale(&graph, Vec::new())?;
         let value = initialize_global_pose(
-            global_basis(&graph, &scales, 5)?,
+            global_basis(&graph, &scales, 6)?,
             GlobalPosePolicy::default(),
             graph,
             scales,
         )?;
-        assert!(value.poses.iter().any(|pose| {
-            pose.node_id == 2 && pose.camera_center_from_root_nano == [0, 0, 0]
-        }));
+        assert!(
+            value.poses.iter().any(|pose| {
+                pose.node_id == 2 && pose.camera_center_from_root_nano == [0, 0, 0]
+            })
+        );
         assert!(value.poses.iter().any(|pose| {
             pose.node_id == 9 && pose.camera_center_from_root_nano == [UNIT_NANO, 0, 0]
         }));
+        Ok(())
+    }
+
+    #[test]
+    fn disconnected_components_keep_independent_origins_and_scale_gauges()
+    -> Result<(), GlobalPoseError> {
+        let graph = pose_graph(
+            vec![node(1, 10), node(2, 20), node(10, 100), node(11, 110)],
+            vec![
+                edge(10, 1, 2, 10, 20, identity(), [UNIT_NANO, 0, 0], 30),
+                edge(
+                    20,
+                    10,
+                    11,
+                    100,
+                    110,
+                    identity(),
+                    [0, UNIT_NANO, 0],
+                    29,
+                ),
+            ],
+        )?;
+        let scales = edge_scale(&graph, Vec::new())?;
+        let value = initialize_global_pose(
+            global_basis(&graph, &scales, 7)?,
+            GlobalPosePolicy::default(),
+            graph,
+            scales,
+        )?;
+        assert_eq!(value.components.len(), 2);
+        assert_eq!(value.poses.len(), 4);
+        assert!(value.translation_cycles.is_empty());
+        assert!(value.components.iter().any(|component| {
+            component.component_root_node_id == 1
+                && component.scale_component_root_edge_id == Some(10)
+                && component.status == GlobalPoseComponentStatus::TreeInitialized
+        }));
+        assert!(value.components.iter().any(|component| {
+            component.component_root_node_id == 10
+                && component.scale_component_root_edge_id == Some(20)
+                && component.status == GlobalPoseComponentStatus::TreeInitialized
+        }));
+        assert!(value.poses.iter().any(|pose| {
+            pose.node_id == 1
+                && pose.component_root_node_id == 1
+                && pose.camera_center_from_root_nano == [0, 0, 0]
+        }));
+        assert!(value.poses.iter().any(|pose| {
+            pose.node_id == 10
+                && pose.component_root_node_id == 10
+                && pose.camera_center_from_root_nano == [0, 0, 0]
+        }));
+        assert!(value.poses.iter().any(|pose| {
+            pose.node_id == 2
+                && pose.scale_component_root_edge_id == Some(10)
+                && pose.camera_center_from_root_nano == [-UNIT_NANO, 0, 0]
+        }));
+        assert!(value.poses.iter().any(|pose| {
+            pose.node_id == 11
+                && pose.scale_component_root_edge_id == Some(20)
+                && pose.camera_center_from_root_nano == [0, -UNIT_NANO, 0]
+        }));
+        assert!(value.validate().is_ok());
+        Ok(())
+    }
+
+    #[test]
+    fn singleton_component_has_an_explicit_zero_origin() -> Result<(), GlobalPoseError> {
+        let graph = pose_graph(vec![node(1, 10)], Vec::new())?;
+        let scales = edge_scale(&graph, Vec::new())?;
+        let value = initialize_global_pose(
+            global_basis(&graph, &scales, 8)?,
+            GlobalPosePolicy::default(),
+            graph,
+            scales,
+        )?;
+        assert_eq!(value.poses.len(), 1);
+        assert_eq!(value.components.len(), 1);
+        assert_eq!(value.components[0].status, GlobalPoseComponentStatus::Singleton);
+        assert_eq!(value.components[0].scale_component_root_edge_id, None);
+        assert_eq!(value.poses[0].camera_center_from_root_nano, [0, 0, 0]);
+        assert_eq!(value.poses[0].scale_component_root_edge_id, None);
+        assert_eq!(value.poses[0].parent_node_id, None);
+        assert_eq!(value.poses[0].parent_edge_id, None);
+        assert!(value.validate().is_ok());
+        Ok(())
+    }
+
+    #[test]
+    fn position_bound_refuses_an_overextended_relative_component() -> Result<(), GlobalPoseError> {
+        let graph = pose_graph(
+            vec![node(1, 10), node(2, 20)],
+            vec![edge(
+                10,
+                1,
+                2,
+                10,
+                20,
+                identity(),
+                [UNIT_NANO, 0, 0],
+                30,
+            )],
+        )?;
+        let scales = edge_scale(&graph, Vec::new())?;
+        let basis = global_basis(&graph, &scales, 9)?;
+        assert!(matches!(
+            initialize_global_pose(
+                basis,
+                GlobalPosePolicy {
+                    max_camera_center_abs_nano: 999_999_999,
+                    ..GlobalPosePolicy::default()
+                },
+                graph,
+                scales,
+            ),
+            Err(GlobalPoseError::PositionBoundExceeded {
+                node_id: 2,
+                actual: 1_000_000_000,
+                maximum: 999_999_999,
+            })
+        ));
+        Ok(())
+    }
+
+    #[test]
+    fn operation_budget_refuses_before_emitting_partial_output() -> Result<(), GlobalPoseError> {
+        let graph = pose_graph(
+            vec![node(1, 10), node(2, 20)],
+            vec![edge(
+                10,
+                1,
+                2,
+                10,
+                20,
+                identity(),
+                [UNIT_NANO, 0, 0],
+                30,
+            )],
+        )?;
+        let scales = edge_scale(&graph, Vec::new())?;
+        let basis = global_basis(&graph, &scales, 10)?;
+        assert!(matches!(
+            initialize_global_pose(
+                basis,
+                GlobalPosePolicy {
+                    max_operations: 2,
+                    ..GlobalPosePolicy::default()
+                },
+                graph,
+                scales,
+            ),
+            Err(GlobalPoseError::OperationBudgetExceeded {
+                attempted: 3,
+                maximum: 2,
+            })
+        ));
+        Ok(())
+    }
+
+    #[test]
+    fn retained_output_tampering_is_detected_by_deterministic_replay()
+    -> Result<(), GlobalPoseError> {
+        let graph = pose_graph(
+            vec![node(1, 10), node(2, 20)],
+            vec![edge(
+                10,
+                1,
+                2,
+                10,
+                20,
+                identity(),
+                [UNIT_NANO, 0, 0],
+                30,
+            )],
+        )?;
+        let scales = edge_scale(&graph, Vec::new())?;
+        let mut value = initialize_global_pose(
+            global_basis(&graph, &scales, 11)?,
+            GlobalPosePolicy::default(),
+            graph,
+            scales,
+        )?;
+        let Some(pose) = value.poses.iter_mut().find(|pose| pose.node_id == 2) else {
+            return Err(GlobalPoseError::InternalLookup {
+                field: "tamper_test_pose",
+            });
+        };
+        pose.camera_center_from_root_nano[0] =
+            pose.camera_center_from_root_nano[0].saturating_add(1);
+        assert!(matches!(
+            value.validate(),
+            Err(GlobalPoseError::DerivedMismatch {
+                field: "global_pose_initialization",
+            })
+        ));
+        assert!(matches!(
+            value.digest(),
+            Err(GlobalPoseError::DerivedMismatch {
+                field: "global_pose_initialization",
+            })
+        ));
         Ok(())
     }
 
@@ -305,7 +569,7 @@ mod tests {
             )],
         )?;
         let scales = edge_scale(&graph, Vec::new())?;
-        let basis = global_basis(&graph, &scales, 6)?;
+        let basis = global_basis(&graph, &scales, 12)?;
         let left = initialize_global_pose(
             basis.clone(),
             GlobalPosePolicy {
@@ -335,7 +599,7 @@ mod tests {
     fn exact_upstream_identity_is_recomputed() -> Result<(), GlobalPoseError> {
         let graph = pose_graph(vec![node(1, 10)], Vec::new())?;
         let scales = edge_scale(&graph, Vec::new())?;
-        let mut basis = global_basis(&graph, &scales, 7)?;
+        let mut basis = global_basis(&graph, &scales, 13)?;
         basis.pose_graph_generation_digest = digest(250);
         assert!(matches!(
             initialize_global_pose(basis, GlobalPosePolicy::default(), graph, scales),
