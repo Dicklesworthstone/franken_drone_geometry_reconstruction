@@ -21,6 +21,7 @@ dependencies = [
  "fdgr-edge-scale",
  "fdgr-epipolar",
  "fdgr-evidence",
+ "fdgr-global-pose",
  "fdgr-keyframe",
  "fdgr-media",
  "fdgr-media-custody",
