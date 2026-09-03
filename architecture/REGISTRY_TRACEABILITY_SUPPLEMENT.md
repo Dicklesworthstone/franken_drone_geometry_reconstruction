@@ -15,6 +15,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `CAP-GRAPH-ANALYZE` | `registries/capabilities.toml` | deterministic topology and cycle evidence |
 | `CAP-KEYFRAME-SELECT` | `registries/capabilities.toml` | evidence-aware keyframe selection |
 | `CAP-POSE-GRAPH-BUILD` | `registries/capabilities.toml` | component-local orientation and rotation cycles |
+| `CAP-POSE-REFINE` | `registries/capabilities.toml` | relax component-relative camera centers against fixed admitted rotations and relative edge-scale factors; grants no landmark, metric, global-trajectory, or full bundle-adjustment authority |
 | `CAP-RELATIVE-POSE-VERIFY` | `registries/capabilities.toml` | scale-free physical two-view adjudication |
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
 | `SCHEMA-CALIBRATION-MODEL` | `registries/schemas.toml` | schemas/calibration_model.schema.json |
