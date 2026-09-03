@@ -14,6 +14,7 @@ mod geometry_observation_cli;
 mod keyframe_cli;
 mod pose_graph_cli;
 mod pose_graph_input_cli;
+mod pose_scale_pipeline_cli;
 mod recorded_args;
 mod recorded_render;
 mod relative_pose_cli;
