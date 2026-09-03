@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/pose_refinement.v1.json",
+  "title": "FDGR deterministic translation-only pose refinement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "refinement_digest",
+    "authority",
+    "unit",
+    "initialization_digest",
+    "policy_digest",
+    "generation",
+    "pose_count",
+    "factor_count",
+    "component_count",
+    "iteration_count",
+    "operation_count",
+    "policy",
+    "poses",
+    "factors",
+    "components"
+  ],
+  "properties": {
+    "schema": {
+      "const": "fdgr.pose_refinement/1"
+    },
+    "refinement_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "authority": {
+      "const": "relative_component_gauge"
+    },
+    "unit": {
+      "const": "component_edge_scale_unit_nano"
+    },
+    "initialization_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "policy_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "generation": {
+      "$ref": "#/$defs/nonzero_safe_integer"
+    },
+    "pose_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+    },
+    "factor_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000
+    },
+    "component_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+    },
+    "iteration_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000000
+    },
+    "operation_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000000
+    },
+    "policy": {
+      "$ref": "#/$defs/policy"
+    },
+    "poses": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100000,
+      "items": {
+        "$ref": "#/$defs/pose"
+      }
+    },
+    "factors": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "$ref": "#/$defs/factor"
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100000,
+      "items": {
+        "$ref": "#/$defs/component"
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "safe_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "nonzero_safe_integer": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "signed_safe_integer": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "optional_id": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        }
+      ]
+    },
+    "optional_safe_integer": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/safe_integer"
+        }
+      ]
+    },
+    "vector3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/signed_safe_integer"
+      }
+    },
+    "optional_vector3": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/vector3"
+        }
+      ]
+    },
+    "rotation9": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/signed_safe_integer"
+      }
+    },
+    "id_array": {
+      "type": "array",
+      "maxItems": 100000,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonzero_safe_integer"
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_iterations",
+        "convergence_delta_nano",
+        "huber_delta_nano",
+        "damping_weight",
+        "max_factor_weight",
+        "max_camera_center_abs_nano",
+        "max_operations"
+      ],
+      "properties": {
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "convergence_delta_nano": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000000000
+        },
+        "huber_delta_nano": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000000000000
+        },
+        "damping_weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "max_factor_weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "max_camera_center_abs_nano": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000000000000
+        },
+        "max_operations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000000
+        }
+      }
+    },
+    "pose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "sample_index",
+        "component_root_node_id",
+        "scale_component_root_edge_id",
+        "rotation_node_from_root_nano",
+        "initial_camera_center_from_root_nano",
+        "refined_camera_center_from_root_nano",
+        "adjustment_nano",
+        "root_pinned"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "sample_index": {
+          "$ref": "#/$defs/safe_integer"
+        },
+        "component_root_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "scale_component_root_edge_id": {
+          "$ref": "#/$defs/optional_id"
+        },
+        "rotation_node_from_root_nano": {
+          "$ref": "#/$defs/rotation9"
+        },
+        "initial_camera_center_from_root_nano": {
+          "$ref": "#/$defs/vector3"
+        },
+        "refined_camera_center_from_root_nano": {
+          "$ref": "#/$defs/vector3"
+        },
+        "adjustment_nano": {
+          "$ref": "#/$defs/vector3"
+        },
+        "root_pinned": {
+          "type": "boolean"
+        }
+      }
+    },
+    "factor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_id",
+        "component_root_node_id",
+        "left_node_id",
+        "right_node_id",
+        "base_weight",
+        "robust_weight",
+        "measured_displacement_nano",
+        "initial_implied_displacement_nano",
+        "refined_implied_displacement_nano",
+        "initial_residual_nano",
+        "final_residual_nano",
+        "disposition"
+      ],
+      "properties": {
+        "edge_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "component_root_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "left_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "right_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "base_weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "robust_weight": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "measured_displacement_nano": {
+          "$ref": "#/$defs/optional_vector3"
+        },
+        "initial_implied_displacement_nano": {
+          "$ref": "#/$defs/vector3"
+        },
+        "refined_implied_displacement_nano": {
+          "$ref": "#/$defs/vector3"
+        },
+        "initial_residual_nano": {
+          "$ref": "#/$defs/optional_safe_integer"
+        },
+        "final_residual_nano": {
+          "$ref": "#/$defs/optional_safe_integer"
+        },
+        "disposition": {
+          "enum": [
+            "active_full_weight",
+            "active_downweighted",
+            "incomparable_scale_gauge",
+            "blocked_upstream_conflict"
+          ]
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component_root_node_id",
+        "scale_component_root_edge_id",
+        "status",
+        "decision",
+        "reason",
+        "iterations",
+        "initial_rms_residual_nano",
+        "final_rms_residual_nano",
+        "rms_improvement_nano",
+        "max_adjustment_nano",
+        "do_nothing_dominates",
+        "node_ids",
+        "factor_edge_ids",
+        "active_factor_edge_ids",
+        "downweighted_edge_ids"
+      ],
+      "properties": {
+        "component_root_node_id": {
+          "$ref": "#/$defs/nonzero_safe_integer"
+        },
+        "scale_component_root_edge_id": {
+          "$ref": "#/$defs/optional_id"
+        },
+        "status": {
+          "enum": [
+            "singleton",
+            "blocked_upstream_conflict",
+            "no_comparable_factors",
+            "already_satisfied",
+            "converged",
+            "iteration_limit",
+            "no_improvement"
+          ]
+        },
+        "decision": {
+          "enum": [
+            "accept_refined",
+            "retain_initialization",
+            "blocked"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "singleton",
+            "already_satisfied",
+            "objective_improved",
+            "no_improvement",
+            "no_comparable_factors",
+            "upstream_conflict"
+          ]
+        },
+        "iterations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "initial_rms_residual_nano": {
+          "$ref": "#/$defs/optional_safe_integer"
+        },
+        "final_rms_residual_nano": {
+          "$ref": "#/$defs/optional_safe_integer"
+        },
+        "rms_improvement_nano": {
+          "$ref": "#/$defs/optional_safe_integer"
+        },
+        "max_adjustment_nano": {
+          "$ref": "#/$defs/safe_integer"
+        },
+        "do_nothing_dominates": {
+          "type": "boolean"
+        },
+        "node_ids": {
+          "$ref": "#/$defs/id_array"
+        },
+        "factor_edge_ids": {
+          "$ref": "#/$defs/id_array"
+        },
+        "active_factor_edge_ids": {
+          "$ref": "#/$defs/id_array"
+        },
+        "downweighted_edge_ids": {
+          "$ref": "#/$defs/id_array"
+        }
+      }
+    }
+  }
+}

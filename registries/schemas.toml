@@ -212,6 +212,12 @@ json_schema_id = "https://fdgr.dev/schemas/pose_graph_generation.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-POSE-REFINEMENT"
+path = "schemas/pose_refinement.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/pose_refinement.v1.json"
+status = "draft_0_1"
+
+[[public_schema]]
 id = "SCHEMA-RECORDED-MEDIA-INGEST"
 path = "schemas/recorded_media_ingest.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/recorded_media_ingest.v1.json"
