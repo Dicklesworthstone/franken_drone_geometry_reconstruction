@@ -20,6 +20,7 @@ fdgr-correspondence = { path = "../fdgr-correspondence" }
 fdgr-edge-scale = { path = "../fdgr-edge-scale" }
 fdgr-epipolar = { path = "../fdgr-epipolar" }
 fdgr-evidence = { path = "../fdgr-evidence" }
+fdgr-global-pose = { path = "../fdgr-global-pose" }
 fdgr-keyframe = { path = "../fdgr-keyframe" }
 fdgr-media = { path = "../fdgr-media" }
 fdgr-media-custody = { path = "../fdgr-media-custody" }

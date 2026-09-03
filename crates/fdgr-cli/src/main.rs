@@ -11,6 +11,7 @@ mod decode_render;
 mod edge_scale_cli;
 mod epipolar_cli;
 mod geometry_observation_cli;
+mod global_pose_cli;
 mod keyframe_cli;
 mod pose_graph_cli;
 mod pose_graph_input_cli;
@@ -39,6 +40,8 @@ fn main() -> ExitCode {
         edge_scale_cli::run(command_arguments)
     } else if epipolar_cli::is_command(&arguments) {
         epipolar_cli::run(command_arguments)
+    } else if global_pose_cli::is_command(&arguments) {
+        global_pose_cli::run(command_arguments)
     } else if keyframe_cli::is_command(&arguments) {
         keyframe_cli::run(command_arguments)
     } else if pose_graph_cli::is_command(&arguments) {
@@ -56,6 +59,7 @@ fn main() -> ExitCode {
             correspondence_cli::print_help_line();
             edge_scale_cli::print_help_line();
             epipolar_cli::print_help_line();
+            global_pose_cli::print_help_line();
             keyframe_cli::print_help_line();
             pose_graph_cli::print_help_line();
             relative_pose_cli::print_help_line();
