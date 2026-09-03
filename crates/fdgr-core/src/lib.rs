@@ -108,7 +108,7 @@ pub fn capabilities() -> &'static [Capability] {
         },
         Capability {
             id: "evidence.store.local",
-            description: "publish verified immutable objects locally with object-first manifest-root-last visibility",
+            description: "publish verified immutable objects locally with object-first/manifest-root-last visibility",
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
@@ -144,6 +144,11 @@ pub fn capabilities() -> &'static [Capability] {
         Capability {
             id: "geometry.pose_graph.build",
             description: "compose component-local orientations and assess rotation cycles while leaving translation baselines underdetermined",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
+            id: "geometry.pose_refine.translation",
+            description: "relax component-relative camera centers against fixed admitted rotations and relative edge-scale factors without landmark, metric, global-trajectory, or full bundle-adjustment authority",
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
@@ -331,8 +336,9 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "derive explicit calibration and independent scale evidence before metric claims",
         "select evidence-aware keyframes and build deterministic descriptor tracks",
         "adjudicate two-view motion candidates before pose-graph admission",
-        "compose orientation topology, reconcile relative edge baselines, and initialize component-relative camera poses before global optimization",
-        "add robust pose refinement, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
+        "compose orientation topology, reconcile relative edge baselines, and initialize component-relative camera poses",
+        "relax component-relative camera centers against fixed admitted factors before nonlinear pose-and-landmark optimization",
+        "add full robust pose-and-landmark refinement, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
     ]
 }
 
@@ -397,6 +403,7 @@ mod tests {
             "geometry.graph.analyze",
             "geometry.keyframe.select",
             "geometry.pose_graph.build",
+            "geometry.pose_refine.translation",
             "geometry.relative_pose.verify",
             "media.decode.plan",
             "media.decode.receipt.validate",
