@@ -1,74 +1,93 @@
 # Implementation Status
 
-**Snapshot:** 2026-09-02
+**Snapshot:** 2026-09-03  
+**Current implementation class:** deterministic safe-Rust reference source under active construction
 
-FDGR is an evidence-first, dependency-free safe-Rust reference implementation under active construction. The current workspace establishes deterministic semantic boundaries and public diagnostic paths; it does not yet constitute a production DJI acquisition, reconstruction, semantic-twin, or cloud-recovery system.
+FDGR currently provides a coherent exact-evidence path from immutable recorded-media custody through component-relative camera-pose initialization. It is not yet a production DJI acquisition, bundle-adjustment, dense-reconstruction, semantic-twin, archive-recovery, or agent-control system.
 
 ## Maturity vocabulary
 
 | Label | Meaning |
 |---|---|
-| **Source present** | Code or a schema exists; no execution claim follows. |
-| **Reference implemented** | A deterministic scalar/reference algorithm and unit fixtures exist. |
-| **Publicly invokable** | The reference is reachable through the unified `fdgr` CLI with exact input identities. |
-| **Locally qualified** | The repository-owned pinned-toolchain and E2E lanes passed for an exact commit and host. |
-| **Production admitted** | Registered positive, negative, fault, recovery, compatibility, accuracy, security, and performance evidence has satisfied the owning gate. |
+| **Source present** | Code, a schema, or a design exists. No execution claim follows. |
+| **Reference implemented** | A deterministic scalar/reference algorithm and focused fixtures exist. |
+| **Publicly invokable** | The reference is reachable through `fdgr` with authenticated bounded inputs. |
+| **Locally qualified** | The repository-owned pinned-toolchain and named E2E lanes passed for an exact commit and host, with retained evidence. |
+| **Production admitted** | The owning gate’s positive, negative, fault, recovery, compatibility, accuracy, security, and performance evidence is complete. |
 
-No lower label implies a higher one.
+No lower label implies a higher one. A queued or hosted workflow is not local qualification.
 
-## Current executable surface
+## Workspace boundary
 
-The workspace currently contains **20 package members**. Every member inherits edition 2024, the pinned toolchain policy, `unsafe_code = forbid`, and the closed dependency universe.
+The workspace currently contains **25 package members**. Every member inherits edition 2024, the pinned toolchain policy, `unsafe_code = forbid`, and the closed dependency universe.
+
+The current executable reference chain is:
+
+```text
+exact bytes and canonical identities
+  → immutable local custody and recorded-media roots
+    → bounded native media/sample evidence and canonical timelines
+      → clock, calibration, and scale-witness semantics
+        → deterministic keyframe evidence
+          → descriptor correspondences and collision-safe tracks
+            → calibrated epipolar proposal adjudication
+              → physical two-view relative-pose adjudication
+                → deterministic graph topology and component orientations
+                  → correlation-aware relative edge-baseline gauges
+                    → component-relative camera centers
+```
+
+The final arrow still produces arbitrary-gauge relative positions, not meters or a bundle-adjusted trajectory.
+
+## Current executable surfaces
 
 | Surface | Current maturity | Earned boundary |
 |---|---|---|
-| Canonical identity and codec | Reference implemented | Streaming SHA-256, length-framed domain separation, deterministic bounded codecs, typed failures |
-| Evidence ledger | Reference implemented | Append/replay invariants, optimistic anchors, immutable event identities; FrankenSQLite production adapter remains unadmitted |
-| Local immutable object store | Reference implemented | Staged object publication, object-first/manifest-root-last visibility, collision refusal, readback verification |
-| Native ISO BMFF inspection | Reference implemented | Bounded container and classic `stbl` parsing; no compressed-video decode or fragmented-sample reconstruction |
+| Canonical identity and codec | Reference implemented | Streaming SHA-256, domain separation, bounded deterministic codecs, typed failures |
+| Evidence ledger | Reference implemented | Append/replay invariants, optimistic anchors, immutable event identities; no production database adapter |
+| Local immutable object store | Reference implemented | Staged writes, object-first/manifest-root-last visibility, collision refusal, readback verification |
+| Native ISO BMFF inspection | Reference implemented | Bounded container and classic sample-table parsing; no compressed-video decode |
 | Recorded-media custody | Publicly invokable | Exact original publication, source-bound inspection, root-last graph, independent closure verification |
-| Canonical media timeline | Publicly invokable | Exact DTS/PTS/duration/byte spans, signed composition offsets, gaps, reordering, and explicit partial coverage |
-| Clock evidence | Publicly invokable | Robust, correlation-aware affine fitting; exact epochs/support; no extrapolation or cross-epoch interpolation |
-| Calibration | Reference implemented | Fixed-point intrinsics, Brown-Conrady distortion, shutter/readout, rigid extrinsics, exact crop/resize propagation and scope checks |
-| Scale witnesses | Reference implemented | Correlation-group-aware candidate fitting, retained conflicts, relative/estimated/witnessed/surveyed authority, metric refusal below witnessed authority |
-| Keyframe selection | Publicly invokable | Exact candidate basis, quality gates, marginal visibility, view/baseline diversity, deterministic selection and rejection ledger |
-| Descriptor correspondence | Publicly invokable | Bounded 256-bit Hamming matching, ambiguity/ratio/mutual checks, operation budgets, collision-safe multi-view tracks |
-| Relative-pose candidate adjudication | Publicly invokable | Fixed-point rotation/translation validation, epipolar residual, parallax, cheirality, explicit no-candidate/ambiguous/verified candidate-set status |
-| Media worker protocol | Contract/reference implemented | Path-free decode plans, typed termination, framehash receipt validation and indeterminacy; **no process spawn** |
+| Canonical media timeline | Publicly invokable | DTS/PTS/duration/byte spans, signed composition offsets, gaps, reordering, explicit partial coverage |
+| Clock evidence | Publicly invokable | Robust correlation-aware affine fitting, exact epochs/support, no extrapolation |
+| Calibration | Reference implemented | Fixed-point intrinsics, distortion, shutter/readout, rigid extrinsics, crop/resize propagation and scope checks |
+| Metric scale-witness semantics | Reference implemented | Correlation-aware candidate fitting, conflict retention, relative/estimated/witnessed/surveyed authority and metric refusal |
+| Keyframe selection | Publicly invokable | Exact basis, quality gates, marginal visibility, view/baseline diversity, deterministic rejection ledger |
+| Descriptor correspondence | Publicly invokable | Bounded Hamming matching, tie/ratio/mutual gates, operation budgets, collision-safe tracks |
+| Epipolar proposal verification | Publicly invokable | Exact calibrated correspondence basis, essential-matrix proposal residuals and degeneracy evidence; no motion authority |
+| Relative-pose candidate adjudication | Publicly invokable | Rotation/direction validation, epipolar/parallax/cheirality evidence, explicit no-winner/ambiguity/unique winner |
+| Graph topology | Reference implemented through downstream public paths | Deterministic components, forest, bridges, non-forest edges, and fundamental-cycle witnesses; no geometry authority |
+| Pose-graph orientation | Publicly invokable | Component-local orientations and rotation-cycle status; translation magnitudes remain underdetermined |
+| Relative edge-scale reconciliation | Publicly invokable | Correlation-aware baseline ratios and explicit arbitrary scale components; disconnected gauges remain incomparable |
+| Component-relative global pose | Publicly invokable | Deterministic orientations and camera centers, zero-origin component gauges, parent-edge provenance, translation-cycle status |
+| Media worker protocol | Contract/reference implemented | Path-free decode plans and typed receipt validation; **no process spawn** |
 | Capability and doctor surfaces | Publicly invokable | Stable maturity labels and read-only prerequisite probes |
-| Agent operating model | Normative target | Schemas, registries, ADRs and acceptance scenarios; no complete Agent Turn Packet runtime |
-| Local qualification | Executable local lanes | Static contracts, Rust format/check/Clippy/tests, and public-path E2E descriptions; hosted GitHub Actions are non-authoritative |
+| Agent operating model | Normative target | Schemas, registries, ADRs, and acceptance scenarios; no complete Agent Turn Packet runtime |
+| Local qualification | Executable specification | Static, format, check, Clippy, tests, and public-path E2Es; no retained current-head success receipt yet |
 
-## Two-view evidence ladder
+## Pose authority ladder
 
-The current geometry frontier is deliberately layered:
-
-```text
-decoded-frame evidence
-  → keyframe candidate evidence
-    → selected keyframe generation
-      → descriptor observations
-        → pairwise descriptor hypotheses
-          → collision-safe tracks
-            → calibrated bearing matches
-              → exact relative-motion candidate set
-                → epipolar/parallax/cheirality adjudication
-```
-
-These statements are intentionally not interchangeable:
+The current multi-view frontier must be read as four separate claims:
 
 ```text
-descriptor match
-≠ geometrically supported match
-≠ selected relative-motion candidate
-≠ globally optimized camera pose
+graph topology
+≠ component-local orientation
+≠ relative edge-baseline gauge
+≠ component-relative camera centers
+≠ bundle-adjusted trajectory
 ≠ metric camera pose
 ≠ published geometry
 ```
 
-`fdgr-relative-pose` does not generate five-point/eight-point candidates. It evaluates an exact content-addressed candidate set and preserves ambiguity instead of inventing a winner. Its translation is a direction only; it carries no metric baseline.
+`fdgr-pose-graph` composes `R_node_from_component_root` and assesses rotation cycles. It emits no camera centers.
 
-## Current public reference commands
+`fdgr-edge-scale` reconciles ratios among pairwise baseline magnitudes. Its scale components are arbitrary gauges, not metric transforms.
+
+`fdgr-global-pose` combines those exact generations to initialize camera centers in `component_edge_scale_unit_nano`. Each connected component has its own zero origin and scale root. Translation-cycle conflict remains visible. The initializer performs no nonlinear optimization, landmark refinement, covariance estimation, metric admission, or trajectory publication.
+
+See [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md).
+
+## Public reference commands
 
 ```bash
 cargo run -p fdgr-cli -- capabilities --format json
@@ -77,62 +96,84 @@ cargo run -p fdgr-cli -- file-manifest <path> --format json
 cargo run -p fdgr-cli -- import-file <store-root> <path> --format json
 cargo run -p fdgr-cli -- media-inspect <path> --format json
 cargo run -p fdgr-cli -- media-samples <path> --track-id <id> --format json
-cargo run -p fdgr-cli -- stored-media-inspect <store-root> <manifest-digest> --format json
-cargo run -p fdgr-cli -- stored-media-samples <store-root> <manifest-digest> --track-id <id> --format json
+cargo run -p fdgr-cli -- stored-media-inspect <store-root> <manifest> --format json
+cargo run -p fdgr-cli -- stored-media-samples <store-root> <manifest> --track-id <id> --format json
 cargo run -p fdgr-cli -- recorded-media-ingest <store-root> <path> --format json
-cargo run -p fdgr-cli -- recorded-media-verify <store-root> <root-manifest-digest> --format json
-cargo run -p fdgr-cli -- recorded-media-timeline <store-root> <root-manifest-digest> --track-id <id> --format json
-cargo run -p fdgr-cli -- media-decode-plan <store-root> <root-manifest-digest> [required options] --format json
-cargo run -p fdgr-cli -- clock-fit <anchors.tsv> [exact basis and fit options] --format json
-cargo run -p fdgr-cli -- keyframe-select <candidates.tsv> [exact basis and policy options] --format json
-cargo run -p fdgr-cli -- correspondence-build <features.tsv> <pairs.tsv> [exact basis and policy options] --format json
-cargo run -p fdgr-cli -- relative-pose-verify <bearings.tsv> <candidates.tsv> [exact basis and policy options] --format json
-cargo run -p fdgr-cli -- verify-file <path> [required identities] --format json
-cargo run -p fdgr-cli -- verify-store <store-root> <manifest-digest> --format json
+cargo run -p fdgr-cli -- recorded-media-verify <store-root> <root> --format json
+cargo run -p fdgr-cli -- recorded-media-timeline <store-root> <root> --track-id <id> --format json
+cargo run -p fdgr-cli -- media-decode-plan <store-root> <root> [exact options] --format json
+cargo run -p fdgr-cli -- clock-fit <anchors.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- keyframe-select <candidates.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- correspondence-build <features.tsv> <pairs.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- epipolar-verify <observations.tsv> <candidates.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- relative-pose-verify <bearings.tsv> <candidates.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- pose-graph-build <nodes.tsv> <pose-edges.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- edge-scale-resolve <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- global-pose-initialize <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- verify-file <path> [exact identities] --format json
+cargo run -p fdgr-cli -- verify-store <store-root> <manifest> --format json
 ```
 
-The subsystem-oriented commands are diagnostic/reference adapters. They do not expand the target eleven-operation Agent Narrow Waist; future agent execution compiles through `fdgr.propose`, `fdgr.commit`, and `fdgr.watch`.
+These subsystem commands are diagnostic/reference adapters. They do not expand or bypass the target eleven-operation agent narrow waist.
 
 ## Important non-claims
 
 | Surface | Current status |
 |---|---|
-| DJI Fly/controller live-view acquisition | Research only; no admitted live adapter |
+| DJI live-view or telemetry acquisition | Research only; no admitted adapter |
 | Aircraft control | Not implemented and outside the initial authority model |
-| Asupersync-owned FFmpeg execution | Not implemented; current decode objects are plans and receipt validators |
+| Asupersync-owned FFmpeg execution | Not implemented; current worker objects are plans and validators |
 | Immutable decoded-frame generation | Not implemented |
 | Native compressed-video decoder/encoder | Not implemented |
 | Live arrival/display/telemetry clock fusion | Not implemented |
-| Calibration estimation and measured real-device accuracy | Not implemented; representation/derivation semantics only |
-| Automatic scale-witness acquisition | Not implemented; witness resolution semantics only |
-| Native feature detector/descriptor extraction | Not implemented; correspondence consumes exact supplied feature evidence |
+| Calibration estimation and measured device accuracy | Not implemented; representation/derivation semantics only |
+| Automatic metric scale-witness acquisition | Not implemented |
+| Native feature/descriptor extraction | Not implemented; exact supplied feature evidence is consumed |
 | Five-point/eight-point candidate generation | Not implemented |
-| Pose graph, loop closure, bundle adjustment and global trajectory | Not implemented |
-| Metric pose | Not implemented; relative-pose translation remains unit direction |
+| Loop-candidate search and closure admission | Not implemented as a complete public lifecycle |
+| Nonlinear pose/landmark bundle adjustment | Not implemented |
+| Resumable refinement checkpoints and decision cards | Not implemented |
+| Metric camera pose | Not implemented; current camera centers use arbitrary component gauges |
 | Sparse triangulated map and dense depth/fusion | Not implemented |
-| Occupancy, mesh, topology and appearance generations | Not implemented |
+| Occupancy, surfel, TSDF, mesh, topology, or appearance publication | Not implemented |
 | Qwen/SAM or other model execution | Protocol/design only; no model lane admitted |
 | Semantic resolver and evidence-linked scene graph | Not implemented |
-| B2/R2 multipart replication, readback and restore | Not implemented |
-| FastMCP and complete Agent Turn Packet runtime | Not implemented |
-| Ground-truth accuracy, latency, cost or ergonomic claims | No claim without retained measured receipts |
+| B2/R2 replication, readback, repair, and restore | Not implemented |
+| Complete Agent Turn Packet, Decision Frame, or FastMCP runtime | Not implemented |
+| Ground-truth accuracy, latency, cost, or ergonomic claims | No claim without retained measured receipts |
 | Production security/recovery qualification | No claim |
+
+## `WP-018` progress boundary
+
+The following reference substrate now exists:
+
+- deterministic graph topology;
+- component-local orientation propagation and rotation-cycle evidence;
+- correlation-aware relative edge-scale reconciliation;
+- component-relative camera-center initialization;
+- canonical schemas and capability discovery;
+- exact-byte public CLI paths;
+- focused unit fixtures and public-path E2E scripts.
+
+`WP-018` remains open. Its unimplemented or unqualified scope includes robust nonlinear optimization, landmarks and residual families, outlier/loop branch decisions, conditioning, checkpoints, cancellation/crash/recovery, agent projection, optimized/reference equivalence, and measured improvement or safe-rejection evidence.
 
 ## Qualification interpretation
 
-A passing unit or E2E lane proves only its named reference semantics at the exact source, toolchain, host, fixture and policy identities. It does not close a work package or acceptance gate by itself.
+A passing unit or E2E lane proves only its named semantics at exact source, toolchain, host, fixture, and policy identities. It does not close a work package or acceptance gate by itself.
 
 In particular:
 
-- source presence is not native qualification;
+- source presence is not qualification;
 - process exit is not decoded-frame publication;
-- a decode plan is not dispatch authority;
-- a media timeline is not a synchronized telemetry trajectory;
-- a calibration object is not proof of calibration accuracy;
+- a media timeline is not synchronized telemetry;
+- a calibration object is not calibration accuracy;
 - an estimated scale is not metric authority;
 - a keyframe visibility cell is not a coverage certificate;
 - a descriptor track is not an epipolar inlier;
-- a candidate-set winner is not a global pose graph;
-- a hosted status badge is not release authority.
+- an essential-matrix proposal is not physical motion authority;
+- a relative-pose winner is not a pose graph;
+- a pose graph is not a camera trajectory;
+- an initialized relative camera center is not bundle adjustment or metric pose;
+- a queued or hosted workflow is not a local Doodlestein receipt.
 
-The authoring environment for the most recent correspondence/relative-pose wave did not expose `cargo`, `rustc`, or `rustfmt`. Native format/check/Clippy/test/E2E success is therefore not claimed for that wave until a Doodlestein or direct local qualification receipt names the exact commit.
+The current exact head has not yet produced a retained repository-owned full qualification receipt. The self-hosted workflow specification may remain queued when no qualified runner is available; that state is visible and does not become success by timeout or assumption.
