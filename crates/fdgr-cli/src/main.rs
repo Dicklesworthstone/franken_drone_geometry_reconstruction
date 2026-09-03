@@ -12,6 +12,7 @@ mod edge_scale_cli;
 mod epipolar_cli;
 mod geometry_observation_cli;
 mod global_pose_cli;
+mod global_pose_pipeline_cli;
 mod keyframe_cli;
 mod pose_graph_cli;
 mod pose_graph_input_cli;

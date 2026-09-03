@@ -2,24 +2,16 @@
 //! Public deterministic component-relative camera-pose initialization.
 
 use crate::args::OutputFormat;
-use crate::pose_graph_input_cli::{
-    parse_digest_option, parse_nonzero_u64_option, parse_u64_option,
-};
-use crate::pose_scale_pipeline_cli::{
-    PoseScalePipelineOptions, PoseScalePipelineParser, build_pose_and_edge_scale,
+use crate::global_pose_pipeline_cli::{
+    GlobalPosePipelineOptions, GlobalPosePipelineParser, build_global_pose,
 };
 use fdgr_global_pose::{
-    GLOBAL_POSE_AUTHORITY, GLOBAL_POSE_INITIALIZATION_SCHEMA, GlobalPoseBasis,
-    GlobalPoseInitialization, GlobalPosePolicy, initialize_global_pose,
+    GLOBAL_POSE_AUTHORITY, GLOBAL_POSE_INITIALIZATION_SCHEMA, GlobalPoseInitialization,
 };
-use fdgr_types::EvidenceDigest;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct Options {
-    pipeline: PoseScalePipelineOptions,
-    policy_digest: EvidenceDigest,
-    generation: u64,
-    policy: GlobalPosePolicy,
+    pipeline: GlobalPosePipelineOptions,
     format: OutputFormat,
 }
 
@@ -37,25 +29,7 @@ pub(crate) fn print_help_line() {
 
 pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
     let options = parse(arguments)?;
-    let (pose_graph, edge_scale) = build_pose_and_edge_scale(&options.pipeline)?;
-    let pose_graph_generation_digest = pose_graph
-        .digest()
-        .map_err(|error| format!("pose-graph identity failed: {error}"))?;
-    let edge_scale_generation_digest = edge_scale
-        .digest()
-        .map_err(|error| format!("edge-scale identity failed: {error}"))?;
-    let initialization = initialize_global_pose(
-        GlobalPoseBasis {
-            pose_graph_generation_digest,
-            edge_scale_generation_digest,
-            policy_digest: options.policy_digest,
-            generation: options.generation,
-        },
-        options.policy,
-        pose_graph,
-        edge_scale,
-    )
-    .map_err(|error| format!("global-pose initialization rejected: {error}"))?;
+    let initialization = build_global_pose(&options.pipeline)?;
     match options.format {
         OutputFormat::Json => println!(
             "{}",
@@ -142,10 +116,7 @@ fn parse(arguments: &[String]) -> Result<Options, String> {
     let Some(witness_path) = arguments.get(2) else {
         return Err(usage.to_owned());
     };
-    let mut pipeline = PoseScalePipelineParser::new(node_path, edge_path, witness_path);
-    let mut policy_digest = None;
-    let mut generation = None;
-    let mut policy = GlobalPosePolicy::default();
+    let mut pipeline = GlobalPosePipelineParser::new(node_path, edge_path, witness_path);
     let mut format = OutputFormat::Text;
     let mut position = 3_usize;
     while position < arguments.len() {
@@ -160,24 +131,6 @@ fn parse(arguments: &[String]) -> Result<Options, String> {
             continue;
         }
         match flag.as_str() {
-            "--global-pose-policy-digest" => {
-                policy_digest = Some(parse_digest_option(value, "global-pose policy digest")?);
-            }
-            "--global-pose-generation" => {
-                generation = Some(parse_nonzero_u64_option(value, "global-pose generation")?);
-            }
-            "--max-translation-cycle-residual-ppm" => {
-                policy.max_translation_cycle_residual_ppm =
-                    parse_u64_option(value, "maximum translation cycle residual ppm")?;
-            }
-            "--max-camera-center-abs-nano" => {
-                policy.max_camera_center_abs_nano =
-                    parse_nonzero_u64_option(value, "maximum camera-center magnitude nano")?;
-            }
-            "--max-global-pose-operations" => {
-                policy.max_operations =
-                    parse_nonzero_u64_option(value, "maximum global-pose operations")?;
-            }
             "--format" => format = parse_format(value)?,
             _ => return Err(format!("unknown global-pose-initialize option {flag:?}")),
         }
@@ -185,10 +138,6 @@ fn parse(arguments: &[String]) -> Result<Options, String> {
     }
     Ok(Options {
         pipeline: pipeline.finish()?,
-        policy_digest: policy_digest
-            .ok_or_else(|| "missing --global-pose-policy-digest".to_owned())?,
-        generation: generation.ok_or_else(|| "missing --global-pose-generation".to_owned())?,
-        policy,
         format,
     })
 }
