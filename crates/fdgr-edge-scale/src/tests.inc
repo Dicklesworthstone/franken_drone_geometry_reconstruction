@@ -66,6 +66,35 @@ mod tests {
     }
 
     #[test]
+    fn singleton_only_pose_universe_has_empty_scale_generation() -> Result<(), super::EdgeScaleError> {
+        let subjects = Vec::new();
+        let witnesses = Vec::new();
+        let value = reconcile_edge_scales(
+            basis(1, &subjects, &witnesses)?,
+            policy(),
+            subjects,
+            witnesses,
+        )?;
+        assert!(value.subjects.is_empty());
+        assert!(value.witnesses.is_empty());
+        assert!(value.relations.is_empty());
+        assert!(value.scales.is_empty());
+        assert!(value.components.is_empty());
+        assert!(value.topology.nodes.is_empty());
+        assert!(value.topology.components.is_empty());
+        assert!(value.validate().is_ok());
+        assert!(value.digest().is_ok());
+        assert!(matches!(
+            value.to_json(),
+            Ok(ref json)
+                if json.contains("\"subject_count\":0")
+                    && json.contains("\"component_count\":0")
+                    && json.contains("\"scales\":[]")
+        ));
+        Ok(())
+    }
+
+    #[test]
     fn chain_propagates_one_arbitrary_component_gauge() -> Result<(), super::EdgeScaleError> {
         let subjects = vec![subject(10, 1), subject(20, 1), subject(30, 1)];
         let witnesses = vec![
