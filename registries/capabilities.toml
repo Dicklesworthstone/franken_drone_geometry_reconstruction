@@ -73,6 +73,11 @@ authority = "initialize deterministic component-relative camera orientations and
 status = "reference_source"
 
 [[capability]]
+id = "CAP-POSE-REFINE"
+authority = "relax component-relative camera centers against fixed admitted rotations and relative edge-scale factors; grants no landmark, metric, global-trajectory, or full bundle-adjustment authority"
+status = "reference_source"
+
+[[capability]]
 id = "CAP-EVIDENCE-APPEND"
 authority = "append validated capsule types to a lineage"
 status = "planned"
