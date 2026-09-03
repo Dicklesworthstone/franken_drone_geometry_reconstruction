@@ -38,6 +38,27 @@ mod tests {
     }
 
     #[test]
+    fn empty_graph_is_identity_bearing_and_replayable() {
+        let value = analyze_graph(basis(), GraphBudget::default(), Vec::new(), Vec::new());
+        assert!(matches!(
+            value,
+            Ok(ref analysis)
+                if analysis.nodes.is_empty()
+                    && analysis.edges.is_empty()
+                    && analysis.components.is_empty()
+                    && analysis.forest_edge_ids.is_empty()
+                    && analysis.non_forest_edge_ids.is_empty()
+                    && analysis.fundamental_cycles.is_empty()
+                    && analysis.bridge_edge_ids.is_empty()
+                    && analysis.cycle_rank == 0
+                    && analysis.path_expansions == 0
+                    && analysis.validate().is_ok()
+                    && analysis.digest().is_ok()
+                    && matches!(analysis.to_json(), Ok(ref json) if json.contains("\"node_count\":0") && json.contains("\"component_count\":0"))
+        ));
+    }
+
+    #[test]
     fn triangle_has_one_fundamental_cycle_and_no_bridges() {
         let value = analyze_graph(
             basis(),
