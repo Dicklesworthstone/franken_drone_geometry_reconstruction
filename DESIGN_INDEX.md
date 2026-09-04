@@ -19,7 +19,7 @@ FDGR is organized around one agent control loop and one evidence universe rather
 ## System constitution
 
 - [`README.md`](README.md) — product narrative, current executable frontier, and explicit non-claims.
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) — compact synthetic system map.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — compact synthetic system map and non-bypassable geometry trust ladder.
 - [`COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md`](COMPREHENSIVE_PLAN_FOR_FRANKEN_DRONE_GEOMETRY_RECONSTRUCTION.md) — normative plan and original traceability appendix.
 - [`architecture/SEMANTICS_MANIFEST.md`](architecture/SEMANTICS_MANIFEST.md) — identities, anchors, time, space, epistemics, authority, and publication.
 - [`architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md`](architecture/REGISTRY_TRACEABILITY_SUPPLEMENT.md) — stable IDs introduced after the embedded plan snapshot.
@@ -32,7 +32,7 @@ FDGR is organized around one agent control loop and one evidence universe rather
 
 ## Current executable evidence stack
 
-The workspace currently has **25 package members**. The principal dependency direction is:
+The workspace currently has **28 package members**. The principal dependency direction is:
 
 ```text
 fdgr-types
@@ -49,7 +49,10 @@ fdgr-types
                       → fdgr-pose-graph
                         → fdgr-edge-scale
                           → fdgr-global-pose
-                            → fdgr-core / fdgr-cli
+                            → fdgr-pose-refinement
+                              → fdgr-bundle-problem
+                                → fdgr-bundle-admission
+                                  → fdgr-core / fdgr-cli
 ```
 
 This is a deterministic reference chain, not an end-to-end reconstruction or production-qualification claim.
@@ -85,15 +88,17 @@ This is a deterministic reference chain, not an end-to-end reconstruction or pro
 
 ### Multi-view pose evidence
 
-- [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md) — exact transform convention, four-level authority ladder, gauge rules, conflict semantics, and remaining `WP-018` boundary.
+- [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md) — exact transform convention, authority ladder, gauge rules, conflict semantics, and remaining `WP-018` boundary.
 - [`crates/fdgr-graph/`](crates/fdgr-graph/) — deterministic components, forests, bridges, non-forest edges, and cycle witnesses without geometric authority.
 - [`crates/fdgr-pose-graph/`](crates/fdgr-pose-graph/) — component-local orientations and rotation-cycle evidence; no camera centers.
 - [`crates/fdgr-edge-scale/`](crates/fdgr-edge-scale/) — correlation-aware relative edge-baseline gauges; no metric authority.
 - [`crates/fdgr-global-pose/`](crates/fdgr-global-pose/) — deterministic component-relative camera centers; no bundle adjustment or trajectory publication.
+- [`crates/fdgr-pose-refinement/`](crates/fdgr-pose-refinement/) — translation-only robust center relaxation against fixed orientation and scale evidence.
 - [`schemas/graph_analysis.schema.json`](schemas/graph_analysis.schema.json)
 - [`schemas/pose_graph_generation.schema.json`](schemas/pose_graph_generation.schema.json)
 - [`schemas/edge_scale_generation.schema.json`](schemas/edge_scale_generation.schema.json)
 - [`schemas/global_pose_initialization.schema.json`](schemas/global_pose_initialization.schema.json)
+- [`schemas/pose_refinement.schema.json`](schemas/pose_refinement.schema.json)
 
 The required interpretation is:
 
@@ -102,19 +107,44 @@ graph topology
 ≠ orientation composition
 ≠ relative edge scale
 ≠ arbitrary-gauge camera centers
+≠ translation-only refined centers
 ≠ bundle-adjusted trajectory
 ≠ metric pose
 ≠ published geometry
 ```
 
+### Bundle preparation and optimizer-entry audit
+
+- [`architecture/BUNDLE_PROBLEM_REFERENCE.md`](architecture/BUNDLE_PROBLEM_REFERENCE.md) — structural support-core and topology authority, including its explicit limitations.
+- [`architecture/BUNDLE_ADMISSION_REFERENCE.md`](architecture/BUNDLE_ADMISSION_REFERENCE.md) — mandatory image-domain, optimize-only seed-provenance, and held-out-independence audit.
+- [`crates/fdgr-bundle-problem/`](crates/fdgr-bundle-problem/) — deterministic structural camera/landmark problem compilation.
+- [`crates/fdgr-bundle-admission/`](crates/fdgr-bundle-admission/) — deterministic optimizer-entry audit over the exact structural digest.
+- [`schemas/bundle_problem.schema.json`](schemas/bundle_problem.schema.json)
+- [`schemas/bundle_admission.schema.json`](schemas/bundle_admission.schema.json)
+
+The required interpretation is:
+
+```text
+structurally redundant factor graph
+≠ valid image-domain binding
+≠ optimize-only seed partition
+≠ independent held-out evidence
+≠ numerically conditioned problem
+≠ optimized reconstruction
+```
+
+`fdgr.bundle_problem/1` is immutable structural evidence. `fdgr.bundle_admission/1` is the stronger certificate a future optimizer must consume. Neither schema proves calibration accuracy, numerical rank, reprojection improvement, optimized landmarks, metric scale, or publishable geometry.
+
 ### Public adapters and executable campaigns
 
 - [`crates/fdgr-cli/`](crates/fdgr-cli/)
+- [`crates/fdgr-cli/src/bundle_problem_pipeline_cli.rs`](crates/fdgr-cli/src/bundle_problem_pipeline_cli.rs) — one exact shared reconstruction/parser seam for structural compilation and audit.
 - [`crates/fdgr-core/`](crates/fdgr-core/)
 - [`scripts/qualify.sh`](scripts/qualify.sh)
 - [`scripts/e2e/`](scripts/e2e/)
+- [`release/doodlestein_job_graph.json`](release/doodlestein_job_graph.json)
 
-Current public-path campaigns include recorded-media ingest/verify, timeline, clock fit, keyframes, correspondences, epipolar verification, relative-pose verification, pose-graph construction, edge-scale reconciliation, and global-pose initialization.
+Current public-path campaigns include recorded-media ingest/verify, timeline, clock fit, keyframes, correspondences, epipolar verification, relative-pose verification, pose-graph construction, edge-scale reconciliation, global-pose initialization, singleton continuity, translation refinement, structural bundle compilation, and bundle-admission auditing.
 
 Subsystem commands are diagnostic/reference surfaces. The target agent protocol remains the eleven-operation semantic waist.
 
@@ -128,6 +158,8 @@ Subsystem commands are diagnostic/reference surfaces. The target agent protocol 
 - [`architecture/SENSOR_EVIDENCE_REFERENCE.md`](architecture/SENSOR_EVIDENCE_REFERENCE.md)
 - [`architecture/TWO_VIEW_EVIDENCE_REFERENCE.md`](architecture/TWO_VIEW_EVIDENCE_REFERENCE.md)
 - [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md)
+- [`architecture/BUNDLE_PROBLEM_REFERENCE.md`](architecture/BUNDLE_PROBLEM_REFERENCE.md)
+- [`architecture/BUNDLE_ADMISSION_REFERENCE.md`](architecture/BUNDLE_ADMISSION_REFERENCE.md)
 - [`architecture/SPATIAL_SEMANTIC_HANDLES.md`](architecture/SPATIAL_SEMANTIC_HANDLES.md)
 - [`architecture/HUMAN_AGENT_FLIGHT_PROTOCOL.md`](architecture/HUMAN_AGENT_FLIGHT_PROTOCOL.md)
 - [`architecture/MULTI_AGENT_COORDINATION.md`](architecture/MULTI_AGENT_COORDINATION.md)
