@@ -33,6 +33,11 @@ authority = "spawn exact admitted model profiles"
 status = "planned"
 
 [[capability]]
+id = "CAP-BUNDLE-PROBLEM-BUILD"
+authority = "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence into an admitted relative bundle problem; grants no optimization, landmark-coordinate, metric, numerical-rank, or publication authority"
+status = "reference_source"
+
+[[capability]]
 id = "CAP-KEYFRAME-SELECT"
 authority = "select deterministic quality, coverage, and diversity-aware keyframes from exact candidate evidence; grants no pose authority"
 status = "reference_source"
