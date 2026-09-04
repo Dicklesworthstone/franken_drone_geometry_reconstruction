@@ -242,6 +242,12 @@ json_schema_id = "https://fdgr.dev/schemas/relative_pose_verification.v1.json"
 status = "reference_source"
 
 [[public_schema]]
+id = "SCHEMA-REPROJECTION-EVALUATION"
+path = "schemas/reprojection_evaluation.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/reprojection_evaluation.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-SCALE-MODEL"
 path = "schemas/scale_model.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/scale_model.v1.json"

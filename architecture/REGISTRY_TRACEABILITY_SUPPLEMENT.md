@@ -19,6 +19,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `CAP-POSE-GRAPH-BUILD` | `registries/capabilities.toml` | compose component-local orientations and assess rotation cycles from admitted pairwise pose evidence; emits no camera centers or metric pose |
 | `CAP-POSE-REFINE` | `registries/capabilities.toml` | relax component-relative camera centers against fixed admitted rotations and relative edge-scale factors; grants no landmark, metric, global-trajectory, or full bundle-adjustment authority |
 | `CAP-RELATIVE-POSE-VERIFY` | `registries/capabilities.toml` | adjudicate exact two-view motion candidates with cheirality and parallax evidence; translation remains a direction without metric baseline |
+| `CAP-REPROJECTION-EVALUATE` | `registries/capabilities.toml` | evaluate exact audited component-relative cameras and landmark seeds through materialized calibrations, preserving optimize/held-out residual evidence and typed projection conflicts; grants no optimization, metric, covariance, or publication authority |
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
 | `SCHEMA-BUNDLE-ADMISSION` | `registries/schemas.toml` | schemas/bundle_admission.schema.json |
 | `SCHEMA-BUNDLE-PROBLEM` | `registries/schemas.toml` | schemas/bundle_problem.schema.json |
@@ -41,6 +42,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `SCHEMA-POSE-REFINEMENT` | `registries/schemas.toml` | schemas/pose_refinement.schema.json |
 | `SCHEMA-RECORDED-MEDIA-INGEST` | `registries/schemas.toml` | schemas/recorded_media_ingest.schema.json |
 | `SCHEMA-RELATIVE-POSE-VERIFICATION` | `registries/schemas.toml` | schemas/relative_pose_verification.schema.json |
+| `SCHEMA-REPROJECTION-EVALUATION` | `registries/schemas.toml` | schemas/reprojection_evaluation.schema.json |
 | `SCHEMA-SAMPLE-WINDOW` | `registries/schemas.toml` | schemas/sample_window.schema.json |
 | `SCHEMA-SCALE-MODEL` | `registries/schemas.toml` | schemas/scale_model.schema.json |
 | `SCHEMA-STORE-VERIFICATION` | `registries/schemas.toml` | schemas/store_verification.schema.json |
