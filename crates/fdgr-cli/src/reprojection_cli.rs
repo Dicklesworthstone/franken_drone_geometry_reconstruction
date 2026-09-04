@@ -1,8 +1,14 @@
 #![forbid(unsafe_code)]
 #![allow(
+    clippy::cast_lossless,
+    clippy::cast_possible_truncation,
+    clippy::doc_markdown,
+    clippy::indexing_slicing,
+    clippy::module_name_repetitions,
+    clippy::similar_names,
+    clippy::struct_excessive_bools,
     clippy::too_many_arguments,
-    clippy::too_many_lines,
-    clippy::struct_excessive_bools
+    clippy::too_many_lines
 )]
 //! Public exact-byte adapter for deterministic calibrated reprojection evidence.
 
