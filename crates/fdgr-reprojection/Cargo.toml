@@ -1,0 +1,20 @@
+[package]
+name = "fdgr-reprojection"
+description = "Deterministic calibrated reprojection oracle for audited relative bundle problems in FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-bundle-admission = { path = "../fdgr-bundle-admission" }
+fdgr-bundle-problem = { path = "../fdgr-bundle-problem" }
+fdgr-calibration = { path = "../fdgr-calibration" }
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-projection = { path = "../fdgr-projection" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true
