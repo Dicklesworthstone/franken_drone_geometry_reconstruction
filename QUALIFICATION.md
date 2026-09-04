@@ -1,6 +1,6 @@
 # Qualification Status
 
-**Snapshot:** 2026-09-03
+**Snapshot:** 2026-09-04
 
 FDGR treats qualification as retained exact-identity evidence. Source presence, a schema, a unit fixture, a process exit, an E2E script, a queued workflow, or a hosted badge is never a blanket implementation or production-readiness claim.
 
@@ -22,7 +22,7 @@ git diff --check
 The static lane covers, among other things:
 
 - TOML and JSON parsing;
-- globally unique stable IDs and traceability;
+- globally unique stable IDs and generated traceability;
 - work-package and local-job DAG acyclicity;
 - schema and ADR paths;
 - closed dependency policy and exact research-source identities;
@@ -44,7 +44,7 @@ cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --all-targets --locked
 ```
 
-The full local qualifier invokes the current public-path campaigns:
+The full local qualifier invokes the current public-path campaigns in dependency order:
 
 ```bash
 bash scripts/e2e/recorded_media_ingest_and_verify.sh
@@ -57,6 +57,10 @@ bash scripts/e2e/relative_pose_verify.sh
 bash scripts/e2e/pose_graph_build.sh
 bash scripts/e2e/edge_scale_resolve.sh
 bash scripts/e2e/global_pose_initialize.sh
+bash scripts/e2e/global_pose_singleton.sh
+bash scripts/e2e/pose_refine.sh
+bash scripts/e2e/bundle_problem_build.sh
+bash scripts/e2e/bundle_admission_audit.sh
 ```
 
 Each campaign proves only its named fixture and refusal semantics at exact source, toolchain, host, and policy identities.
@@ -73,12 +77,50 @@ Each campaign proves only its named fixture and refusal semantics at exact sourc
 | pose-graph build | deterministic graph topology, component-local orientations, and rotation-cycle status | camera centers or synchronized translation scale |
 | edge-scale resolve | correlation-aware relative baseline gauges and cycle evidence | meters or comparability across disconnected gauges |
 | global-pose initialize | deterministic component-relative camera centers, parent-edge provenance, and translation-cycle status | bundle adjustment, landmarks, metric pose, covariance, or trajectory publication |
+| global-pose singleton | identity-bearing empty edge-scale continuity and fixed zero-origin singleton semantics | multi-camera consistency or reconstruction accuracy |
+| pose refine | deterministic translation-only robust relaxation, fixed roots, factor dispositions, and do-nothing dominance | rotation or landmark optimization, metric pose, or held-out reprojection improvement |
+| bundle-problem build | exact structural camera/landmark support core, bipartite topology, bridges, root reachability, candidate held-out counts, and typed structural decisions | exact image-domain validity, seed independence, numerical conditioning, or optimization |
+| bundle-admission audit | exact image-domain binding, half-open coordinate checks, optimize-only seed provenance, surviving seed support, active-camera held-out independence, and recomputed admission | calibration accuracy, reprojection minimization, numerical rank, optimized poses/landmarks, metric scale, or geometry publication |
+
+## Bundle qualification boundary
+
+The structural and audited bundle generations are separate qualification obligations:
+
+```text
+fdgr.bundle_problem/1
+  → proves structural support and topology
+
+fdgr.bundle_admission/1
+  → proves exact image domains, seed partition, and held-out usability
+```
+
+A structural `admit` is not enough to invoke a future optimizer. The audit campaign specifically protects against:
+
+- an active or candidate-held-out coordinate outside the exact image bounds;
+- a frame or effective-calibration identity substituted beneath an unchanged camera node;
+- a held-out observation reused during landmark-seed initialization;
+- a seed whose declared support did not survive into the final optimize core;
+- candidate held-out evidence from a camera pruned out of that core;
+- a stale raw file accepted under a previously computed digest;
+- a partial audit emitted after operation-budget exhaustion;
+- semantic identity changing merely because a larger successful operation ceiling was supplied.
+
+A positive audit still proves only that the problem is eligible for **bounded optimization evaluation**. It does not prove the optimizer’s result or the physical scene.
 
 ## Current evidence boundary
 
-The exact current head contains source, schemas, focused unit fixtures, and public-path scripts through component-relative global-pose initialization. The `fdgr-cli` lock closure was repaired after adding the global-pose dependency. Those facts are necessary preconditions, not a retained qualification receipt.
+The exact current source contains:
 
-At this snapshot, the self-hosted workflow for the current head is queued and has not produced a terminal result. That state is explicitly **not** success. The repository therefore does not claim that the current exact head passed formatting, locked compilation, Clippy, all workspace tests, or every public-path campaign.
+- the 28-member safe-Rust workspace;
+- schemas and registries through bundle admission;
+- focused unit fixtures for the bundle-admission oracle;
+- public exact-byte structural and audit commands;
+- a full local qualifier that places the audit after structural compilation;
+- a Doodlestein job graph that makes the audit receipt a predecessor of promotion.
+
+Those facts are necessary preconditions, not a retained current-head qualification receipt.
+
+This execution environment does not provide the pinned `cargo`, `rustc`, or `rustfmt` toolchain and therefore cannot honestly establish that the current exact head passes formatting, locked compilation, Clippy, all workspace tests, or every public-path campaign. No such claim is made here.
 
 Those claims become earned only when one retained receipt binds:
 
@@ -109,21 +151,42 @@ A release candidate additionally requires a clean checkout, exact production-adm
   --receipt-out qualification/fdgr-local-qualification.json
 ```
 
+## Doodlestein dependency closure
+
+The local job graph now makes promotion depend on:
+
+```text
+repository, registry, dependency, and generated-contract checks
+  → complete locked Rust lane
+    → agent-contract and agent-scenario lanes
+      → keyframe and correspondence evidence
+        → epipolar and relative-pose evidence
+          → pose graph and edge-scale evidence
+            → global-pose and singleton continuity
+              → translation refinement
+                → structural bundle compilation
+                  → bundle-admission audit
+                    → promotion identity seal
+```
+
+No later job may infer a missing predecessor receipt from source presence or a hosted status.
+
 ## `WP-018` qualification boundary
 
-Current reference evidence covers graph topology, orientation composition, relative edge-scale reconciliation, and arbitrary-gauge camera-center initialization. `WP-018` and `GATE-009` remain open because they also require, among other things:
+Current reference evidence covers graph topology, orientation composition, relative edge-scale reconciliation, arbitrary-gauge camera-center initialization, translation-only refinement, structural bundle compilation, and image-domain/seed-provenance/held-out auditing. `WP-018` and `GATE-009` remain open because they also require, among other things:
 
-- robust nonlinear pose/landmark objective and residual semantics;
-- deterministic outlier and loop-closure branch decisions;
-- gauge conditioning and convergence/refusal evidence;
+- calibrated reprojection functions and residual-family semantics;
+- robust joint rotation, translation, and landmark optimization;
+- deterministic factor admission, downweighting, retraction, and branch decisions;
+- gauge conditioning, numerical-rank evidence, and convergence/refusal semantics;
 - resumable checkpoints and stale-checkpoint handling;
 - cancellation, crash, restart, recovery, and indeterminate outcomes;
 - agent-readable decision cards and exact continuation;
 - scalar/reference versus optimized differential equivalence;
-- held-out or ground-truth evidence that refinement improves or safely rejects priors;
-- retained current local receipts and visible negative evidence.
+- independently held-out or ground-truth evidence that optimization improves or safely rejects priors;
+- retained exact-head local receipts and visible negative evidence.
 
-Component-relative initialization cannot close those obligations merely because it is a useful substrate.
+An audited input problem cannot close those obligations merely because it is a necessary substrate.
 
 ## Promotion rule
 
