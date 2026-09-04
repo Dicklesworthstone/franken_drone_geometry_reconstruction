@@ -29,7 +29,12 @@
   "properties": {
     "schema": {"const": "fdgr.bundle_admission/1"},
     "bundle_admission_digest": {"$ref": "#/$defs/digest"},
-    "authority": {"const": "audited_relative_bundle_problem"},
+    "authority": {
+      "enum": [
+        "bundle_admission_evidence_only",
+        "audited_relative_bundle_problem"
+      ]
+    },
     "bundle_problem_digest": {"$ref": "#/$defs/digest"},
     "camera_domain_basis_digest": {"$ref": "#/$defs/digest"},
     "seed_provenance_basis_digest": {"$ref": "#/$defs/digest"},
