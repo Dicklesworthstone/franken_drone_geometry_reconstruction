@@ -1,0 +1,23 @@
+[package]
+name = "fdgr-bundle-admission"
+description = "Deterministic image-domain and seed-provenance admission for structural bundle problems in FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-bundle-problem = { path = "../fdgr-bundle-problem" }
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-types = { path = "../fdgr-types" }
+
+[dev-dependencies]
+fdgr-edge-scale = { path = "../fdgr-edge-scale" }
+fdgr-global-pose = { path = "../fdgr-global-pose" }
+fdgr-pose-graph = { path = "../fdgr-pose-graph" }
+fdgr-pose-refinement = { path = "../fdgr-pose-refinement" }
+
+[lints]
+workspace = true
