@@ -58,6 +58,22 @@ fn validate_safe_number(field: &'static str, value: u64) -> Result<(), Reproject
     }
 }
 
+fn validate_signed_safe_number(
+    field: &'static str,
+    value: i64,
+) -> Result<(), ReprojectionError> {
+    let magnitude = value.unsigned_abs();
+    if magnitude > MAX_SAFE_JSON_INTEGER {
+        Err(ReprojectionError::BoundExceeded {
+            field,
+            actual: u128::from(magnitude),
+            maximum: u128::from(MAX_SAFE_JSON_INTEGER),
+        })
+    } else {
+        Ok(())
+    }
+}
+
 fn validate_basis(basis: &ReprojectionBasis) -> Result<(), ReprojectionError> {
     for (field, digest) in [
         ("bundle_admission_digest", &basis.bundle_admission_digest),
@@ -280,9 +296,19 @@ fn residual_magnitude(dx: i64, dy: i64) -> Result<u64, ReprojectionError> {
         .ok_or(ReprojectionError::ArithmeticOverflow {
             field: "residual_squared",
         })?;
-    u64::try_from(integer_sqrt(squared)).map_err(|_| ReprojectionError::ArithmeticOverflow {
-        field: "residual_magnitude",
-    })
+    let magnitude = u64::try_from(integer_sqrt(squared)).map_err(|_| {
+        ReprojectionError::ArithmeticOverflow {
+            field: "residual_magnitude",
+        }
+    })?;
+    if magnitude > MAX_REPROJECTION_RESIDUAL_NANO_PIXELS {
+        return Err(ReprojectionError::BoundExceeded {
+            field: "residual_nano_pixels",
+            actual: u128::from(magnitude),
+            maximum: u128::from(MAX_REPROJECTION_RESIDUAL_NANO_PIXELS),
+        });
+    }
+    Ok(magnitude)
 }
 
 fn integer_sqrt(value: u128) -> u128 {
@@ -323,9 +349,13 @@ fn normalized_residual_ppm(
             field: "normalized_residual",
         })?
         / u128::from(denominator);
-    u64::try_from(rounded).map_err(|_| ReprojectionError::ArithmeticOverflow {
-        field: "normalized_residual",
-    })
+    let value = u64::try_from(rounded).map_err(|_| {
+        ReprojectionError::ArithmeticOverflow {
+            field: "normalized_residual",
+        }
+    })?;
+    validate_safe_number("normalized_residual_ppm", value)?;
+    Ok(value)
 }
 
 fn summarize_residuals(
