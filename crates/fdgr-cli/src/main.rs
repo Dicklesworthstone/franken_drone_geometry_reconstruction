@@ -2,6 +2,7 @@
 //! Agent-friendly deterministic CLI surfaces for FDGR.
 
 mod args;
+mod bundle_problem_cli;
 mod clock_args;
 mod clock_render;
 mod commands;
@@ -36,7 +37,9 @@ fn command_arguments(arguments: &[String]) -> &[String] {
 fn main() -> ExitCode {
     let arguments: Vec<String> = env::args().skip(1).collect();
     let command_arguments = command_arguments(&arguments);
-    let result = if correspondence_cli::is_command(&arguments) {
+    let result = if bundle_problem_cli::is_command(&arguments) {
+        bundle_problem_cli::run(command_arguments)
+    } else if correspondence_cli::is_command(&arguments) {
         correspondence_cli::run(command_arguments)
     } else if edge_scale_cli::is_command(&arguments) {
         edge_scale_cli::run(command_arguments)
@@ -60,6 +63,7 @@ fn main() -> ExitCode {
                     .first()
                     .is_some_and(|value| matches!(value.as_str(), "help" | "--help" | "-h")))
         {
+            bundle_problem_cli::print_help_line();
             correspondence_cli::print_help_line();
             edge_scale_cli::print_help_line();
             epipolar_cli::print_help_line();

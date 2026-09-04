@@ -27,6 +27,7 @@ dependencies = [
 name = "fdgr-cli"
 version = "0.0.1"
 dependencies = [
+ "fdgr-bundle-problem",
  "fdgr-clock",
  "fdgr-codec",
  "fdgr-core",
