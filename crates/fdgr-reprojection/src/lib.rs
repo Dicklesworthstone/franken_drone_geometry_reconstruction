@@ -4,6 +4,7 @@
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
     clippy::cast_sign_loss,
+    clippy::doc_markdown,
     clippy::indexing_slicing,
     clippy::module_name_repetitions,
     clippy::needless_pass_by_value,
@@ -28,7 +29,9 @@ use fdgr_bundle_problem::{BundleObservationDisposition, BundleObservationRole};
 use fdgr_calibration::{CalibrationError, DerivedCalibration, MAX_READOUT_TIME_NS, NANO_SCALE};
 use fdgr_codec::{CodecError, Encoder, hash_domain};
 use fdgr_projection::{
-    CalibratedProjectionPolicy, ProjectionError, project_calibrated_camera_point,
+    CalibratedProjectionPolicy, MAX_CAMERA_POINT_ABS_NANO,
+    MAX_NORMALIZED_COORDINATE_ABS_NANO, MAX_PROJECTED_COORDINATE_ABS_NANO_PIXELS,
+    ProjectionError, project_calibrated_camera_point,
 };
 use fdgr_types::{DigestDomain, DomainError, EvidenceDigest};
 use std::collections::{BTreeMap, BTreeSet};
