@@ -1,0 +1,23 @@
+[package]
+name = "fdgr-bundle-problem"
+description = "Deterministic structural admission for relative bundle problems in FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-codec = { path = "../fdgr-codec" }
+fdgr-graph = { path = "../fdgr-graph" }
+fdgr-pose-refinement = { path = "../fdgr-pose-refinement" }
+fdgr-types = { path = "../fdgr-types" }
+
+[dev-dependencies]
+fdgr-edge-scale = { path = "../fdgr-edge-scale" }
+fdgr-global-pose = { path = "../fdgr-global-pose" }
+fdgr-pose-graph = { path = "../fdgr-pose-graph" }
+
+[lints]
+workspace = true
