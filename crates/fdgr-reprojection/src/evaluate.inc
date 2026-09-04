@@ -7,7 +7,7 @@ pub fn reprojection_algorithm_digest() -> Result<EvidenceDigest, ReprojectionErr
     let domain = DigestDomain::parse(REPROJECTION_ALGORITHM_SCHEMA)?;
     Ok(hash_domain(
         &domain,
-        b"root_to_camera_i128_round_nearest;calibrated_projection_v1;euclidean_residual_integer_sqrt;uncertainty=max(observation,calibration,1);component_decision_v1",
+        b"root_to_camera_i128_round_nearest;calibrated_projection_v1;euclidean_residual_integer_sqrt;uncertainty=max(observation,calibration,1);component_decision_v2",
     )?)
 }
 
@@ -68,6 +68,13 @@ pub fn evaluate_reprojection(
 ) -> Result<ReprojectionEvaluation, ReprojectionError> {
     validate_basis(&basis)?;
     validate_policy(policy)?;
+    if bundle_admission.bundle_problem.observations.len() > MAX_REPROJECTION_OBSERVATIONS {
+        return Err(ReprojectionError::BoundExceeded {
+            field: "observation_count",
+            actual: bundle_admission.bundle_problem.observations.len() as u128,
+            maximum: MAX_REPROJECTION_OBSERVATIONS as u128,
+        });
+    }
     bundle_admission.validate()?;
     let observed_admission_digest = bundle_admission.digest()?;
     compare_basis_digest(
@@ -501,7 +508,7 @@ fn component_decision(
     ReprojectionDecision,
     ReprojectionRecommendation,
 ) {
-    if admission_decision != BundleAdmissionDecision::Admit {
+    if admission_decision == BundleAdmissionDecision::Block {
         return (
             ReprojectionComponentStatus::BlockedAdmission,
             ReprojectionDecision::Block,
@@ -545,6 +552,13 @@ fn component_decision(
             ReprojectionComponentStatus::ResidualConflict,
             ReprojectionDecision::AdmitDiagnostic,
             ReprojectionRecommendation::RevisitStateOrCalibration,
+        );
+    }
+    if admission_decision == BundleAdmissionDecision::AdmitDiagnostic {
+        return (
+            ReprojectionComponentStatus::UpstreamDiagnostic,
+            ReprojectionDecision::AdmitDiagnostic,
+            ReprojectionRecommendation::ResolveBundleAdmission,
         );
     }
     (
