@@ -1,0 +1,16 @@
+[package]
+name = "fdgr-projection"
+description = "Deterministic fixed-point rectified projection kernels for FDGR"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fdgr-calibration = { path = "../fdgr-calibration" }
+fdgr-types = { path = "../fdgr-types" }
+
+[lints]
+workspace = true
