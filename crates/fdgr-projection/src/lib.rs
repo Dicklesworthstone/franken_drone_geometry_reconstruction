@@ -6,14 +6,14 @@
     clippy::doc_markdown,
     clippy::indexing_slicing,
     clippy::module_name_repetitions,
-    clippy::similar_names
+    clippy::similar_names,
+    clippy::too_many_lines
 )]
-//! Deterministic fixed-point projection kernels for explicitly rectified camera domains.
+//! Deterministic fixed-point projection kernels for exact calibrated image domains.
 //!
 //! This crate projects points already expressed in a camera frame through an exact derived
-//! calibration. The initial reference path accepts only global-shutter, distortion-free image
-//! domains. Rolling-shutter and distorted projection require additional motion or distortion
-//! semantics and therefore fail closed rather than being approximated.
+//! calibration. Global-shutter pinhole and Brown-Conrady domains are supported. Rolling-shutter
+//! projection still fails closed until an exact row-time motion model is supplied.
 
 use fdgr_calibration::{CalibrationError, DerivedCalibration, DistortionModel, NANO_SCALE};
 use std::error::Error;
