@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fdgr.dev/schemas/bundle_admission.v1.json",
+  "title": "FDGR deterministic bundle-admission audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "bundle_admission_digest",
+    "authority",
+    "bundle_problem_digest",
+    "camera_domain_basis_digest",
+    "seed_provenance_basis_digest",
+    "policy_digest",
+    "generation",
+    "camera_domain_count",
+    "seed_provenance_count",
+    "observation_audit_count",
+    "landmark_audit_count",
+    "component_count",
+    "operation_count",
+    "policy",
+    "camera_domains",
+    "seed_provenance",
+    "observations",
+    "landmarks",
+    "components"
+  ],
+  "properties": {
+    "schema": {"const": "fdgr.bundle_admission/1"},
+    "bundle_admission_digest": {"$ref": "#/$defs/digest"},
+    "authority": {"const": "audited_relative_bundle_problem"},
+    "bundle_problem_digest": {"$ref": "#/$defs/digest"},
+    "camera_domain_basis_digest": {"$ref": "#/$defs/digest"},
+    "seed_provenance_basis_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "generation": {"$ref": "#/$defs/nonzero_safe_integer"},
+    "camera_domain_count": {"type": "integer", "minimum": 1, "maximum": 100000},
+    "seed_provenance_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "observation_audit_count": {"type": "integer", "minimum": 0, "maximum": 500000},
+    "landmark_audit_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "component_count": {"type": "integer", "minimum": 1, "maximum": 100000},
+    "operation_count": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+    "policy": {"$ref": "#/$defs/policy"},
+    "camera_domains": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100000,
+      "items": {"$ref": "#/$defs/camera_domain"}
+    },
+    "seed_provenance": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {"$ref": "#/$defs/seed_provenance"}
+    },
+    "observations": {
+      "type": "array",
+      "maxItems": 500000,
+      "items": {"$ref": "#/$defs/observation_audit"}
+    },
+    "landmarks": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {"$ref": "#/$defs/landmark_audit"}
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100000,
+      "items": {"$ref": "#/$defs/component"}
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "safe_integer": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "nonzero_safe_integer": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "optional_id": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/nonzero_safe_integer"}
+      ]
+    },
+    "observation_ids": {
+      "type": "array",
+      "maxItems": 500000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+    },
+    "landmark_ids": {
+      "type": "array",
+      "maxItems": 100000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+    },
+    "camera_ids": {
+      "type": "array",
+      "maxItems": 100000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_seed_uncertainty_nano",
+        "min_seed_support_observations",
+        "min_seed_support_cameras",
+        "require_active_held_out_camera",
+        "max_operations"
+      ],
+      "properties": {
+        "max_seed_uncertainty_nano": {"type": "integer", "minimum": 1, "maximum": 9000000000000000},
+        "min_seed_support_observations": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "min_seed_support_cameras": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "require_active_held_out_camera": {"type": "boolean"},
+        "max_operations": {"type": "integer", "minimum": 1, "maximum": 1000000000}
+      }
+    },
+    "camera_domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "camera_node_id",
+        "frame_digest",
+        "effective_calibration_digest",
+        "image_width",
+        "image_height"
+      ],
+      "properties": {
+        "camera_node_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "frame_digest": {"$ref": "#/$defs/digest"},
+        "effective_calibration_digest": {"$ref": "#/$defs/digest"},
+        "image_width": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "image_height": {"type": "integer", "minimum": 1, "maximum": 65535}
+      }
+    },
+    "seed_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["landmark_id", "support_observation_ids"],
+      "properties": {
+        "landmark_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "support_observation_ids": {
+          "type": "array",
+          "maxItems": 100000,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonzero_safe_integer"}
+        }
+      }
+    },
+    "observation_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_id",
+        "landmark_id",
+        "camera_node_id",
+        "within_image_domain",
+        "camera_active",
+        "landmark_active",
+        "seed_support_used",
+        "disposition"
+      ],
+      "properties": {
+        "observation_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "landmark_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "camera_node_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "within_image_domain": {"type": "boolean"},
+        "camera_active": {"type": "boolean"},
+        "landmark_active": {"type": "boolean"},
+        "seed_support_used": {"type": "boolean"},
+        "disposition": {
+          "enum": [
+            "active_optimize_in_domain",
+            "eligible_held_out_independent",
+            "held_out_inactive_camera",
+            "outside_image_domain",
+            "upstream_excluded"
+          ]
+        }
+      }
+    },
+    "landmark_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "landmark_id",
+        "declared_support_observation_ids",
+        "surviving_support_observation_ids",
+        "surviving_support_camera_node_ids",
+        "seed_uncertainty_within_policy",
+        "provenance_proven"
+      ],
+      "properties": {
+        "landmark_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "declared_support_observation_ids": {"$ref": "#/$defs/observation_ids"},
+        "surviving_support_observation_ids": {"$ref": "#/$defs/observation_ids"},
+        "surviving_support_camera_node_ids": {"$ref": "#/$defs/camera_ids"},
+        "seed_uncertainty_within_policy": {"type": "boolean"},
+        "provenance_proven": {"type": "boolean"}
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component_root_node_id",
+        "scale_component_root_edge_id",
+        "status",
+        "decision",
+        "recommendation",
+        "invalid_image_observation_ids",
+        "unproven_seed_landmark_ids",
+        "inactive_held_out_observation_ids",
+        "independent_held_out_observation_ids",
+        "independent_held_out_camera_node_ids"
+      ],
+      "properties": {
+        "component_root_node_id": {"$ref": "#/$defs/nonzero_safe_integer"},
+        "scale_component_root_edge_id": {"$ref": "#/$defs/optional_id"},
+        "status": {
+          "enum": [
+            "blocked_upstream",
+            "invalid_image_domain",
+            "unproven_seed_partition",
+            "insufficient_independent_held_out",
+            "upstream_diagnostic",
+            "admitted"
+          ]
+        },
+        "decision": {"enum": ["block", "admit_diagnostic", "admit"]},
+        "recommendation": {
+          "enum": [
+            "resolve_upstream_structural_problem",
+            "bind_correct_image_domain",
+            "rebuild_seeds_from_optimize_partition",
+            "reserve_independent_held_out_views",
+            "follow_upstream_diagnostic",
+            "proceed_to_bounded_bundle_optimization"
+          ]
+        },
+        "invalid_image_observation_ids": {"$ref": "#/$defs/observation_ids"},
+        "unproven_seed_landmark_ids": {"$ref": "#/$defs/landmark_ids"},
+        "inactive_held_out_observation_ids": {"$ref": "#/$defs/observation_ids"},
+        "independent_held_out_observation_ids": {"$ref": "#/$defs/observation_ids"},
+        "independent_held_out_camera_node_ids": {"$ref": "#/$defs/camera_ids"}
+      }
+    }
+  }
+}
