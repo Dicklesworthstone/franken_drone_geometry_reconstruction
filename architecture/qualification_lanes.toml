@@ -1,5 +1,5 @@
 schema = "fdgr.qualification_lanes.v2"
-revision = 1
+revision = 2
 authority = "local-doodlestein-receipts"
 hosted_github_actions_authority = false
 entrypoint = "scripts/qualify.sh"
@@ -67,7 +67,7 @@ id = "QL-009"
 name = "geometry-synthetic"
 requires = ["QL-004", "QL-007", "QL-008"]
 host_labels = ["geometry-cpu"]
-authority_dimensions = ["track", "pose", "scale", "depth", "fusion", "topology"]
+authority_dimensions = ["track", "pose", "scale", "bundle-structure", "image-domain", "seed-provenance", "held-out-partition", "depth", "fusion", "topology"]
 
 [[lane]]
 id = "QL-010"
