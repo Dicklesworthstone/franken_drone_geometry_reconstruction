@@ -8,17 +8,17 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 <!-- BEGIN GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->
 | Stable ID | Normative registry | Compact label |
 |---|---|---|
-| `CAP-BUNDLE-ADMISSION-AUDIT` | `registries/capabilities.toml` | audit structural bundle evidence against exact image domains, optimize-only seed provenance, and independently usable held-out views; grants no optimization, calibration-accuracy, metric, rank, or sparse-geometry authority |
+| `CAP-BUNDLE-ADMISSION-AUDIT` | `registries/capabilities.toml` | audit an exact structural bundle problem against camera image domains, optimize-only seed provenance, and independently usable held-out evidence; grants no calibration-accuracy, optimization, metric, rank, or sparse-geometry authority |
 | `CAP-BUNDLE-PROBLEM-BUILD` | `registries/capabilities.toml` | compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence into an admitted relative bundle problem; grants no optimization, landmark-coordinate, metric, numerical-rank, or publication authority |
-| `CAP-CORRESPONDENCE-BUILD` | `registries/capabilities.toml` | bounded descriptor hypotheses and tracks |
-| `CAP-EDGE-SCALE-RESOLVE` | `registries/capabilities.toml` | nonmetric relative pose-edge gauges |
-| `CAP-EPIPOLAR-VERIFY` | `registries/capabilities.toml` | calibrated essential-matrix adjudication |
+| `CAP-CORRESPONDENCE-BUILD` | `registries/capabilities.toml` | build bounded descriptor-correspondence hypotheses and collision-safe tracks from exact evidence tables; grants no geometric authority |
+| `CAP-EDGE-SCALE-RESOLVE` | `registries/capabilities.toml` | reconcile correlation-aware relative baseline ratios inside exact pose components; disconnected gauges remain incomparable and output is nonmetric |
+| `CAP-EPIPOLAR-VERIFY` | `registries/capabilities.toml` | adjudicate exact essential-matrix proposals against calibrated correspondence evidence; grants no rotation, translation, or pose authority |
 | `CAP-GLOBAL-POSE-INITIALIZE` | `registries/capabilities.toml` | initialize deterministic component-relative camera orientations and centers in explicit arbitrary edge-scale gauges; grants no metric, trajectory-publication, or bundle-adjustment authority |
-| `CAP-GRAPH-ANALYZE` | `registries/capabilities.toml` | deterministic topology and cycle evidence |
-| `CAP-KEYFRAME-SELECT` | `registries/capabilities.toml` | evidence-aware keyframe selection |
-| `CAP-POSE-GRAPH-BUILD` | `registries/capabilities.toml` | component-local orientation and rotation cycles |
+| `CAP-GRAPH-ANALYZE` | `registries/capabilities.toml` | derive deterministic connected components, forests, bridges, and cycle witnesses from exact graph evidence; grants no geometric authority |
+| `CAP-KEYFRAME-SELECT` | `registries/capabilities.toml` | select deterministic quality, coverage, and diversity-aware keyframes from exact candidate evidence; grants no pose authority |
+| `CAP-POSE-GRAPH-BUILD` | `registries/capabilities.toml` | compose component-local orientations and assess rotation cycles from admitted pairwise pose evidence; emits no camera centers or metric pose |
 | `CAP-POSE-REFINE` | `registries/capabilities.toml` | relax component-relative camera centers against fixed admitted rotations and relative edge-scale factors; grants no landmark, metric, global-trajectory, or full bundle-adjustment authority |
-| `CAP-RELATIVE-POSE-VERIFY` | `registries/capabilities.toml` | scale-free physical two-view adjudication |
+| `CAP-RELATIVE-POSE-VERIFY` | `registries/capabilities.toml` | adjudicate exact two-view motion candidates with cheirality and parallax evidence; translation remains a direction without metric baseline |
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
 | `SCHEMA-BUNDLE-ADMISSION` | `registries/schemas.toml` | schemas/bundle_admission.schema.json |
 | `SCHEMA-BUNDLE-PROBLEM` | `registries/schemas.toml` | schemas/bundle_problem.schema.json |
