@@ -11,6 +11,7 @@ members = [
     "crates/fdgr-bundle-admission",
     "crates/fdgr-clock",
     "crates/fdgr-calibration",
+    "crates/fdgr-projection",
     "crates/fdgr-scale",
     "crates/fdgr-keyframe",
     "crates/fdgr-correspondence",
