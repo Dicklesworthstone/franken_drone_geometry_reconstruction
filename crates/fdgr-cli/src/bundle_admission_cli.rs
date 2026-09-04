@@ -11,11 +11,10 @@ use crate::pose_graph_input_cli::{
     parse_digest, parse_digest_option, parse_nonzero_u32_option, parse_nonzero_u64_option,
 };
 use fdgr_bundle_admission::{
-    BUNDLE_ADMISSION_AUTHORITY, BUNDLE_ADMISSION_SCHEMA, BundleAdmissionBasis,
-    BundleAdmissionGeneration, BundleAdmissionPolicy, BundleCameraDomain,
-    LandmarkSeedProvenance, MAX_CAMERA_DOMAINS, MAX_SEED_PROVENANCES,
-    audit_bundle_admission, bundle_admission_policy_digest, camera_domain_table_digest,
-    seed_provenance_table_digest,
+    BUNDLE_ADMISSION_SCHEMA, BundleAdmissionBasis, BundleAdmissionGeneration,
+    BundleAdmissionPolicy, BundleCameraDomain, LandmarkSeedProvenance, MAX_CAMERA_DOMAINS,
+    MAX_SEED_PROVENANCES, audit_bundle_admission, bundle_admission_policy_digest,
+    camera_domain_table_digest, seed_provenance_table_digest,
 };
 use fdgr_types::EvidenceDigest;
 use std::path::{Path, PathBuf};
@@ -102,7 +101,7 @@ fn print_text(generation: &BundleAdmissionGeneration) -> Result<(), String> {
         .map_err(|error| format!("bundle-admission identity failed: {error}"))?;
     println!("schema: {BUNDLE_ADMISSION_SCHEMA}");
     println!("bundle_admission_digest: {digest}");
-    println!("authority: {BUNDLE_ADMISSION_AUTHORITY}");
+    println!("authority: {}", generation.authority());
     println!(
         "bundle_problem_digest: {}",
         generation.basis.bundle_problem_digest
