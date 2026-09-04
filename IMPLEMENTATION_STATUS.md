@@ -1,9 +1,9 @@
 # Implementation Status
 
-**Snapshot:** 2026-09-03  
+**Snapshot:** 2026-09-04  
 **Current implementation class:** deterministic safe-Rust reference source under active construction
 
-FDGR currently provides a coherent exact-evidence path from immutable recorded-media custody through component-relative camera-pose initialization. It is not yet a production DJI acquisition, bundle-adjustment, dense-reconstruction, semantic-twin, archive-recovery, or agent-control system.
+FDGR currently provides a coherent exact-evidence path from immutable recorded-media custody through an **audited relative bundle problem**. It is not yet a production DJI acquisition, joint bundle-adjustment, sparse/dense reconstruction, semantic-twin, archive-recovery, or agent-control system.
 
 ## Maturity vocabulary
 
@@ -19,7 +19,7 @@ No lower label implies a higher one. A queued or hosted workflow is not local qu
 
 ## Workspace boundary
 
-The workspace currently contains **25 package members**. Every member inherits edition 2024, the pinned toolchain policy, `unsafe_code = forbid`, and the closed dependency universe.
+The workspace currently contains **28 package members**. Every member inherits edition 2024, the pinned toolchain policy, `unsafe_code = forbid`, and the closed dependency universe.
 
 The current executable reference chain is:
 
@@ -35,9 +35,12 @@ exact bytes and canonical identities
                 → deterministic graph topology and component orientations
                   → correlation-aware relative edge-baseline gauges
                     → component-relative camera centers
+                      → robust translation-only center refinement
+                        → structural bundle-problem compilation
+                          → image-domain, seed-provenance, and held-out audit
 ```
 
-The final arrow still produces arbitrary-gauge relative positions, not meters or a bundle-adjusted trajectory.
+The final arrow admits an exact relative bundle problem for bounded optimization evaluation. It does not optimize cameras or landmarks, prove calibration accuracy or numerical conditioning, emit meters, or publish geometry.
 
 ## Current executable surfaces
 
@@ -60,21 +63,27 @@ The final arrow still produces arbitrary-gauge relative positions, not meters or
 | Pose-graph orientation | Publicly invokable | Component-local orientations and rotation-cycle status; translation magnitudes remain underdetermined |
 | Relative edge-scale reconciliation | Publicly invokable | Correlation-aware baseline ratios and explicit arbitrary scale components; disconnected gauges remain incomparable |
 | Component-relative global pose | Publicly invokable | Deterministic orientations and camera centers, zero-origin component gauges, parent-edge provenance, translation-cycle status |
+| Translation-only pose refinement | Publicly invokable | Robust deterministic camera-center relaxation against fixed rotations/scales with retained factor evidence; no landmark or metric authority |
+| Structural bundle problem | Publicly invokable | Exact camera/frame/calibration identities, landmark proposals, optimize/held-out roles, fixed-point support pruning, bipartite topology, bridges, structural decisions |
+| Bundle-admission audit | Publicly invokable | Exact image domains, coordinate bounds, optimize-only seed provenance, surviving seed support, active-camera held-out independence, recomputed decisions |
 | Media worker protocol | Contract/reference implemented | Path-free decode plans and typed receipt validation; **no process spawn** |
 | Capability and doctor surfaces | Publicly invokable | Stable maturity labels and read-only prerequisite probes |
 | Agent operating model | Normative target | Schemas, registries, ADRs, and acceptance scenarios; no complete Agent Turn Packet runtime |
-| Local qualification | Executable specification | Static, format, check, Clippy, tests, and public-path E2Es; no retained current-head success receipt yet |
+| Local qualification | Executable specification | Static, format, check, Clippy, tests, and public-path E2Es through bundle admission; no retained current-head success receipt in this execution environment |
 
-## Pose authority ladder
+## Geometry authority ladder
 
-The current multi-view frontier must be read as four separate claims:
+The current frontier must be read as distinct claims:
 
 ```text
 graph topology
 ≠ component-local orientation
 ≠ relative edge-baseline gauge
 ≠ component-relative camera centers
-≠ bundle-adjusted trajectory
+≠ translation-only refined centers
+≠ structural bundle topology
+≠ audited optimizer input
+≠ bundle-adjusted trajectory and landmarks
 ≠ metric camera pose
 ≠ published geometry
 ```
@@ -83,9 +92,19 @@ graph topology
 
 `fdgr-edge-scale` reconciles ratios among pairwise baseline magnitudes. Its scale components are arbitrary gauges, not metric transforms.
 
-`fdgr-global-pose` combines those exact generations to initialize camera centers in `component_edge_scale_unit_nano`. Each connected component has its own zero origin and scale root. Translation-cycle conflict remains visible. The initializer performs no nonlinear optimization, landmark refinement, covariance estimation, metric admission, or trajectory publication.
+`fdgr-global-pose` combines those exact generations to initialize camera centers in `component_edge_scale_unit_nano`. Each connected component has its own zero origin and scale root. Translation-cycle conflict remains visible.
 
-See [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md).
+`fdgr-pose-refinement` changes camera centers only, against fixed rotations and fixed relative edge scales. It retains both initialization and factor evidence. It is not full pose optimization.
+
+`fdgr-bundle-problem` compiles a structural support core and bipartite graph. Its effective-calibration digests are opaque, its image coordinates are not yet checked against bound dimensions, and its held-out counts are candidate evidence rather than a proof of independence.
+
+`fdgr-bundle-admission` binds exact per-camera image domains and exact optimize-only seed provenance, rejects held-out seed leakage, requires support that survived into the optimize core, removes held-out evidence from pruned cameras, and recomputes component admission. Its positive authority is only `audited_relative_bundle_problem`.
+
+See:
+
+- [`architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md`](architecture/POSE_GRAPH_AND_GLOBAL_POSE_REFERENCE.md)
+- [`architecture/BUNDLE_PROBLEM_REFERENCE.md`](architecture/BUNDLE_PROBLEM_REFERENCE.md)
+- [`architecture/BUNDLE_ADMISSION_REFERENCE.md`](architecture/BUNDLE_ADMISSION_REFERENCE.md)
 
 ## Public reference commands
 
@@ -110,6 +129,9 @@ cargo run -p fdgr-cli -- relative-pose-verify <bearings.tsv> <candidates.tsv> [e
 cargo run -p fdgr-cli -- pose-graph-build <nodes.tsv> <pose-edges.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- edge-scale-resolve <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- global-pose-initialize <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- pose-refine <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- bundle-problem-build <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> <camera-bindings.tsv> <landmark-seeds.tsv> <bundle-observations.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- bundle-admission-audit <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> <camera-bindings.tsv> <landmark-seeds.tsv> <bundle-observations.tsv> <camera-domains.tsv> <seed-provenance.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- verify-file <path> [exact identities] --format json
 cargo run -p fdgr-cli -- verify-store <store-root> <manifest> --format json
 ```
@@ -131,7 +153,9 @@ These subsystem commands are diagnostic/reference adapters. They do not expand o
 | Native feature/descriptor extraction | Not implemented; exact supplied feature evidence is consumed |
 | Five-point/eight-point candidate generation | Not implemented |
 | Loop-candidate search and closure admission | Not implemented as a complete public lifecycle |
-| Nonlinear pose/landmark bundle adjustment | Not implemented |
+| Rotation-aware or joint pose/landmark bundle adjustment | Not implemented |
+| Reprojection residual and held-out improvement adjudication | Not implemented |
+| Numerical rank, Hessian, covariance, and Schur-complement evidence | Not implemented |
 | Resumable refinement checkpoints and decision cards | Not implemented |
 | Metric camera pose | Not implemented; current camera centers use arbitrary component gauges |
 | Sparse triangulated map and dense depth/fusion | Not implemented |
@@ -151,11 +175,17 @@ The following reference substrate now exists:
 - component-local orientation propagation and rotation-cycle evidence;
 - correlation-aware relative edge-scale reconciliation;
 - component-relative camera-center initialization;
+- translation-only robust camera-center refinement;
+- deterministic structural camera/landmark support-core compilation;
+- bipartite graph cycles, bridges, root reachability, and structural decisions;
+- exact camera image-domain audit;
+- optimize-only seed-provenance verification;
+- held-out-camera independence correction;
 - canonical schemas and capability discovery;
 - exact-byte public CLI paths;
-- focused unit fixtures and public-path E2E scripts.
+- focused unit fixtures and public-path E2E specifications.
 
-`WP-018` remains open. Its unimplemented or unqualified scope includes robust nonlinear optimization, landmarks and residual families, outlier/loop branch decisions, conditioning, checkpoints, cancellation/crash/recovery, agent projection, optimized/reference equivalence, and measured improvement or safe-rejection evidence.
+`WP-018` remains open. Its unimplemented or unqualified scope includes reprojection models, joint rotation/translation/landmark optimization, numerical rank and conditioning, robust factor admission/retraction generations, checkpoints, cancellation/crash/recovery, held-out improvement adjudication, agent projection, optimized/reference equivalence, and measured accuracy evidence.
 
 ## Qualification interpretation
 
@@ -173,7 +203,9 @@ In particular:
 - an essential-matrix proposal is not physical motion authority;
 - a relative-pose winner is not a pose graph;
 - a pose graph is not a camera trajectory;
-- an initialized relative camera center is not bundle adjustment or metric pose;
+- an initialized or translation-refined camera center is not bundle adjustment or metric pose;
+- a structurally redundant factor graph is not proof that its image coordinates or seed partition are valid;
+- an audited bundle problem is not optimized geometry or held-out accuracy evidence;
 - a queued or hosted workflow is not a local Doodlestein receipt.
 
-The current exact head has not yet produced a retained repository-owned full qualification receipt. The self-hosted workflow specification may remain queued when no qualified runner is available; that state is visible and does not become success by timeout or assumption.
+The current exact head has not yet produced a retained repository-owned full qualification receipt in this execution environment. The self-hosted workflow specification may remain queued when no qualified runner is available; that state is visible and does not become success by timeout or assumption.
