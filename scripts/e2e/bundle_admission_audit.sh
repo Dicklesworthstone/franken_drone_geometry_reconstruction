@@ -120,10 +120,15 @@ camera_node_id	frame_digest	effective_calibration_digest	image_width	image_heigh
 3	7373737373737373737373737373737373737373737373737373737373737373	8383838383838383838383838383838383838383838383838383838383838383	640	480
 EOF_SMALL_DOMAIN
 
-{
-  head -n 1 "$DOMAINS"
-  tail -n +2 "$DOMAINS" | tac
-} >"$REORDERED_DOMAINS"
+"$PYTHON" - "$DOMAINS" "$REORDERED_DOMAINS" <<'PY'
+from pathlib import Path
+import sys
+source = Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
+Path(sys.argv[2]).write_text(
+    "\n".join([source[0], *reversed(source[1:])]) + "\n",
+    encoding="utf-8",
+)
+PY
 
 cat >"$PROVENANCE" <<'EOF_PROVENANCE'
 landmark_id	support_observation_ids
@@ -292,11 +297,13 @@ assert value["bundle_admission_digest"] == larger["bundle_admission_digest"]
 assert value["policy_digest"] == larger["policy_digest"]
 assert value["policy"]["max_operations"] != larger["policy"]["max_operations"]
 inactive_component = inactive["components"][0]
+assert inactive["authority"] == "bundle_admission_evidence_only"
 assert inactive_component["status"] == "insufficient_independent_held_out"
 assert inactive_component["decision"] == "admit_diagnostic"
 assert inactive_component["inactive_held_out_observation_ids"] == [7, 8]
 assert inactive_component["independent_held_out_observation_ids"] == []
 out_component = out_of_domain["components"][0]
+assert out_of_domain["authority"] == "bundle_admission_evidence_only"
 assert out_component["status"] == "invalid_image_domain"
 assert out_component["decision"] == "block"
 assert 2 in out_component["invalid_image_observation_ids"]
@@ -372,6 +379,7 @@ receipt = {
     "rustc_version": sys.argv[6],
     "bundle_admission_digest": admitted["bundle_admission_digest"],
     "complete_problem_admitted": admitted["components"][0]["decision"] == "admit",
+    "positive_authority_only_when_admitted": admitted["authority"] == "audited_relative_bundle_problem" and inactive["authority"] == "bundle_admission_evidence_only" and out_of_domain["authority"] == "bundle_admission_evidence_only",
     "inactive_held_out_demoted": inactive["components"][0]["status"] == "insufficient_independent_held_out",
     "out_of_domain_blocked": out_of_domain["components"][0]["decision"] == "block",
     "held_out_seed_leak_exit_code": int(sys.argv[7]),
