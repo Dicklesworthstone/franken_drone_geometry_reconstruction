@@ -25,6 +25,7 @@ mod recorded_args;
 mod recorded_render;
 mod relative_pose_cli;
 mod render;
+mod reprojection_cli;
 mod sample_render;
 mod stored_args;
 mod stored_render;
@@ -59,6 +60,8 @@ fn main() -> ExitCode {
         pose_refinement_cli::run(command_arguments)
     } else if relative_pose_cli::is_command(&arguments) {
         relative_pose_cli::run(command_arguments)
+    } else if reprojection_cli::is_command(&arguments) {
+        reprojection_cli::run(command_arguments)
     } else {
         let result = commands::run(&arguments);
         if result.is_ok()
@@ -77,6 +80,7 @@ fn main() -> ExitCode {
             pose_graph_cli::print_help_line();
             pose_refinement_cli::print_help_line();
             relative_pose_cli::print_help_line();
+            reprojection_cli::print_help_line();
         }
         result
     };
