@@ -16,5 +16,11 @@ fdgr-codec = { path = "../fdgr-codec" }
 fdgr-projection = { path = "../fdgr-projection" }
 fdgr-types = { path = "../fdgr-types" }
 
+[dev-dependencies]
+fdgr-edge-scale = { path = "../fdgr-edge-scale" }
+fdgr-global-pose = { path = "../fdgr-global-pose" }
+fdgr-pose-graph = { path = "../fdgr-pose-graph" }
+fdgr-pose-refinement = { path = "../fdgr-pose-refinement" }
+
 [lints]
 workspace = true
