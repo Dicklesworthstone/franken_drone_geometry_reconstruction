@@ -330,6 +330,8 @@ fn evaluate_observation(
         .ok_or(ReprojectionError::ArithmeticOverflow {
             field: "residual_y",
         })?;
+    validate_signed_safe_number("residual_x_nano_pixels", residual_x)?;
+    validate_signed_safe_number("residual_y_nano_pixels", residual_y)?;
     let residual = residual_magnitude(residual_x, residual_y)?;
     let normalized = normalized_residual_ppm(
         residual,
@@ -385,6 +387,10 @@ fn canonicalize_calibrations(
             &calibration.effective_calibration_digest,
         )?;
         calibration.calibration.validate()?;
+        validate_safe_number(
+            "declared_uncertainty_nano_pixels",
+            calibration.calibration.declared_uncertainty_nano_pixels,
+        )?;
         if calibration.calibration.readout.observed_readout_time_ns > MAX_READOUT_TIME_NS {
             return Err(ReprojectionError::BoundExceeded {
                 field: "observed_readout_time_ns",
