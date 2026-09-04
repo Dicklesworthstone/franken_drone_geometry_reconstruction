@@ -112,6 +112,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "geometry.bundle_admission.audit",
+            description: "audit an exact structural bundle problem against camera image domains, optimize-only seed provenance, and independently usable held-out evidence without calibration-accuracy, optimization, metric, rank, or sparse-geometry authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "geometry.bundle_problem.build",
             description: "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence without optimization, landmark-coordinate, metric, numerical-rank, or publication authority",
             status: CapabilityStatus::ReferenceSource,
@@ -343,7 +348,8 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "adjudicate two-view motion candidates before pose-graph admission",
         "compose orientation topology, reconcile relative edge baselines, and initialize component-relative camera poses",
         "relax component-relative camera centers against fixed admitted factors",
-        "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence before any landmark-bearing optimizer",
+        "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence",
+        "audit exact image domains, optimize-only seed provenance, and independently usable held-out evidence before numerical optimization",
         "add full robust pose-and-landmark optimization, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
     ]
 }
@@ -402,6 +408,7 @@ mod tests {
             "evidence.manifest.build",
             "evidence.manifest.verify",
             "evidence.store.local",
+            "geometry.bundle_admission.audit",
             "geometry.bundle_problem.build",
             "geometry.correspondence.build",
             "geometry.edge_scale.resolve",
