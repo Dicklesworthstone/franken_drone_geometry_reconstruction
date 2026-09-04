@@ -43,7 +43,7 @@ mod decision_tests {
     }
 
     #[test]
-    fn upstream_block_dominatesapparently_clean_residuals() {
+    fn upstream_block_dominates_apparently_clean_residuals() {
         let policy = ReprojectionPolicy::default();
         let optimize = complete_summary(u64::from(
             policy.min_optimize_observations_per_component,
