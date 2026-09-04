@@ -8,6 +8,7 @@ members = [
     "crates/fdgr-global-pose",
     "crates/fdgr-pose-refinement",
     "crates/fdgr-bundle-problem",
+    "crates/fdgr-bundle-admission",
     "crates/fdgr-clock",
     "crates/fdgr-calibration",
     "crates/fdgr-scale",
