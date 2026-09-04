@@ -3,6 +3,19 @@
 version = 4
 
 [[package]]
+name = "fdgr-bundle-admission"
+version = "0.0.1"
+dependencies = [
+ "fdgr-bundle-problem",
+ "fdgr-codec",
+ "fdgr-edge-scale",
+ "fdgr-global-pose",
+ "fdgr-pose-graph",
+ "fdgr-pose-refinement",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-bundle-problem"
 version = "0.0.1"
 dependencies = [
