@@ -53,6 +53,53 @@ L0  External devices, processes, filesystems, providers, and operators
 Typed handles and provenance connect every level. Higher levels compress lower levels; they never
 silently strengthen epistemic status or authority.
 
+## Executable geometry trust ladder
+
+The current reference workspace intentionally decomposes geometry authority into immutable
+successive generations:
+
+```text
+exact keyframe and descriptor evidence
+  → correspondence hypotheses
+    → epipolar-supported hypotheses
+      → scale-free physical relative-pose hypotheses
+        → graph topology and component orientation
+          → relative edge-baseline gauges
+            → component-relative camera-center initialization
+              → translation-only robust center refinement
+                → structural bundle-problem compilation
+                  → image-domain, seed-provenance, and held-out audit
+                    → joint pose-landmark optimization            [future]
+                      → held-out reprojection adjudication        [future]
+                        → sparse reconstruction publication       [future]
+                          → witnessed metric mapping              [future]
+```
+
+Each generation may consume only the exact digest of its predecessor and may grant only its named
+authority. No later-sounding noun strengthens an earlier result implicitly.
+
+### Structural bundle compilation is not optimizer admission
+
+`fdgr.bundle_problem/1` establishes a fixed-point optimize support core and a deterministic
+camera/landmark bipartite topology. It retains camera/frame/effective-calibration identities,
+landmark proposals, optimize/held-out roles, bridges, cycles, root reachability, and structural
+decision cards. Its image coordinates have not yet been proven to lie inside exact calibrated image
+dimensions, and its landmark seeds do not yet carry observation-level initialization provenance.
+Its candidate held-out counts therefore do not prove independence.
+
+`fdgr.bundle_admission/1` is a separate mandatory audit generation. It binds one exact image domain
+per camera, checks half-open coordinate bounds, binds optimize-only seed-support observation IDs,
+requires that sufficient seed support survived in the final optimize core, rejects held-out seed
+leakage, removes held-out evidence from cameras absent from that core, and recomputes component
+admission. A future optimizer must consume an admitted audit over the exact structural digest.
+
+Even a positive audit grants only `audited_relative_bundle_problem`. It does not prove calibration
+accuracy, numerical rank, conditioning, reprojection improvement, optimized poses or landmarks,
+metric scale, or publishable geometry.
+
+See [`architecture/BUNDLE_PROBLEM_REFERENCE.md`](architecture/BUNDLE_PROBLEM_REFERENCE.md) and
+[`architecture/BUNDLE_ADMISSION_REFERENCE.md`](architecture/BUNDLE_ADMISSION_REFERENCE.md).
+
 ## Question-driven cognition
 
 ```text
@@ -245,13 +292,18 @@ Doodlestein executes clean, exact-source, native/self-hosted qualification lanes
 a portable job graph, not hosted release authority. Claims are matrix rows over exact platform,
 device, model, provider, privacy, recovery, and performance profiles.
 
+The current full local specification runs the structural bundle campaign and then the stronger
+bundle-admission campaign before promotion. A source commit or isolated test does not become
+qualification until the pinned native lane emits and retains its exact receipt.
+
 ## Non-bypassability
 
 An implementation is invalid if any path can mutate without a sealed plan and current authority;
 read mixed generations; emit metric claims without scale; prove absence without coverage; hide
 active/indeterminate work; dispatch from recommendation or memory; truncate safety under budget;
 publish roots before children; treat acceptance as completion; learn policy from one episode; let a
-stale agent publish after fencing; or claim readiness without local positive evidence.
+stale agent publish after fencing; claim readiness without local positive evidence; or feed a
+structural bundle problem into an optimizer without the exact image-domain/seed-provenance audit.
 
 ## Shared cockpit invariants
 
