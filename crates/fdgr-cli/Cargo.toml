@@ -13,6 +13,7 @@ name = "fdgr"
 path = "src/main.rs"
 
 [dependencies]
+fdgr-bundle-admission = { path = "../fdgr-bundle-admission" }
 fdgr-bundle-problem = { path = "../fdgr-bundle-problem" }
 fdgr-clock = { path = "../fdgr-clock" }
 fdgr-codec = { path = "../fdgr-codec" }
