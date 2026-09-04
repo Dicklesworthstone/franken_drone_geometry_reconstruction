@@ -29,6 +29,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
 use std::fmt::{self, Display, Formatter, Write as _};
 
+/// Authority emitted by a diagnostic or blocked audit generation.
+pub const BUNDLE_ADMISSION_EVIDENCE_AUTHORITY: &str = "bundle_admission_evidence_only";
+
 include!("types.inc");
 include!("audit.inc");
 include!("model.inc");
