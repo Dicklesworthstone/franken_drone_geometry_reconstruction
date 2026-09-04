@@ -107,6 +107,8 @@ step 'Running singleton component pose-continuity E2E'
 bash scripts/e2e/global_pose_singleton.sh
 step 'Running deterministic translation-only pose-refinement E2E'
 bash scripts/e2e/pose_refine.sh
+step 'Running deterministic structural bundle-problem admission E2E'
+bash scripts/e2e/bundle_problem_build.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then
