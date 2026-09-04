@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-//! Public deterministic translation-only pose refinement.
+//! Public deterministic translation-only pose refinement and shared exact reconstruction seam.
 
 use crate::args::OutputFormat;
 use crate::global_pose_pipeline_cli::{
@@ -15,11 +15,113 @@ use fdgr_pose_refinement::{
 use fdgr_types::EvidenceDigest;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-struct Options {
-    pipeline: GlobalPosePipelineOptions,
-    policy_digest: EvidenceDigest,
-    generation: u64,
+pub(crate) struct PoseRefinementPipelineOptions {
+    pub(crate) global_pose: GlobalPosePipelineOptions,
+    pub(crate) policy_digest: EvidenceDigest,
+    pub(crate) generation: u64,
+    pub(crate) policy: PoseRefinementPolicy,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct PoseRefinementPipelineParser {
+    global_pose: GlobalPosePipelineParser,
+    policy_digest: Option<EvidenceDigest>,
+    generation: Option<u64>,
     policy: PoseRefinementPolicy,
+}
+
+impl PoseRefinementPipelineParser {
+    pub(crate) fn new(node_path: &str, edge_path: &str, witness_path: &str) -> Self {
+        Self {
+            global_pose: GlobalPosePipelineParser::new(node_path, edge_path, witness_path),
+            policy_digest: None,
+            generation: None,
+            policy: PoseRefinementPolicy::default(),
+        }
+    }
+
+    pub(crate) fn apply_option(&mut self, flag: &str, value: &str) -> Result<bool, String> {
+        if self.global_pose.apply_option(flag, value)? {
+            return Ok(true);
+        }
+        match flag {
+            "--pose-refinement-policy-digest" => {
+                self.policy_digest = Some(parse_digest_option(value, "pose-refinement policy digest")?);
+            }
+            "--pose-refinement-generation" => {
+                self.generation = Some(parse_nonzero_u64_option(value, "pose-refinement generation")?);
+            }
+            "--max-refinement-iterations" => {
+                self.policy.max_iterations =
+                    parse_nonzero_u32_option(value, "maximum refinement iterations")?;
+            }
+            "--refinement-convergence-delta-nano" => {
+                self.policy.convergence_delta_nano =
+                    parse_u64_option(value, "refinement convergence delta nano")?;
+            }
+            "--refinement-huber-delta-nano" => {
+                self.policy.huber_delta_nano =
+                    parse_nonzero_u64_option(value, "refinement Huber delta nano")?;
+            }
+            "--refinement-damping-weight" => {
+                self.policy.damping_weight =
+                    parse_nonzero_u32_option(value, "refinement damping weight")?;
+            }
+            "--max-refinement-factor-weight" => {
+                self.policy.max_factor_weight =
+                    parse_nonzero_u32_option(value, "maximum refinement factor weight")?;
+            }
+            "--max-refinement-camera-center-abs-nano" => {
+                self.policy.max_camera_center_abs_nano = parse_nonzero_u64_option(
+                    value,
+                    "maximum refined camera-center magnitude nano",
+                )?;
+            }
+            "--max-refinement-operations" => {
+                self.policy.max_operations =
+                    parse_nonzero_u64_option(value, "maximum refinement operations")?;
+            }
+            _ => return Ok(false),
+        }
+        Ok(true)
+    }
+
+    pub(crate) fn finish(self) -> Result<PoseRefinementPipelineOptions, String> {
+        Ok(PoseRefinementPipelineOptions {
+            global_pose: self.global_pose.finish()?,
+            policy_digest: self
+                .policy_digest
+                .ok_or_else(|| "missing --pose-refinement-policy-digest".to_owned())?,
+            generation: self
+                .generation
+                .ok_or_else(|| "missing --pose-refinement-generation".to_owned())?,
+            policy: self.policy,
+        })
+    }
+}
+
+pub(crate) fn build_pose_refinement(
+    options: &PoseRefinementPipelineOptions,
+) -> Result<PoseRefinementGeneration, String> {
+    let initialization = build_global_pose(&options.global_pose)?;
+    let initialization_digest = initialization
+        .digest()
+        .map_err(|error| format!("global-pose identity failed: {error}"))?;
+    refine_pose_translation(
+        PoseRefinementBasis {
+            initialization_digest,
+            policy_digest: options.policy_digest.clone(),
+            generation: options.generation,
+        },
+        options.policy,
+        initialization,
+    )
+    .map_err(|error| format!("pose refinement rejected: {error}"))
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct Options {
+    refinement: PoseRefinementPipelineOptions,
     format: OutputFormat,
 }
 
@@ -37,20 +139,7 @@ pub(crate) fn print_help_line() {
 
 pub(crate) fn run(arguments: &[String]) -> Result<(), String> {
     let options = parse(arguments)?;
-    let initialization = build_global_pose(&options.pipeline)?;
-    let initialization_digest = initialization
-        .digest()
-        .map_err(|error| format!("global-pose identity failed: {error}"))?;
-    let refinement = refine_pose_translation(
-        PoseRefinementBasis {
-            initialization_digest,
-            policy_digest: options.policy_digest,
-            generation: options.generation,
-        },
-        options.policy,
-        initialization,
-    )
-    .map_err(|error| format!("pose refinement rejected: {error}"))?;
+    let refinement = build_pose_refinement(&options.refinement)?;
     match options.format {
         OutputFormat::Json => println!(
             "{}",
@@ -140,10 +229,7 @@ fn parse(arguments: &[String]) -> Result<Options, String> {
     let Some(witness_path) = arguments.get(2) else {
         return Err(usage.to_owned());
     };
-    let mut pipeline = GlobalPosePipelineParser::new(node_path, edge_path, witness_path);
-    let mut policy_digest = None;
-    let mut generation = None;
-    let mut policy = PoseRefinementPolicy::default();
+    let mut parser = PoseRefinementPipelineParser::new(node_path, edge_path, witness_path);
     let mut format = OutputFormat::Text;
     let mut position = 3_usize;
     while position < arguments.len() {
@@ -153,59 +239,18 @@ fn parse(arguments: &[String]) -> Result<Options, String> {
         let value = arguments
             .get(position.saturating_add(1))
             .ok_or_else(|| format!("missing value for {flag}"))?;
-        if pipeline.apply_option(flag, value)? {
+        if parser.apply_option(flag, value)? {
             position = position.saturating_add(2);
             continue;
         }
         match flag.as_str() {
-            "--pose-refinement-policy-digest" => {
-                policy_digest = Some(parse_digest_option(value, "pose-refinement policy digest")?);
-            }
-            "--pose-refinement-generation" => {
-                generation = Some(parse_nonzero_u64_option(value, "pose-refinement generation")?);
-            }
-            "--max-refinement-iterations" => {
-                policy.max_iterations =
-                    parse_nonzero_u32_option(value, "maximum refinement iterations")?;
-            }
-            "--refinement-convergence-delta-nano" => {
-                policy.convergence_delta_nano =
-                    parse_u64_option(value, "refinement convergence delta nano")?;
-            }
-            "--refinement-huber-delta-nano" => {
-                policy.huber_delta_nano =
-                    parse_nonzero_u64_option(value, "refinement Huber delta nano")?;
-            }
-            "--refinement-damping-weight" => {
-                policy.damping_weight =
-                    parse_nonzero_u32_option(value, "refinement damping weight")?;
-            }
-            "--max-refinement-factor-weight" => {
-                policy.max_factor_weight =
-                    parse_nonzero_u32_option(value, "maximum refinement factor weight")?;
-            }
-            "--max-refinement-camera-center-abs-nano" => {
-                policy.max_camera_center_abs_nano = parse_nonzero_u64_option(
-                    value,
-                    "maximum refined camera-center magnitude nano",
-                )?;
-            }
-            "--max-refinement-operations" => {
-                policy.max_operations =
-                    parse_nonzero_u64_option(value, "maximum refinement operations")?;
-            }
             "--format" => format = parse_format(value)?,
             _ => return Err(format!("unknown pose-refine option {flag:?}")),
         }
         position = position.saturating_add(2);
     }
     Ok(Options {
-        pipeline: pipeline.finish()?,
-        policy_digest: policy_digest
-            .ok_or_else(|| "missing --pose-refinement-policy-digest".to_owned())?,
-        generation: generation
-            .ok_or_else(|| "missing --pose-refinement-generation".to_owned())?,
-        policy,
+        refinement: parser.finish()?,
         format,
     })
 }
@@ -230,7 +275,7 @@ fn display_optional_vector(value: Option<[i64; 3]>) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{is_command, parse};
+    use super::{PoseRefinementPipelineParser, is_command, parse};
 
     #[test]
     fn command_detection_is_exact() {
@@ -247,5 +292,18 @@ mod tests {
             "witnesses.tsv".to_owned(),
         ];
         assert!(matches!(parse(&arguments), Err(ref error) if error.contains("--node-file-digest")));
+    }
+
+    #[test]
+    fn shared_pipeline_requires_refinement_identity_after_upstream_identity() {
+        let parser = PoseRefinementPipelineParser::new(
+            "nodes.tsv",
+            "edges.tsv",
+            "witnesses.tsv",
+        );
+        assert!(matches!(
+            parser.finish(),
+            Err(ref error) if error.contains("--node-file-digest")
+        ));
     }
 }
