@@ -3,107 +3,107 @@ revision = 1
 
 [[work_package]]
 id = "WP-000"
-name = "Constitution and registries"
-summary = "Freeze normative vocabulary, IDs, invariants, claims, effects, errors, schemas, and admission policies."
+name = "Normative contracts and schema lock"
+summary = "Convert architecture, schemas, registries, source closures, acceptance evidence, and the Agent Operating Model into executable validation."
 dependencies = []
-acceptance_gate = "GATE-000"
-status = "draft"
+acceptance_gate = "GATE-001"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-001"
-name = "Workspace and qualification scaffold"
-summary = "Create the strict Rust DAG, CLI contracts, local qualifier, and release manifests."
+name = "Crate graph and build skeleton"
+summary = "Create the edition-2024 safe-Rust workspace, dependency policy, compile checks, and thin `fdgr` entry point."
 dependencies = ["WP-000"]
-acceptance_gate = "GATE-000"
-status = "scaffolded"
+acceptance_gate = "GATE-002"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-002"
-name = "Canonical identity and codec"
-summary = "Implement domain-separated identities, canonical binary encoding, finite numeric policy, and differential codec tests."
-dependencies = ["WP-000", "WP-001"]
-acceptance_gate = "GATE-001"
+name = "Identity codec and evidence ledger"
+summary = "Implement canonical encoding, domain-separated identities, optimistic append/replay, and deterministic Merkle publication."
+dependencies = ["WP-001"]
+acceptance_gate = "GATE-003"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-003"
-name = "Reference evidence ledger"
-summary = "Build append-only capsules, immutable roots, anchor reads, and a single-threaded reference oracle."
-dependencies = ["WP-002"]
-acceptance_gate = "GATE-001"
+name = "Durable state idempotency and leases"
+summary = "Implement intent records, semantic idempotency, state transitions, leases, fences, readback, reconciliation, and deadlines."
+dependencies = ["WP-001", "WP-002"]
+acceptance_gate = "GATE-003"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-004"
-name = "Content-addressed publication"
-summary = "Implement reserve-materialize-verify-publish, staging cleanup, crash matrices, and root traversal."
-dependencies = ["WP-002", "WP-003"]
-acceptance_gate = "GATE-002"
+name = "Local object store and evidence bundles"
+summary = "Implement root-last content-addressed local storage, staged writes, collision checks, crash cleanup, and verification bundles."
+dependencies = ["WP-002"]
+acceptance_gate = "GATE-004"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-005"
-name = "Original media import"
-summary = "Import files and byte streams exactly, preserve container metadata, and account for every source range."
+name = "Original evidence import"
+summary = "Import originals unchanged, preserve source metadata, produce capture anchors, and refuse transformation before preservation."
 dependencies = ["WP-003", "WP-004"]
-acceptance_gate = "GATE-002"
+acceptance_gate = "GATE-004"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-006"
-name = "Media sidecar protocol"
-summary = "Supervise ffprobe and ffmpeg with sealed manifests, bounded pipes/files, deterministic profiles, and descendant cleanup."
-dependencies = ["WP-004", "WP-005"]
-acceptance_gate = "GATE-003"
-status = "in_progress"
+name = "DJI Flip compatibility ladder"
+summary = "Implement owner-authorized read-only compatibility probes across aircraft, controller, app, firmware, OS, network, and region."
+dependencies = ["WP-000", "WP-001"]
+acceptance_gate = "GATE-005"
+status = "planned"
 
 [[work_package]]
 id = "WP-007"
-name = "Packet frame and clock ledger"
-summary = "Model PTS, DTS, arrival, decode, display, telemetry, drift, gaps, and epoch transitions."
-dependencies = ["WP-005", "WP-006"]
-acceptance_gate = "GATE-003"
+name = "Recorded-media inspection and normalization"
+summary = "Build a bounded native ISO BMFF parser plus supervised ffprobe/ffmpeg profiles and immutable normalized outputs."
+dependencies = ["WP-003", "WP-004", "WP-005"]
+acceptance_gate = "GATE-005"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-008"
-name = "Calibration registry"
-summary = "Represent intrinsics, distortion, rolling shutter, gimbal transforms, crop/zoom state, and calibration evidence."
-dependencies = ["WP-007"]
-acceptance_gate = "GATE-004"
+name = "Clock graph and canonical media time"
+summary = "Represent explicit clock domains and epochs, robust affine fitting, rolling-shutter timing, uncertainty, drift, gaps, and resets."
+dependencies = ["WP-002", "WP-007"]
+acceptance_gate = "GATE-006"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-009"
-name = "Scale witness system"
-summary = "Implement relative, estimated, witnessed, and surveyed scale states with fusion and conflict rules."
-dependencies = ["WP-008"]
-acceptance_gate = "GATE-004"
+name = "Calibration and metric-scale witnesses"
+summary = "Implement intrinsic/extrinsic/shutter calibration epochs and relative/estimated/witnessed/surveyed scale with correlation-aware admission."
+dependencies = ["WP-002", "WP-005"]
+acceptance_gate = "GATE-006"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-010"
-name = "DJI compatibility laboratory"
-summary = "Build read-only probes and profiles for aircraft, controller, app, firmware, OS, and region combinations."
-dependencies = ["WP-005", "WP-007"]
+name = "Read-only live acquisition"
+summary = "Implement bounded live-view arrival, drop accounting, adaptive preview, cancellation, reconnect, and session manifests."
+dependencies = ["WP-003", "WP-006", "WP-008"]
 acceptance_gate = "GATE-005"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-011"
-name = "Recorded and mirrored capture adapters"
-summary = "Admit SD-card, DJI Fly export, controller recording, screen capture, and HDMI or USB capture paths."
-dependencies = ["WP-010"]
-acceptance_gate = "GATE-005"
-status = "planned"
+name = "Arrival and display clock correlation"
+summary = "Correlate arrival/display/device clocks explicitly and expose uncertainty and missing-domain fallback behavior."
+dependencies = ["WP-008", "WP-010"]
+acceptance_gate = "GATE-006"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-012"
-name = "Owner-authorized live adapter research"
-summary = "Characterize documented streams and owned-device traffic without bypassing pairing, authentication, or encryption."
-dependencies = ["WP-010", "WP-011"]
+name = "Telemetry ingest and synchronization"
+summary = "Parse timed metadata, subtitles, and legal sidecars; fit epochs; preserve gaps/resets; join by explicit clock models."
+dependencies = ["WP-008", "WP-009", "WP-010", "WP-011"]
 acceptance_gate = "GATE-006"
-status = "planned"
+status = "in_progress"
 
 [[work_package]]
 id = "WP-013"
@@ -149,7 +149,7 @@ status = "planned"
 id = "WP-018"
 name = "Pose graph and bundle refinement"
 summary = "Build robust deterministic pose optimization, loop closure, outlier handling, and complexity witnesses."
-dependencies = ["WP-014", "WP-016"]
+dependencies = ["WP-009", "WP-014"]
 acceptance_gate = "GATE-009"
 status = "in_progress"
 
@@ -211,50 +211,50 @@ status = "planned"
 
 [[work_package]]
 id = "WP-026"
-name = "CLI and robot protocol"
-summary = "Ship complete JSON, JSONL, TOON, progress, cancellation, continuation, capabilities, doctor, and explain surfaces."
-dependencies = ["WP-003", "WP-025"]
-acceptance_gate = "GATE-013"
+name = "Public CLI robot and protocol adapters"
+summary = "Expose stable human/JSON/NDJSON contracts, schema negotiation, progress, cancellation, and documentation parity."
+dependencies = ["WP-001", "WP-025"]
+acceptance_gate = "GATE-014"
 status = "in_progress"
 
 [[work_package]]
 id = "WP-027"
-name = "MCP presentation plane"
-summary = "Expose a narrow replaceable fastmcp_rust interface without leaking transport types into semantic crates."
-dependencies = ["WP-026"]
+name = "FastMCP transport seam"
+summary = "Expose the agent contract through FastMCP with request-scoped context, cancellation, auth, and no semantic duplication."
+dependencies = ["WP-003", "WP-026"]
 acceptance_gate = "GATE-014"
 status = "planned"
 
 [[work_package]]
 id = "WP-028"
-name = "Eidetic operational integration"
-summary = "Export curated evidence and failure lessons to advisory agent memory with one-way provenance."
-dependencies = ["WP-025", "WP-026"]
-acceptance_gate = "GATE-014"
+name = "Advisory context packs and memory"
+summary = "Build bounded context packs, Pack DNA, evidence-linked lessons, and outcome feedback without policy authority."
+dependencies = ["WP-026", "WP-027"]
+acceptance_gate = "GATE-015"
 status = "planned"
 
 [[work_package]]
 id = "WP-029"
-name = "Deterministic laboratory"
-summary = "Exercise schedule, packet, clock, process, disk, GPU, archive, corruption, cancellation, and crash faults."
-dependencies = ["WP-003", "WP-006", "WP-015", "WP-024"]
-acceptance_gate = "GATE-015"
+name = "Self-hosted qualification graph"
+summary = "Implement Doodlestein-style local job planning, signed receipts, resume, fan-out, rollback, and artifact closure."
+dependencies = ["WP-001", "WP-003", "WP-004"]
+acceptance_gate = "GATE-016"
 status = "planned"
 
 [[work_package]]
 id = "WP-030"
-name = "Ground-truth benchmark corpus"
-summary = "Build synthetic and real home/UAV datasets with survey or LiDAR references, held-out views, semantics, and privacy controls."
-dependencies = ["WP-009", "WP-020", "WP-023"]
-acceptance_gate = "GATE-015"
+name = "Benchmarks and equivalence gates"
+summary = "Implement one-binary runtime-selected benchmarks, workload fixtures, shadow arms, effect sizes, and correctness gates."
+dependencies = ["WP-013", "WP-014", "WP-016", "WP-017", "WP-018", "WP-020", "WP-029"]
+acceptance_gate = "GATE-016"
 status = "planned"
 
 [[work_package]]
 id = "WP-031"
-name = "Performance and economic optimizer"
-summary = "Measure same-binary alternatives and optimize latency, GPU memory, storage, egress, energy, and operator time without semantic drift."
-dependencies = ["WP-024", "WP-029", "WP-030"]
-acceptance_gate = "GATE-016"
+name = "Accuracy and semantic evaluation"
+summary = "Evaluate camera pose, depth, point, surface, coverage, dimensions, semantic precision/recall, and threshold robustness."
+dependencies = ["WP-009", "WP-018", "WP-020", "WP-023", "WP-030"]
+acceptance_gate = "GATE-017"
 status = "planned"
 
 [[work_package]]
@@ -271,7 +271,7 @@ name = "Agent semantic constitution"
 summary = "Freeze the abstraction tower, operating loop, anchor vector, epistemic lattice, four ledgers, common response spine, and non-bypassability rules."
 dependencies = ["WP-000", "WP-003"]
 acceptance_gate = "GATE-018"
-status = "draft"
+status = "planned"
 
 [[work_package]]
 id = "WP-034"
@@ -347,40 +347,40 @@ status = "planned"
 
 [[work_package]]
 id = "WP-043"
-name = "Self-description and first-try inevitability"
-summary = "Generate operation/capability/profile/schema/error/maturity manifests, robot docs, help parity, examples, typo repair, why-unavailable output, and exact safe repairs."
-dependencies = ["WP-026", "WP-034"]
-acceptance_gate = "GATE-023"
+name = "Deterministic reporting and semantic export"
+summary = "Compile agent and human reports from the same evidence graph with stable sections, uncertainty, counterevidence, citations, manifests, and privacy projection."
+dependencies = ["WP-025", "WP-034", "WP-035", "WP-036"]
+acceptance_gate = "GATE-024"
 status = "planned"
 
 [[work_package]]
 id = "WP-044"
-name = "Agent ergonomics and accretion qualification"
-summary = "Run cold-arrival, context-loss, gap, indeterminate, pilot, budget, multi-agent, learning, and handoff benchmarks under local Doodlestein lanes."
-dependencies = ["WP-036", "WP-039", "WP-040", "WP-041", "WP-042", "WP-043"]
-acceptance_gate = "GATE-023"
+name = "Agent-native release and ergonomic qualification"
+summary = "Prove cold-start orientation, task success, minimum sufficient context, handoff quality, explanation parity, and retain agent-release claims in local receipts."
+dependencies = ["WP-029", "WP-032", "WP-034", "WP-036", "WP-038", "WP-041", "WP-043"]
+acceptance_gate = "GATE-025"
 status = "planned"
 
 [[work_package]]
 id = "WP-045"
-name = "Decision Frame and shared cockpit"
-summary = "Implement the singular anchor-bound decision projection and semantically equivalent CLI, MCP, NDJSON, TUI, and viewer cards."
-dependencies = ["WP-034", "WP-035", "WP-037", "WP-038"]
-acceptance_gate = "GATE-024"
+name = "Evidence-gated policy improvement"
+summary = "Turn episode/surprise outcomes into reproducible advisory candidates, offline rankings, shadow tests, clamped canaries, rollback, and cost reductions without bypass."
+dependencies = ["WP-028", "WP-030", "WP-040", "WP-044"]
+acceptance_gate = "GATE-026"
 status = "planned"
 
 [[work_package]]
 id = "WP-046"
-name = "Epistemic debt and stable attention"
-summary = "Represent unresolved decision loss, classed interrupts, hysteresis, acknowledgement, suppression, expiry, shared evidence opportunities, and conscious debt acceptance."
-dependencies = ["WP-035", "WP-036", "WP-045"]
-acceptance_gate = "GATE-024"
+name = "Agent-native public operation orchestrator"
+summary = "Implement the eleven-operation fdgr.* semantic narrow waist over one canonical service boundary, with all lower-level helpers capability-private."
+dependencies = ["WP-003", "WP-026", "WP-033"]
+acceptance_gate = "GATE-027"
 status = "planned"
 
 [[work_package]]
 id = "WP-047"
-name = "Spatial handles and human-agent flight"
-summary = "Implement frame-complete spatial/semantic handles, human landmarks, semantic zoom, pilot cards, operator acknowledgement/refusal, observed execution, evidence gain, stopping, and abort semantics."
-dependencies = ["WP-039", "WP-045", "WP-046"]
-acceptance_gate = "GATE-024"
+name = "Agent control-loop conformance"
+summary = "Prove A-001..A-027 across every transport with authoritative Agent Turn Packets, Question/Objective transitions, watch progress, recovery, and qualified source trees."
+dependencies = ["WP-034", "WP-035", "WP-038", "WP-041", "WP-046"]
+acceptance_gate = "GATE-028"
 status = "planned"
