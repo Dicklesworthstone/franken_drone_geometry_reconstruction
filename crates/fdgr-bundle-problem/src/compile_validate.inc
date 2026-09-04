@@ -17,6 +17,17 @@ fn validate_basis(basis: &BundleProblemBasis) -> Result<(), BundleProblemError> 
     validate_safe_nonzero("generation", basis.generation)
 }
 
+fn validate_safe_u64(field: &'static str, value: u64) -> Result<(), BundleProblemError> {
+    if value > MAX_SAFE_JSON_INTEGER {
+        return Err(BundleProblemError::BoundExceeded {
+            field,
+            actual: u128::from(value),
+            maximum: u128::from(MAX_SAFE_JSON_INTEGER),
+        });
+    }
+    Ok(())
+}
+
 fn validate_policy(policy: BundleProblemPolicy) -> Result<(), BundleProblemError> {
     if policy.min_optimize_cameras_per_landmark < 2 {
         return Err(BundleProblemError::BelowMinimum {
@@ -92,7 +103,7 @@ fn canonicalize_camera_bindings(
     let mut ids = BTreeSet::new();
     for binding in &bindings {
         validate_safe_nonzero("camera_node_id", binding.camera_node_id)?;
-        validate_safe_nonzero("camera_sample_index", binding.sample_index)?;
+        validate_safe_u64("camera_sample_index", binding.sample_index)?;
         reject_zero_digest("camera_frame_digest", &binding.frame_digest)?;
         reject_zero_digest(
             "effective_calibration_digest",
@@ -180,7 +191,7 @@ fn canonicalize_observations(
         validate_safe_nonzero("observation_id", observation.observation_id)?;
         validate_safe_nonzero("observation_landmark_id", observation.landmark_id)?;
         validate_safe_nonzero("observation_camera_node_id", observation.camera_node_id)?;
-        validate_safe_nonzero("observation_sample_index", observation.sample_index)?;
+        validate_safe_u64("observation_sample_index", observation.sample_index)?;
         validate_safe_nonzero(
             "source_feature_observation_id",
             observation.source_feature_observation_id,
