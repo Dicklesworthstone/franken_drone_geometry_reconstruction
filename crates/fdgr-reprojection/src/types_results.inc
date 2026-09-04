@@ -13,7 +13,7 @@ pub enum ReprojectionObservationDisposition {
     NormalizedResidualExceeded,
     /// Point depth was nonpositive or too close to the projection singularity.
     InsufficientPositiveDepth,
-    /// Undistorted normalized coordinate exceeded the admitted domain.
+    /// Undistorted normalized camera coordinates exceeded the admitted domain.
     NormalizedCoordinateExceeded,
     /// The exact calibration model is not implemented by this scalar oracle.
     ProjectionModelUnsupported,
@@ -123,7 +123,7 @@ pub struct ReprojectionObservationEvidence {
 /// Component maturity after scalar reprojection adjudication.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ReprojectionComponentStatus {
-    /// Upstream bundle admission did not grant optimizer-entry authority.
+    /// Upstream bundle admission blocked numerical use.
     BlockedAdmission,
     /// At least one required observation could not be projected under the exact model.
     ProjectionConflict,
@@ -135,6 +135,8 @@ pub enum ReprojectionComponentStatus {
     InsufficientHeldOutEvidence,
     /// At least one projected observation violated image-domain or residual policy.
     ResidualConflict,
+    /// Upstream admission permits diagnostic evaluation only.
+    UpstreamDiagnostic,
     /// Every required observation projected and passed all gates.
     Consistent,
 }
@@ -150,6 +152,7 @@ impl ReprojectionComponentStatus {
             Self::InsufficientOptimizeEvidence => "insufficient_optimize_evidence",
             Self::InsufficientHeldOutEvidence => "insufficient_held_out_evidence",
             Self::ResidualConflict => "residual_conflict",
+            Self::UpstreamDiagnostic => "upstream_diagnostic",
             Self::Consistent => "consistent",
         }
     }
@@ -162,7 +165,8 @@ impl ReprojectionComponentStatus {
             Self::InsufficientOptimizeEvidence => 4,
             Self::InsufficientHeldOutEvidence => 5,
             Self::ResidualConflict => 6,
-            Self::Consistent => 7,
+            Self::UpstreamDiagnostic => 7,
+            Self::Consistent => 8,
         }
     }
 }
