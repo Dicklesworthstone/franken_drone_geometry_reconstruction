@@ -109,6 +109,8 @@ step 'Running deterministic translation-only pose-refinement E2E'
 bash scripts/e2e/pose_refine.sh
 step 'Running deterministic structural bundle-problem admission E2E'
 bash scripts/e2e/bundle_problem_build.sh
+step 'Running image-domain, seed-partition, and held-out bundle-admission audit E2E'
+bash scripts/e2e/bundle_admission_audit.sh
 pass 'Full native FDGR qualification completed'
 
 if [[ "$MODE" == full ]]; then
