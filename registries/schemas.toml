@@ -116,6 +116,12 @@ json_schema_id = "https://fdgr.dev/schemas/anchor_vector.v1.json"
 status = "normative_target"
 
 [[public_schema]]
+id = "SCHEMA-BUNDLE-PROBLEM"
+path = "schemas/bundle_problem.schema.json"
+json_schema_id = "https://fdgr.dev/schemas/bundle_problem.v1.json"
+status = "reference_source"
+
+[[public_schema]]
 id = "SCHEMA-CALIBRATION-MODEL"
 path = "schemas/calibration_model.schema.json"
 json_schema_id = "https://fdgr.dev/schemas/calibration_model.v1.json"
