@@ -1,4 +1,22 @@
 impl BundleAdmissionGeneration {
+    /// Returns the maximum authority actually earned by this complete generation.
+    ///
+    /// A mixed, diagnostic, or blocked component set remains evidence-only. Positive optimizer-entry
+    /// authority is emitted only when every component is admitted.
+    #[must_use]
+    pub fn authority(&self) -> &'static str {
+        if !self.components.is_empty()
+            && self
+                .components
+                .iter()
+                .all(|component| component.decision == BundleAdmissionDecision::Admit)
+        {
+            BUNDLE_ADMISSION_AUTHORITY
+        } else {
+            BUNDLE_ADMISSION_EVIDENCE_AUTHORITY
+        }
+    }
+
     /// Replays every derived field from retained exact inputs.
     ///
     /// # Errors
@@ -114,8 +132,9 @@ impl BundleAdmissionGeneration {
     /// Returns a validation, identity, or formatting error.
     pub fn to_json(&self) -> Result<String, BundleAdmissionError> {
         let digest = self.digest()?;
+        let authority = self.authority();
         let mut output = format!(
-            "{{\"schema\":\"{BUNDLE_ADMISSION_SCHEMA}\",\"bundle_admission_digest\":\"{digest}\",\"authority\":\"{BUNDLE_ADMISSION_AUTHORITY}\",\"bundle_problem_digest\":\"{}\",\"camera_domain_basis_digest\":\"{}\",\"seed_provenance_basis_digest\":\"{}\",\"policy_digest\":\"{}\",\"generation\":{},\"camera_domain_count\":{},\"seed_provenance_count\":{},\"observation_audit_count\":{},\"landmark_audit_count\":{},\"component_count\":{},\"operation_count\":{},\"policy\":{{\"max_seed_uncertainty_nano\":{},\"min_seed_support_observations\":{},\"min_seed_support_cameras\":{},\"require_active_held_out_camera\":{},\"max_operations\":{}}},\"camera_domains\":[",
+            "{{\"schema\":\"{BUNDLE_ADMISSION_SCHEMA}\",\"bundle_admission_digest\":\"{digest}\",\"authority\":\"{authority}\",\"bundle_problem_digest\":\"{}\",\"camera_domain_basis_digest\":\"{}\",\"seed_provenance_basis_digest\":\"{}\",\"policy_digest\":\"{}\",\"generation\":{},\"camera_domain_count\":{},\"seed_provenance_count\":{},\"observation_audit_count\":{},\"landmark_audit_count\":{},\"component_count\":{},\"operation_count\":{},\"policy\":{{\"max_seed_uncertainty_nano\":{},\"min_seed_support_observations\":{},\"min_seed_support_cameras\":{},\"require_active_held_out_camera\":{},\"max_operations\":{}}},\"camera_domains\":[",
             self.basis.bundle_problem_digest,
             self.basis.camera_domain_basis_digest,
             self.basis.seed_provenance_basis_digest,
