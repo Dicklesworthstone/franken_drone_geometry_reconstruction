@@ -112,6 +112,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "geometry.bundle_problem.build",
+            description: "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence without optimization, landmark-coordinate, metric, numerical-rank, or publication authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "geometry.correspondence.build",
             description: "build bounded deterministic descriptor correspondences and collision-safe multi-view tracks from exact evidence tables",
             status: CapabilityStatus::ReferenceSource,
@@ -337,8 +342,9 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "select evidence-aware keyframes and build deterministic descriptor tracks",
         "adjudicate two-view motion candidates before pose-graph admission",
         "compose orientation topology, reconcile relative edge baselines, and initialize component-relative camera poses",
-        "relax component-relative camera centers against fixed admitted factors before nonlinear pose-and-landmark optimization",
-        "add full robust pose-and-landmark refinement, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
+        "relax component-relative camera centers against fixed admitted factors",
+        "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence before any landmark-bearing optimizer",
+        "add full robust pose-and-landmark optimization, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
     ]
 }
 
@@ -396,6 +402,7 @@ mod tests {
             "evidence.manifest.build",
             "evidence.manifest.verify",
             "evidence.store.local",
+            "geometry.bundle_problem.build",
             "geometry.correspondence.build",
             "geometry.edge_scale.resolve",
             "geometry.epipolar.verify",
