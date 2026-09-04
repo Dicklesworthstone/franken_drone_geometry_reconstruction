@@ -172,6 +172,11 @@ pub fn capabilities() -> &'static [Capability] {
             status: CapabilityStatus::ReferenceSource,
         },
         Capability {
+            id: "geometry.reprojection.evaluate",
+            description: "evaluate exact audited component-relative cameras and landmark seeds through materialized calibrations while preserving optimize/held-out residual evidence and typed projection conflicts, without optimization, metric, covariance, or publication authority",
+            status: CapabilityStatus::ReferenceSource,
+        },
+        Capability {
             id: "media.decode.plan",
             description: "compile authority-free bounded decode plans against independently verified recorded-media roots and exact video sample domains",
             status: CapabilityStatus::ReferenceSource,
@@ -350,6 +355,7 @@ pub fn implementation_sequence() -> &'static [&'static str] {
         "relax component-relative camera centers against fixed admitted factors",
         "compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence",
         "audit exact image domains, optimize-only seed provenance, and independently usable held-out evidence before numerical optimization",
+        "evaluate exact optimize and held-out reprojection residuals through materialized calibrations before optimizer execution",
         "add full robust pose-and-landmark optimization, fusion, uncertainty, coverage, semantics, archive recovery, and agent surfaces in dependency order",
     ]
 }
@@ -419,6 +425,7 @@ mod tests {
             "geometry.pose_graph.build",
             "geometry.pose_refine.translation",
             "geometry.relative_pose.verify",
+            "geometry.reprojection.evaluate",
             "media.decode.plan",
             "media.decode.receipt.validate",
             "media.index.classic_samples",
