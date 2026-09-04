@@ -8,6 +8,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 <!-- BEGIN GENERATED REGISTRY TRACEABILITY SUPPLEMENT -->
 | Stable ID | Normative registry | Compact label |
 |---|---|---|
+| `CAP-BUNDLE-ADMISSION-AUDIT` | `registries/capabilities.toml` | audit structural bundle evidence against exact image domains, optimize-only seed provenance, and independently usable held-out views; grants no optimization, calibration-accuracy, metric, rank, or sparse-geometry authority |
 | `CAP-BUNDLE-PROBLEM-BUILD` | `registries/capabilities.toml` | compile exact camera/calibration, landmark-seed, optimize/held-out observation, support-core, and bipartite topology evidence into an admitted relative bundle problem; grants no optimization, landmark-coordinate, metric, numerical-rank, or publication authority |
 | `CAP-CORRESPONDENCE-BUILD` | `registries/capabilities.toml` | bounded descriptor hypotheses and tracks |
 | `CAP-EDGE-SCALE-RESOLVE` | `registries/capabilities.toml` | nonmetric relative pose-edge gauges |
@@ -19,6 +20,7 @@ normative; a future plan revision may absorb these rows and empty this supplemen
 | `CAP-POSE-REFINE` | `registries/capabilities.toml` | relax component-relative camera centers against fixed admitted rotations and relative edge-scale factors; grants no landmark, metric, global-trajectory, or full bundle-adjustment authority |
 | `CAP-RELATIVE-POSE-VERIFY` | `registries/capabilities.toml` | scale-free physical two-view adjudication |
 | `GALG-022` | `registries/graph_algorithms.toml` | geometric-and-visibility-graphs |
+| `SCHEMA-BUNDLE-ADMISSION` | `registries/schemas.toml` | schemas/bundle_admission.schema.json |
 | `SCHEMA-BUNDLE-PROBLEM` | `registries/schemas.toml` | schemas/bundle_problem.schema.json |
 | `SCHEMA-CALIBRATION-MODEL` | `registries/schemas.toml` | schemas/calibration_model.schema.json |
 | `SCHEMA-CLOCK-MODEL` | `registries/schemas.toml` | schemas/clock_model.schema.json |
