@@ -223,6 +223,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "fdgr-reprojection"
+version = "0.0.1"
+dependencies = [
+ "fdgr-bundle-admission",
+ "fdgr-bundle-problem",
+ "fdgr-calibration",
+ "fdgr-codec",
+ "fdgr-edge-scale",
+ "fdgr-global-pose",
+ "fdgr-pose-graph",
+ "fdgr-pose-refinement",
+ "fdgr-projection",
+ "fdgr-types",
+]
+
+[[package]]
 name = "fdgr-recorded-media"
 version = "0.0.1"
 dependencies = [
