@@ -2,6 +2,8 @@
 pub const MAX_CAMERA_POINT_ABS_NANO: u64 = 9_000_000_000_000_000;
 /// Maximum absolute projected coordinate admitted by the scalar reference kernel.
 pub const MAX_PROJECTED_COORDINATE_ABS_NANO_PIXELS: u64 = 9_000_000_000_000_000;
+/// Maximum absolute normalized camera coordinate admitted before distortion.
+pub const MAX_NORMALIZED_COORDINATE_ABS_NANO: u64 = 32_000_000_000;
 
 /// Semantic visibility and numeric bounds for one rectified projection.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -22,6 +24,39 @@ impl Default for RectifiedProjectionPolicy {
     }
 }
 
+/// Semantic bounds for exact calibrated projection including admitted distortion.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct CalibratedProjectionPolicy {
+    /// Smallest positive camera-frame depth accepted by the projection.
+    pub minimum_positive_depth_nano: u64,
+    /// Maximum absolute normalized coordinate admitted before distortion.
+    pub max_normalized_coordinate_abs_nano: u64,
+    /// Maximum absolute projected coordinate before the result is refused.
+    pub max_projected_coordinate_abs_nano_pixels: u64,
+}
+
+impl Default for CalibratedProjectionPolicy {
+    fn default() -> Self {
+        Self {
+            minimum_positive_depth_nano: 1_000,
+            max_normalized_coordinate_abs_nano: 8_000_000_000,
+            max_projected_coordinate_abs_nano_pixels:
+                MAX_PROJECTED_COORDINATE_ABS_NANO_PIXELS,
+        }
+    }
+}
+
+impl From<RectifiedProjectionPolicy> for CalibratedProjectionPolicy {
+    fn from(policy: RectifiedProjectionPolicy) -> Self {
+        Self {
+            minimum_positive_depth_nano: policy.minimum_positive_depth_nano,
+            max_normalized_coordinate_abs_nano: MAX_NORMALIZED_COORDINATE_ABS_NANO,
+            max_projected_coordinate_abs_nano_pixels: policy
+                .max_projected_coordinate_abs_nano_pixels,
+        }
+    }
+}
+
 /// One deterministic image projection retaining visibility and depth evidence.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ProjectedPixel {
@@ -35,12 +70,29 @@ pub struct ProjectedPixel {
     pub within_image_domain: bool,
 }
 
-/// Stable failures for the deliberately narrow rectified projection kernel.
+/// Calibrated projection plus the exact undistorted normalized camera coordinate.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct CalibratedProjectedPixel {
+    /// Horizontal top-left image coordinate in nano-pixels.
+    pub x_nano_pixels: i64,
+    /// Vertical top-left image coordinate in nano-pixels.
+    pub y_nano_pixels: i64,
+    /// Positive camera-frame depth in component-relative nano units.
+    pub depth_nano: i64,
+    /// Undistorted normalized horizontal camera coordinate multiplied by `1e9`.
+    pub normalized_x_nano: i64,
+    /// Undistorted normalized vertical camera coordinate multiplied by `1e9`.
+    pub normalized_y_nano: i64,
+    /// Whether the coordinate lies in the exact half-open calibrated image domain.
+    pub within_image_domain: bool,
+}
+
+/// Stable failures for the deterministic calibrated projection kernel.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ProjectionError {
     /// The exact derived calibration failed its own invariants.
     Calibration(CalibrationError),
-    /// Distorted coordinates require a separately admitted distortion kernel.
+    /// The rectified compatibility operation received a distorted domain.
     UnsupportedDistortion {
         /// Canonical calibration model name.
         model: &'static str,
@@ -68,6 +120,15 @@ pub enum ProjectionError {
         /// Required positive minimum.
         minimum_positive_depth_nano: u64,
     },
+    /// Undistorted normalized camera coordinates exceeded the admitted domain.
+    NormalizedCoordinateExceeded {
+        /// Horizontal normalized coordinate multiplied by `1e9`.
+        x_nano: i64,
+        /// Vertical normalized coordinate multiplied by `1e9`.
+        y_nano: i64,
+        /// Maximum admitted absolute coordinate.
+        maximum_abs_nano: u64,
+    },
     /// Checked fixed-point arithmetic overflowed.
     ArithmeticOverflow {
         /// Stable operation name.
@@ -81,7 +142,7 @@ impl Display for ProjectionError {
             Self::Calibration(error) => write!(formatter, "projection calibration error: {error}"),
             Self::UnsupportedDistortion { model } => write!(
                 formatter,
-                "projection model {model} is unsupported; an exact rectified domain is required"
+                "rectified projection does not admit calibration model {model}"
             ),
             Self::RollingShutterRequiresMotionModel => formatter.write_str(
                 "rolling-shutter projection requires an admitted time-varying pose model",
@@ -103,6 +164,14 @@ impl Display for ProjectionError {
             } => write!(
                 formatter,
                 "camera depth {depth_nano} is below required positive minimum {minimum_positive_depth_nano}"
+            ),
+            Self::NormalizedCoordinateExceeded {
+                x_nano,
+                y_nano,
+                maximum_abs_nano,
+            } => write!(
+                formatter,
+                "normalized camera coordinate [{x_nano}, {y_nano}] exceeds absolute maximum {maximum_abs_nano}"
             ),
             Self::ArithmeticOverflow { field } => write!(
                 formatter,
