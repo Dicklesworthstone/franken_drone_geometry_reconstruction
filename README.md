@@ -4,7 +4,7 @@
 
 **An agent-native, evidence-grade operating substrate for turning owner-authorized drone observations into metrically honest semantic digital twins.**
 
-> **Current implementation boundary — 2026-09-04:** FDGR has a 28-member, dependency-closed safe-Rust reference workspace. The executable path covers immutable recorded-media custody, bounded native ISO BMFF/sample evidence, canonical timelines, clock/calibration/scale semantics, deterministic keyframes and correspondences, epipolar and relative-pose adjudication, graph topology, component-local orientation, relative edge-baseline gauges, component-relative camera-center initialization, translation-only robust pose refinement, structural bundle-problem compilation, and a separate image-domain/seed-provenance/held-out-independence audit. It does **not** yet claim live DJI acquisition, owned FFmpeg execution, native feature or motion-candidate generation, joint pose-landmark bundle adjustment, metric camera pose, sparse/dense reconstruction, semantic resolution, cloud recovery, a complete agent runtime, or production qualification.
+> **Current implementation boundary — 2026-10-26:** FDGR has a 30-member, dependency-closed safe-Rust reference workspace. The executable path covers immutable recorded-media custody, bounded native ISO BMFF/sample evidence, canonical timelines, clock/calibration/scale semantics, deterministic keyframes and correspondences, epipolar and relative-pose adjudication, graph topology, component-local orientation, relative edge-baseline gauges, component-relative camera-center initialization, translation-only robust pose refinement, structural bundle-problem compilation, a separate image-domain/seed-provenance/held-out-independence audit, and deterministic calibrated reprojection-evidence evaluation over that audited relative bundle problem. It does **not** yet claim live DJI acquisition, owned FFmpeg execution, native feature or motion-candidate generation, joint pose-landmark bundle adjustment, metric camera pose, sparse/dense reconstruction, semantic resolution, cloud recovery, a complete agent runtime, or production qualification.
 
 FDGR is designed for a person who manually flies a compact drone such as the DJI Flip around a property while an agent helps decide what to observe, what to compute, what can be trusted, what remains unknown, and what should happen next.
 
@@ -68,6 +68,7 @@ exact bytes and canonical identities
                           → robust translation-only camera-center refinement
                             → structural camera/landmark factor graph
                               → image-domain, seed-provenance, and held-out audit
+                                → calibrated reprojection-evidence evaluation
 ```
 
 Each seam has an exact basis, a narrow authority ceiling, deterministic replay, and typed failure states. The final audit admits a **problem for bounded optimization evaluation**; it is not itself bundle adjustment or geometry publication.
@@ -188,6 +189,7 @@ cargo run -p fdgr-cli -- global-pose-initialize <nodes.tsv> <pose-edges.tsv> <sc
 cargo run -p fdgr-cli -- pose-refine <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- bundle-problem-build <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> <camera-bindings.tsv> <landmark-seeds.tsv> <bundle-observations.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- bundle-admission-audit <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> <camera-bindings.tsv> <landmark-seeds.tsv> <bundle-observations.tsv> <camera-domains.tsv> <seed-provenance.tsv> [exact options] --format json
+cargo run -p fdgr-cli -- reprojection-evaluate <nodes.tsv> <pose-edges.tsv> <scale-witnesses.tsv> <camera-bindings.tsv> <landmark-seeds.tsv> <bundle-observations.tsv> <camera-domains.tsv> <seed-provenance.tsv> <effective-calibrations.tsv> [exact options] --format json
 cargo run -p fdgr-cli -- verify-file <path> [exact identities] --format json
 cargo run -p fdgr-cli -- verify-store <store-root> <manifest> --format json
 ```
